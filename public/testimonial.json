@@ -1,0 +1,52 @@
+[
+  {
+    "_id": "ss001",
+    "name": "Ananya Rahman",
+    "role": "Undergraduate Student",
+    "university": "University of Dhaka",
+    "scholarship": "Merit-Based Science Scholarship",
+    "year": 2025,
+    "testimonial": "ScholarStream helped me discover scholarships I never knew existed. The application process was simple, and I got selected within two months.",
+    "image": "https://example.com/images/ananya.jpg"
+  },
+  {
+    "_id": "ss002",
+    "name": "Rafiul Islam",
+    "role": "Computer Science Student",
+    "university": "BUET",
+    "scholarship": "Need-Based Technology Grant",
+    "year": 2024,
+    "testimonial": "Before ScholarStream, I had to search many websites for scholarships. This platform saved my time and helped me secure financial support for my studies.",
+    "image": "https://example.com/images/rafiul.jpg"
+  },
+  {
+    "_id": "ss003",
+    "name": "Nusrat Jahan",
+    "role": "Master’s Student",
+    "university": "Jahangirnagar University",
+    "scholarship": "Women in STEM Scholarship",
+    "year": 2025,
+    "testimonial": "ScholarStream made the scholarship application process stress-free. I could track my application status easily and got regular updates.",
+    "image": "https://example.com/images/nusrat.jpg"
+  },
+  {
+    "_id": "ss004",
+    "name": "Sabbir Ahmed",
+    "role": "Engineering Student",
+    "university": "Khulna University of Engineering & Technology",
+    "scholarship": "Government Excellence Scholarship",
+    "year": 2024,
+    "testimonial": "The platform is very user-friendly. Thanks to ScholarStream, I received a scholarship that fully covered my tuition fees.",
+    "image": "https://example.com/images/sabbir.jpg"
+  },
+  {
+    "_id": "ss005",
+    "name": "Farzana Akter",
+    "role": "Higher Secondary Student",
+    "university": "Rajshahi College",
+    "scholarship": "Bright Future Scholarship",
+    "year": 2023,
+    "testimonial": "As a first-generation college student, ScholarStream guided me step by step. This scholarship changed my academic journey.",
+    "image": "https://example.com/images/farzana.jpg"
+  }
+]
