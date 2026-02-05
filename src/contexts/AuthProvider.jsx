@@ -3,10 +3,13 @@ import { AuthContext } from "./AuthContext";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signOut,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.init";
+import { set } from "react-hook-form";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -30,13 +33,25 @@ const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, googleProvider)
   }
 
-  useEffect(()=>{
+  const logOut = () =>{
+    setLoading(true)
+   return signOut(auth)
+  }
 
+  useEffect(()=>{
+    const unSubscribe = onAuthStateChanged(auth , (currentUser)=>{
+      setUser(currentUser);
+      setLoading(false);
+    })
+    return () => {
+      unSubscribe();
+    }
   }, [])
-  
+
   const authInfo = {
     user,
     loading,
+    logOut,
     registerUser,
     signInUser,
     signInGoogle
