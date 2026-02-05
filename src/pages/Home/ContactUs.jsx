@@ -19,7 +19,7 @@ const ContactUs = () => {
             <h3 className="text-2xl font-semibold mb-6">Get in Touch</h3>
 
             <div className="flex items-start gap-4">
-              <div className="bg-primary p-3 rounded-full text-white">
+              <div className="bg-[#9f87e2] p-3 rounded-full text-white">
                 <FaMapMarkerAlt className="text-xl" />
               </div>
               <div>
@@ -33,7 +33,7 @@ const ContactUs = () => {
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="bg-primary p-3 rounded-full text-white">
+              <div className="bg-[#9f87e2] p-3 rounded-full text-white">
                 <FaEnvelope className="text-xl" />
               </div>
               <div>
@@ -44,7 +44,7 @@ const ContactUs = () => {
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="bg-primary p-3 rounded-full text-white">
+              <div className="bg-[#9f87e2] p-3 rounded-full text-white">
                 <FaPhone className="text-xl" />
               </div>
               <div>
@@ -103,7 +103,7 @@ const ContactUs = () => {
                   ></textarea>
                 </div>
 
-                <button type="submit" className="btn bg-[#654ea3] text-white w-full">
+                <button type="submit" className="btn bg-[#9f87e2] text-white w-full">
                   Send Message
                 </button>
               </form>

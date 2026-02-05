@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.init";
 import { set } from "react-hook-form";
@@ -38,6 +39,10 @@ const AuthProvider = ({ children }) => {
    return signOut(auth)
   }
 
+  const updateUserProfile = ()=>{
+    return updateProfile(auth.currentUser, profile)
+  }
+
   useEffect(()=>{
     const unSubscribe = onAuthStateChanged(auth , (currentUser)=>{
       setUser(currentUser);
@@ -52,6 +57,7 @@ const AuthProvider = ({ children }) => {
     user,
     loading,
     logOut,
+    updateUserProfile,
     registerUser,
     signInUser,
     signInGoogle
