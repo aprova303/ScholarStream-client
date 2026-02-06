@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import SocialLogin from "./SocialLogin";
 import axios from "axios";
 
@@ -12,6 +12,8 @@ const Register = () => {
     formState: { errors },
   } = useForm();
   const { registerUser, updateUserProfile } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleRegistration = (data) => {
     //  console.log(data)
@@ -24,24 +26,32 @@ const Register = () => {
         formData.append("image", profileImg);
         const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`;
 
-        axios.post(image_API_URL, formData).then((res) => {
-          console.log("image url", res.data.data.display_url);
-          //  update user profile
-          const userProfile = {
-            displayName: data.name,
-            photoURL: res.data.data.display_url,
-          };
-          updateUserProfile(userProfile)
-            .then(() => {
-              console.log("user profile updated");
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        });
+        axios
+          .post(image_API_URL, formData)
+          .then((res) => {
+            console.log("image url", res.data.data.display_url);
+            //  update user profile
+            const userProfile = {
+              displayName: data.name,
+              photoURL: res.data.data.display_url,
+            };
+            updateUserProfile(userProfile)
+              .then(() => {
+                console.log("user profile updated");
+                // Redirect to where user came from or to home page
+                const from = location.state?.from?.pathname || "/";
+                navigate(from, { replace: true });
+              })
+              .catch((error) => {
+                console.log("Profile update error:", error);
+              });
+          })
+          .catch((error) => {
+            console.log("Image upload error:", error);
+          });
       })
       .catch((error) => {
-        console.log(error.message);
+        console.log("Registration error:", error.message);
       });
   };
   return (

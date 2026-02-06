@@ -1,0 +1,218 @@
+[
+  {
+    "_id": "1",
+    "scholarshipName": "Oxford Excellence Scholarship",
+    "universityName": "University of Oxford",
+    "universityImage": "https://i.ibb.co/9ysq3jL/oxford.jpg",
+    "universityWorldRank": 4,
+    "scholarshipCategory": "Merit-Based",
+    "subjectCategory": "Engineering",
+    "location": "Oxford, United Kingdom",
+    "applicationFees": 0,
+    "stipend": "Full Tuition + £15,000 Annual Allowance",
+    "deadline": "2025-06-30",
+    "description": "The Oxford Excellence Scholarship is awarded to exceptional students demonstrating outstanding academic achievement, leadership potential, and commitment to making a positive impact in their field. This comprehensive scholarship covers tuition fees and provides a living allowance to support your studies at one of the world's most prestigious universities.",
+    "eligibility": "Bachelor's or Master's degree students with excellent academic records",
+    "reviews": [
+      {
+        "_id": "r1",
+        "reviewerName": "Ahmed Hassan",
+        "reviewerImage": "https://i.ibb.co/kH7KjZk/avatar1.jpg",
+        "rating": 5,
+        "date": "2025-01-15",
+        "comment": "Amazing opportunity! The scholarship was transformative for my education at Oxford."
+      },
+      {
+        "_id": "r2",
+        "reviewerName": "Sarah Johnson",
+        "reviewerImage": "https://i.ibb.co/b2mX8Lg/avatar2.jpg",
+        "rating": 5,
+        "date": "2025-01-20",
+        "comment": "Excellent support and resources provided. Highly recommended for aspiring engineers!"
+      }
+    ]
+  },
+  {
+    "_id": "2",
+    "scholarshipName": "Harvard Global Scholarship",
+    "universityName": "Harvard University",
+    "universityImage": "https://i.ibb.co/7X7Z8nB/harvard.jpg",
+    "universityWorldRank": 2,
+    "scholarshipCategory": "Need-Based",
+    "subjectCategory": "Medicine",
+    "location": "Cambridge, USA",
+    "applicationFees": 0,
+    "stipend": "Full Tuition + $25,000 Annual Stipend",
+    "deadline": "2025-05-15",
+    "description": "Harvard's Global Scholarship provides comprehensive financial support to international students with demonstrated need. The scholarship covers full tuition fees and provides a substantial annual stipend to cover living expenses, books, and other educational necessities.",
+    "eligibility": "International students admitted to Harvard with financial need",
+    "reviews": [
+      {
+        "_id": "r3",
+        "reviewerName": "Maria Garcia",
+        "reviewerImage": "https://i.ibb.co/ZNL3pHT/avatar3.jpg",
+        "rating": 5,
+        "date": "2025-01-10",
+        "comment": "Life-changing scholarship! Harvard made my dream possible."
+      },
+      {
+        "_id": "r4",
+        "reviewerName": "Raj Kumar",
+        "reviewerImage": "https://i.ibb.co/4pVqkYM/avatar4.jpg",
+        "rating": 4,
+        "date": "2025-01-18",
+        "comment": "Great opportunity, though the application process is quite competitive."
+      }
+    ]
+  },
+  {
+    "_id": "3",
+    "scholarshipName": "Stanford Innovation Grant",
+    "universityName": "Stanford University",
+    "universityImage": "https://i.ibb.co/Kw5YLrk/stanford.jpg",
+    "universityWorldRank": 3,
+    "scholarshipCategory": "Merit-Based",
+    "subjectCategory": "Computer Science",
+    "location": "Stanford, USA",
+    "applicationFees": 50,
+    "stipend": "Full Tuition + $20,000 Research Grant",
+    "deadline": "2025-07-01",
+    "description": "Stanford's Innovation Grant recognizes students with exceptional potential in computer science and technology. Beyond covering tuition, recipients receive a dedicated research grant to support groundbreaking projects and innovation initiatives.",
+    "eligibility": "Undergraduate and graduate students in CS/Technology fields",
+    "reviews": [
+      {
+        "_id": "r5",
+        "reviewerName": "David Chen",
+        "reviewerImage": "https://i.ibb.co/G2Y5Hpy/avatar5.jpg",
+        "rating": 5,
+        "date": "2025-01-22",
+        "comment": "Perfect for aspiring tech entrepreneurs. Great support for research!"
+      }
+    ]
+  },
+  {
+    "_id": "4",
+    "scholarshipName": "Cambridge STEM Excellence",
+    "universityName": "University of Cambridge",
+    "universityImage": "https://i.ibb.co/tQZ7Qmn/cambridge.jpg",
+    "universityWorldRank": 5,
+    "scholarshipCategory": "Merit-Based",
+    "subjectCategory": "Physics",
+    "location": "Cambridge, United Kingdom",
+    "applicationFees": 0,
+    "stipend": "Full Tuition + £12,000 Annual Allowance",
+    "deadline": "2025-06-15",
+    "description": "The Cambridge STEM Excellence Scholarship is designed for outstanding students pursuing science, technology, engineering, and mathematics. Recipients benefit from world-class facilities, mentorship, and a vibrant research community.",
+    "eligibility": "STEM students with exceptional academic records",
+    "reviews": [
+      {
+        "_id": "r6",
+        "reviewerName": "Emma Wilson",
+        "reviewerImage": "https://i.ibb.co/5hKjMnP/avatar6.jpg",
+        "rating": 4,
+        "date": "2025-01-25",
+        "comment": "Incredible opportunity to study at Cambridge. Highly competitive but rewarding."
+      }
+    ]
+  },
+  {
+    "_id": "5",
+    "scholarshipName": "National Merit International",
+    "universityName": "MIT",
+    "universityImage": "https://i.ibb.co/k8Zqnzw/mit.jpg",
+    "universityWorldRank": 1,
+    "scholarshipCategory": "Merit-Based",
+    "subjectCategory": "Engineering",
+    "location": "Cambridge, USA",
+    "applicationFees": 0,
+    "stipend": "Full Tuition + $30,000 Annual Stipend",
+    "deadline": "2025-04-01",
+    "description": "MIT's National Merit International Scholarship is one of the most prestigious awards in engineering education. It provides complete financial support and exclusive access to MIT's unparalleled research facilities and network.",
+    "eligibility": "International students with outstanding engineering qualifications",
+    "reviews": [
+      {
+        "_id": "r7",
+        "reviewerName": "Priya Sharma",
+        "reviewerImage": "https://i.ibb.co/5xT8YhJ/avatar7.jpg",
+        "rating": 5,
+        "date": "2025-01-28",
+        "comment": "Dream come true! MIT scholarship opened doors I never imagined."
+      }
+    ]
+  },
+  {
+    "_id": "6",
+    "scholarshipName": "Yale Global Leaders",
+    "universityName": "Yale University",
+    "universityImage": "https://i.ibb.co/1Zq5Yyw/yale.jpg",
+    "universityWorldRank": 6,
+    "scholarshipCategory": "Need-Based",
+    "subjectCategory": "Business",
+    "location": "New Haven, USA",
+    "applicationFees": 75,
+    "stipend": "Full Tuition + $18,000 Annual Allowance",
+    "deadline": "2025-05-20",
+    "description": "Yale's Global Leaders Scholarship supports exceptional students committed to making a positive global impact. The program combines financial support with mentorship and networking opportunities with Yale's influential business alumni.",
+    "eligibility": "Business and international relations students with demonstrated leadership",
+    "reviews": [
+      {
+        "_id": "r8",
+        "reviewerName": "Oluwaseun Okafor",
+        "reviewerImage": "https://i.ibb.co/Z6mKnTR/avatar8.jpg",
+        "rating": 4,
+        "date": "2025-01-30",
+        "comment": "Great scholarship with excellent networking opportunities."
+      }
+    ]
+  },
+  {
+    "_id": "7",
+    "scholarshipName": "Berkeley Excellence Award",
+    "universityName": "University of California, Berkeley",
+    "universityImage": "https://i.ibb.co/y8VyRm0/berkeley.jpg",
+    "universityWorldRank": 8,
+    "scholarshipCategory": "Merit-Based",
+    "subjectCategory": "Environmental Science",
+    "location": "Berkeley, USA",
+    "applicationFees": 40,
+    "stipend": "Tuition + $15,000 Research Fund",
+    "deadline": "2025-06-30",
+    "description": "UC Berkeley's Excellence Award recognizes students passionate about environmental sustainability and science. Winners receive tuition support and access to research funding to pursue innovative environmental projects.",
+    "eligibility": "Environmental science students with strong research interests",
+    "reviews": [
+      {
+        "_id": "r9",
+        "reviewerName": "Natalie Green",
+        "reviewerImage": "https://i.ibb.co/3ymHqJp/avatar9.jpg",
+        "rating": 5,
+        "date": "2025-02-01",
+        "comment": "Perfect for environmental advocates. Berkeley's commitment is inspiring!"
+      }
+    ]
+  },
+  {
+    "_id": "8",
+    "scholarshipName": "Toronto International Award",
+    "universityName": "University of Toronto",
+    "universityImage": "https://i.ibb.co/Xj5p3Tm/toronto.jpg",
+    "universityWorldRank": 21,
+    "scholarshipCategory": "Merit-Based",
+    "subjectCategory": "Medicine",
+    "location": "Toronto, Canada",
+    "applicationFees": 0,
+    "stipend": "CAD $50,000/year",
+    "deadline": "2025-05-31",
+    "description": "The University of Toronto International Award is designed to attract top-tier international students to Canada's leading research university. It offers substantial financial support with opportunities to engage in groundbreaking medical research.",
+    "eligibility": "International medical students with excellent academic records",
+    "reviews": [
+      {
+        "_id": "r10",
+        "reviewerName": "Kofi Mensah",
+        "reviewerImage": "https://i.ibb.co/dQxH2Jf/avatar10.jpg",
+        "rating": 5,
+        "date": "2025-02-03",
+        "comment": "Excellent Canadian opportunity for international students. Highly recommended!"
+      }
+    ]
+  }
+]
