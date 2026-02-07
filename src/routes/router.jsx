@@ -6,6 +6,18 @@ import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import AllScholarships from "../pages/Scholarship/all_scholarships";
 import ScholarshipDetails from "../pages/Scholarship/scholarshipDetails";
+import PrivateRoute from "./PrivateRoute";
+import DashboardLayout from "../layouts/DashboardLayout";
+import StudentProfile from "../pages/Dashboard/Student/StudentProfile";
+import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
+import AddScholarship from "../pages/Dashboard/Admin/AddScholarship";
+import ManageScholarships from "../pages/Dashboard/Admin/ManageScholarships";
+import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
+import Analytics from "../pages/Dashboard/Admin/Analytics";
+import ModeratorProfile from "../pages/Dashboard/Moderator/ModeratorProfile";
+import ManageApplications from "../pages/Dashboard/Moderator/ManageApplications";
+import MyApplications from "../pages/Dashboard/Student/MyApplications";
+import MyReviews from "../pages/Dashboard/Student/MyReviews";
 
 export const router = createBrowserRouter([
   {
@@ -41,4 +53,52 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: 'dashboard',
+    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    children: [
+      {
+        path: 'student-profile',
+        Component: StudentProfile,
+
+      }
+      ,
+      {
+        path: 'admin/profile',
+        Component: AdminProfile
+      },
+      {
+        path: 'admin/add-scholarship',
+        Component: AddScholarship
+      },
+      {
+        path: 'admin/manage-scholarships',
+        Component: ManageScholarships
+      },
+      {
+        path: 'admin/manage-users',
+        Component: ManageUsers
+      },
+      {
+        path: 'admin/analytics',
+        Component: Analytics
+      },
+      {
+        path: 'moderator/profile',
+        Component: ModeratorProfile
+      },
+      {
+        path: 'moderator/manage-applications',
+        Component: ManageApplications
+      },
+      {
+        path: 'student/applications',
+        Component: MyApplications
+      },
+      {
+        path: 'student/reviews',
+        Component: MyReviews
+      }
+    ]
+  }
 ]);
