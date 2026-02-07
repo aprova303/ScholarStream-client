@@ -5,6 +5,8 @@ import Logo from "../../components/Logo";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
+  console.log("Navbar user:", user);
+
   const navigate = useNavigate();
 
   const handleLogOut = () => {
@@ -108,9 +110,9 @@ const Navbar = () => {
               <li>
                 <NavLink to="/dashboard">Dashboard</NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink to="/profile">Profile</NavLink>
-              </li>
+              </li> */}
               <li>
                 <a onClick={handleLogOut}>Logout</a>
               </li>

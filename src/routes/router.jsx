@@ -13,11 +13,14 @@ import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
 import AddScholarship from "../pages/Dashboard/Admin/AddScholarship";
 import ManageScholarships from "../pages/Dashboard/Admin/ManageScholarships";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
-import Analytics from "../pages/Dashboard/Admin/Analytics";
+import Analytics from "../pages/Dashboard/Admin/analytics";
 import ModeratorProfile from "../pages/Dashboard/Moderator/ModeratorProfile";
 import ManageApplications from "../pages/Dashboard/Moderator/ManageApplications";
 import MyApplications from "../pages/Dashboard/Student/MyApplications";
 import MyReviews from "../pages/Dashboard/Student/MyReviews";
+import ModeratorReviews from "../pages/Dashboard/Moderator/ModeratorReviews";
+
+const DashboardWrapper = () => <PrivateRoute><DashboardLayout /></PrivateRoute>;
 
 export const router = createBrowserRouter([
   {
@@ -55,7 +58,7 @@ export const router = createBrowserRouter([
   },
   {
     path: 'dashboard',
-    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    Component: DashboardWrapper,
     children: [
       {
         path: 'student-profile',
@@ -90,6 +93,10 @@ export const router = createBrowserRouter([
       {
         path: 'moderator/manage-applications',
         Component: ManageApplications
+      },
+      {
+        path: 'moderator/reviews',
+        Component: ModeratorReviews
       },
       {
         path: 'student/applications',

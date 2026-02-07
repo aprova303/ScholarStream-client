@@ -10,7 +10,6 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.init";
-import { set } from "react-hook-form";
 import { api } from "../services/api";
 
 const googleProvider = new GoogleAuthProvider();
@@ -69,7 +68,7 @@ const AuthProvider = ({ children }) => {
         if (Array.isArray(data) && data.length > 0) r = data[0].role || r;
         else if (data && data.role) r = data.role;
         if (mounted) setRole(r);
-      } catch (e) {
+      } catch (_) {
         // default to Student on error
         if (mounted) setRole("Student");
       }
