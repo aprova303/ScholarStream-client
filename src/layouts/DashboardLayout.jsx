@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import useAuth from "../hooks/useAuth";
+import Logo from "../components/Logo";
 
 const DashboardLayout = () => {
   const { user, logOut, role } = useAuth();
@@ -39,12 +40,12 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className="drawer lg:drawer-open">
+    <div className=" drawer lg:drawer-open">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
         <nav className="navbar w-full bg-gradient-to-r from-[#654ea3] to-[#eaafc8] shadow-lg">
-          <div className="flex-1 flex gap-4">
+          <div className=" flex-1 flex gap-10">
             <label
               htmlFor="my-drawer-4"
               aria-label="open sidebar"
@@ -69,6 +70,7 @@ const DashboardLayout = () => {
             <div className="px-4 text-white font-bold text-lg">
               ScholarStream Dashboard
             </div>
+            
           </div>
 
           {/* Right navbar: User Profile */}
@@ -120,7 +122,8 @@ const DashboardLayout = () => {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
+        {/* <div className="flex min-h-full flex-col items-start bg-base-200 border-r border-base-300 shadow-xl is-drawer-close:w-14 is-drawer-open:w-64 transition-all duration-300"> */}
+        <div className=" flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-40 is-drawer-open:w-40">
           {/* Sidebar content here */}
           <ul className="menu w-full grow">
             {/* List item */}

@@ -19,6 +19,7 @@ import ManageApplications from "../pages/Dashboard/Moderator/ManageApplications"
 import MyApplications from "../pages/Dashboard/Student/MyApplications";
 import MyReviews from "../pages/Dashboard/Student/MyReviews";
 import ModeratorReviews from "../pages/Dashboard/Moderator/ModeratorReviews";
+import AdminRoute from "./AdminRoute";
 
 const DashboardWrapper = () => <PrivateRoute><DashboardLayout /></PrivateRoute>;
 
@@ -72,19 +73,19 @@ export const router = createBrowserRouter([
       },
       {
         path: 'admin/add-scholarship',
-        Component: AddScholarship
+        element:<AdminRoute><AddScholarship></AddScholarship></AdminRoute>
       },
       {
         path: 'admin/manage-scholarships',
-        Component: ManageScholarships
+       element: <AdminRoute><ManageScholarships /></AdminRoute>
       },
       {
         path: 'admin/manage-users',
-        Component: ManageUsers
+        element:<AdminRoute><ManageUsers /></AdminRoute>
       },
       {
         path: 'admin/analytics',
-        Component: Analytics
+        element:<AdminRoute><Analytics></Analytics></AdminRoute>
       },
       {
         path: 'moderator/profile',
