@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
 import { FiSearch, FiFilter, FiX } from "react-icons/fi";
+import { api } from "../../services/api";
+import { toast } from "react-toastify";
 
 const AllScholarships = () => {
   const [scholarships, setScholarships] = useState([]);
@@ -9,18 +11,26 @@ const AllScholarships = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
 
-  // Fetch scholarships data
+  // Fetch scholarships from API
   useEffect(() => {
-    fetch("/scholarships.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setScholarships(data);
-        setFilteredScholarships(data);
-      })
-      .catch((error) => console.log("Error loading scholarships:", error));
+    const fetchScholarships = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get("/scholarships");
+        setScholarships(response.data);
+        setFilteredScholarships(response.data);
+      } catch (error) {
+        console.error("Error loading scholarships:", error);
+        toast.error("Failed to load scholarships");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchScholarships();
   }, []);
 
   // Function to filter scholarships
@@ -57,35 +67,19 @@ const AllScholarships = () => {
       );
     }
 
-    // Location filter
-    if (selectedLocation) {
-      filtered = filtered.filter((scholarship) =>
-        scholarship.location
-          .toLowerCase()
-          .includes(selectedLocation.toLowerCase()),
-      );
-    }
-
     setFilteredScholarships(filtered);
   };
 
   // Call filter function when any filter changes
   useEffect(() => {
     filterScholarships();
-  }, [
-    searchTerm,
-    selectedCategory,
-    selectedSubject,
-    selectedLocation,
-    scholarships,
-  ]);
+  }, [searchTerm, selectedCategory, selectedSubject, scholarships]);
 
   // Reset filters
   const resetFilters = () => {
     setSearchTerm("");
     setSelectedCategory("");
     setSelectedSubject("");
-    setSelectedLocation("");
   };
 
   // Get unique values for filter dropdowns
@@ -93,7 +87,6 @@ const AllScholarships = () => {
     ...new Set(scholarships.map((s) => s.scholarshipCategory)),
   ];
   const subjects = [...new Set(scholarships.map((s) => s.subjectCategory))];
-  const locations = [...new Set(scholarships.map((s) => s.location))];
 
   return (
     <div className="min-h-screen bg-base-fifty">
@@ -189,25 +182,6 @@ const AllScholarships = () => {
               </select>
             </div>
 
-            {/* Location Filter */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Location
-              </label>
-              <select
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className="select select-bordered w-full"
-              >
-                <option value="">All Locations</option>
-                {locations.map((location) => (
-                  <option key={location} value={location}>
-                    {location}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             {/* Reset Button */}
             <div className="flex items-end">
               <button
@@ -277,7 +251,8 @@ const AllScholarships = () => {
 
                   {/* Location */}
                   <p className="text-sm text-gray-500 flex items-center gap-2">
-                    📍 {scholarship.location}
+                    📍 {scholarship.universityCity},{" "}
+                    {scholarship.universityCountry}
                   </p>
 
                   {/* Application Fees */}

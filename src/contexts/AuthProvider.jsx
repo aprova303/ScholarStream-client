@@ -18,6 +18,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState("Student");
+  const [token, setToken] = useState(null);
 
   const registerUser = (email, password) => {
     setLoading(true);
@@ -36,6 +37,8 @@ const AuthProvider = ({ children }) => {
 
   const logOut = () => {
     setLoading(true);
+    setToken(null);
+    setRole("Student");
     return signOut(auth);
   };
 
@@ -43,9 +46,33 @@ const AuthProvider = ({ children }) => {
     return updateProfile(auth.currentUser, profile);
   };
 
+  // Get Firebase token for API requests
+  const getToken = async () => {
+    if (auth.currentUser) {
+      try {
+        const idToken = await auth.currentUser.getIdToken();
+        return idToken;
+      } catch (error) {
+        console.error("Error getting token:", error);
+        return null;
+      }
+    }
+    return null;
+  };
+
   useEffect(() => {
-    const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+
+      if (currentUser) {
+        // Get Firebase token
+        const idToken = await getToken();
+        setToken(idToken);
+      } else {
+        setToken(null);
+        setRole("Student");
+      }
+
       setLoading(false);
     });
     return () => {
@@ -57,22 +84,24 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (!user?.email) return;
     let mounted = true;
+
     const fetchRole = async () => {
       try {
         const res = await api.get(
-          `/users?email=${encodeURIComponent(user.email)}`,
+          `/users/${encodeURIComponent(user.email)}/role`,
         );
-        // assume server returns an array or single object
+        // assume server returns role
         const data = res.data;
         let r = "Student";
-        if (Array.isArray(data) && data.length > 0) r = data[0].role || r;
-        else if (data && data.role) r = data.role;
+        if (data && data.role) r = data.role;
         if (mounted) setRole(r);
-      } catch (_) {
+      } catch (error) {
+        console.error("Error fetching role:", error);
         // default to Student on error
         if (mounted) setRole("Student");
       }
     };
+
     fetchRole();
     return () => {
       mounted = false;
@@ -83,11 +112,13 @@ const AuthProvider = ({ children }) => {
     user,
     role,
     loading,
+    token,
     logOut,
     updateUserProfile,
     registerUser,
     signInUser,
     signInGoogle,
+    getToken,
   };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

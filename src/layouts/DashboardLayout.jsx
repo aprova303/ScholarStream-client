@@ -1,11 +1,17 @@
 import React from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import useAuth from "../hooks/useAuth";
+import useRole from "../hooks/useRole";
 import Logo from "../components/Logo";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const DashboardLayout = () => {
-  const { user, logOut, role } = useAuth();
+  const { user, logOut, loading: authLoading } = useAuth();
+  const { role, roleLoading } = useRole();
   const navigate = useNavigate();
+
+  const isLoading = authLoading || roleLoading;
 
   const getInitials = (name) => {
     if (!name) return "U";
@@ -17,35 +23,305 @@ const DashboardLayout = () => {
       .slice(0, 2);
   };
 
-  const handleLogout = () => {
-    logOut()
-      .then(() => {
-        navigate("/");
-      })
-      .catch((error) => {
-        console.log(error);
+  const handleLogout = async () => {
+    try {
+      const result = await Swal.fire({
+        title: "Logout Confirmation",
+        text: "Are you sure you want to logout?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#9f87e2",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, logout",
+        cancelButtonText: "Cancel",
       });
-  };
 
+      if (result.isConfirmed) {
+        await logOut();
+        toast.success("Logged out successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        navigate("/");
+        document.getElementById("my-drawer-4").checked = false;
+      }
+    } catch (error) {
+      toast.error("Error logging out. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      console.error("Logout error:", error);
+    }
+  };
 
   const getProfileRoute = () => {
     switch (role) {
       case "Admin":
-        return "/dashboard/admin/profile";
+        return "/dashboard/profile";
       case "Moderator":
-        return "/dashboard/moderator/profile";
+        return "/dashboard/profile";
       default:
-        return "/dashboard/student-profile";
+        return "/dashboard/profile";
     }
   };
 
+  const renderSidebarLinks = () => {
+    if (role === "Admin") {
+      return (
+        <>
+          <li>
+            <NavLink to="/dashboard/profile">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span className="is-drawer-close:hidden">My Profile</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/add-scholarship">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span className="is-drawer-close:hidden">Add Scholarship</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/manage-scholarships">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span className="is-drawer-close:hidden">
+                Manage Scholarships
+              </span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/manage-applications">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <path d="M9 11l3 3L22 4"></path>
+                <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span className="is-drawer-close:hidden">
+                Manage Applications
+              </span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/manage-users">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span className="is-drawer-close:hidden">Manage Users</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/analytics">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <line x1="12" y1="2" x2="12" y2="22"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+              <span className="is-drawer-close:hidden">Analytics</span>
+            </NavLink>
+          </li>
+        </>
+      );
+    }
+    if (role === "Moderator") {
+      return (
+        <>
+          <li>
+            <NavLink to="/dashboard/profile">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span className="is-drawer-close:hidden">My Profile</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/manage-applications">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <path d="M9 11l3 3L22 4"></path>
+                <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span className="is-drawer-close:hidden">
+                Manage Applications
+              </span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/moderator-reviews">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <span className="is-drawer-close:hidden">Reviews</span>
+            </NavLink>
+          </li>
+        </>
+      );
+    }
+    // Student
+    return (
+      <>
+        <li>
+          <NavLink to="/dashboard/student-profile">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="size-4"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span className="is-drawer-close:hidden">My Profile</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/dashboard/student/applications">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="size-4"
+            >
+              <path d="M9 11l3 3L22 4"></path>
+              <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span className="is-drawer-close:hidden">My Applications</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/dashboard/student/reviews">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="size-4"
+            >
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span className="is-drawer-close:hidden">My Reviews</span>
+          </NavLink>
+        </li>
+      </>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <span className="loading loading-dots loading-xl"></span>
+      </div>
+    );
+  }
+
   return (
-    <div className=" drawer lg:drawer-open">
+    <div className="drawer lg:drawer-open">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
-        <nav className="navbar w-full bg-gradient-to-r from-[#654ea3] to-[#eaafc8] shadow-lg">
-          <div className=" flex-1 flex gap-10">
+        <nav className="navbar w-full bg-gradient-to-r from-[#654ea3] to-[#eaafc8] shadow-lg sticky top-0 z-30">
+          <div className="flex-1 flex gap-10">
             <label
               htmlFor="my-drawer-4"
               aria-label="open sidebar"
@@ -70,26 +346,34 @@ const DashboardLayout = () => {
             <div className="px-4 text-white font-bold text-lg">
               ScholarStream Dashboard
             </div>
-            
+            <div className="badge badge-primary text-white">{role}</div>
           </div>
 
           {/* Right navbar: User Profile */}
           <div className="flex-none">
             <div className="dropdown dropdown-end">
-                
-              <button className="btn btn-ghost btn-circle avatar">
-               <img
+              <button tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                {user?.photoURL ? (
+                  <img
                     src={user.photoURL}
                     alt={user.displayName || "User"}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-full"
                   />
-                <div className="w-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-bold text-sm">
-                  {getInitials(user?.displayName || user?.email)}
-                </div>
+                ) : (
+                  <div className="w-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-bold text-sm">
+                    {getInitials(user?.displayName || user?.email)}
+                  </div>
+                )}
               </button>
-              <ul className="dropdown-content menu bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu bg-base-300 rounded-box z-[1] w-52 p-2 shadow"
+              >
                 <li className="menu-title">
                   <span>{user?.displayName || user?.email}</span>
+                </li>
+                <li className="menu-title">
+                  <span className="text-xs text-gray-600">Role: {role}</span>
                 </li>
                 <li>
                   <a
@@ -122,16 +406,18 @@ const DashboardLayout = () => {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        {/* <div className="flex min-h-full flex-col items-start bg-base-200 border-r border-base-300 shadow-xl is-drawer-close:w-14 is-drawer-open:w-64 transition-all duration-300"> */}
-        <div className=" flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-40 is-drawer-open:w-40">
+        <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-40 is-drawer-open:w-40">
           {/* Sidebar content here */}
           <ul className="menu w-full grow">
-            {/* List item */}
+            {/* List item - Homepage */}
             <li>
               <Link
                 to="/"
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Homepage"
+                onClick={() => {
+                  document.getElementById("my-drawer-4").checked = false;
+                }}
               >
                 {/* Home icon */}
                 <svg
@@ -151,106 +437,34 @@ const DashboardLayout = () => {
               </Link>
             </li>
 
-            {/* Role-based dashboard links */}
-            {(() => {
-              if (role === "Admin") {
-                return (
-                  <>
-                    <li>
-                      <NavLink to="/dashboard/admin/profile">
-                        My Profile
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/dashboard/admin/add-scholarship">
-                        Add Scholarship
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/dashboard/admin/manage-scholarships">
-                        Manage Scholarships
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/dashboard/admin/manage-users">
-                        Manage Users
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/dashboard/admin/analytics">
-                        Analytics
-                      </NavLink>
-                    </li>
-                  </>
-                );
-              }
-              if (role === "Moderator") {
-                return (
-                  <>
-                    <li>
-                      <NavLink to="/dashboard/moderator/profile">
-                        My Profile
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/dashboard/moderator/manage-applications">
-                        Manage Applications
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/dashboard/moderator/all-reviews">
-                        All Reviews
-                      </NavLink>
-                    </li>
-                  </>
-                );
-              }
-              // default Student
-              return (
-                <>
-                  <li>
-                    <NavLink to="/dashboard/student-profile">
-                      My Profile
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/dashboard/student/applications">
-                      My Applications
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/dashboard/student/reviews">
-                      My Reviews
-                    </NavLink>
-                  </li>
-                </>
-              );
-            })()}
+            {/* Role-based links */}
+            {renderSidebarLinks()}
 
-            {/* List item */}
+            {/* All Scholarships Link */}
             <li>
-              <button
+              <Link
+                to="/all-scholarships"
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Settings"
+                data-tip="Scholarships"
+                onClick={() => {
+                  document.getElementById("my-drawer-4").checked = false;
+                }}
               >
-                {/* Settings icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="2"
                   fill="none"
                   stroke="currentColor"
-                  className="my-1.5 inline-block size-4"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="size-4"
                 >
-                  <path d="M20 7h-9"></path>
-                  <path d="M14 17H5"></path>
-                  <circle cx="17" cy="17" r="3"></circle>
-                  <circle cx="7" cy="7" r="3"></circle>
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                 </svg>
-                <span className="is-drawer-close:hidden">Settings</span>
-              </button>
+                <span className="is-drawer-close:hidden">All Scholarships</span>
+              </Link>
             </li>
           </ul>
         </div>
