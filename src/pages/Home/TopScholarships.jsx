@@ -16,7 +16,7 @@ const TopScholarships = () => {
         const response = await api.get("/scholarships");
 
         // Sort by applicationDeadline (most recent) and get top 6
-        const sorted = response.data
+        const sorted = response.data.data
           .sort(
             (a, b) =>
               new Date(b.scholarshipPostDate) - new Date(a.scholarshipPostDate),

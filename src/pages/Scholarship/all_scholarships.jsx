@@ -1,27 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
-import { FiSearch, FiFilter, FiX } from "react-icons/fi";
+import { FiSearch, FiFilter, FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { api } from "../../services/api";
 import { toast } from "react-toastify";
 
 const AllScholarships = () => {
   const [scholarships, setScholarships] = useState([]);
-  const [filteredScholarships, setFilteredScholarships] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [sortBy, setSortBy] = useState("postDate");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  const [paginationData, setPaginationData] = useState({
+    current: 1,
+    limit: 12,
+    total: 0,
+    pages: 0
+  });
+  const [availableCountries, setAvailableCountries] = useState([]);
+  const [availableCategories, setAvailableCategories] = useState([]);
 
-  // Fetch scholarships from API
+  // Fetch scholarships with filters and pagination
   useEffect(() => {
     const fetchScholarships = async () => {
       try {
         setLoading(true);
-        const response = await api.get("/scholarships");
-        setScholarships(response.data);
-        setFilteredScholarships(response.data);
+        
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (searchTerm) params.append("search", searchTerm);
+        if (selectedCategory) params.append("category", selectedCategory);
+        if (selectedCountry) params.append("country", selectedCountry);
+        params.append("sortBy", sortBy);
+        params.append("sortOrder", sortOrder);
+        params.append("page", currentPage);
+        params.append("limit", 12);
+
+        const response = await api.get(`/scholarships?${params.toString()}`);
+        
+        setScholarships(response.data.data);
+        setPaginationData(response.data.pagination);
       } catch (error) {
         console.error("Error loading scholarships:", error);
         toast.error("Failed to load scholarships");
@@ -31,65 +53,80 @@ const AllScholarships = () => {
     };
 
     fetchScholarships();
-  }, []);
+  }, [searchTerm, selectedCategory, selectedCountry, sortBy, sortOrder, currentPage]);
 
-  // Function to filter scholarships
-  const filterScholarships = () => {
-    let filtered = scholarships;
-
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (scholarship) =>
-          scholarship.scholarshipName
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          scholarship.universityName
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          scholarship.subjectCategory
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()),
-      );
-    }
-
-    // Category filter
-    if (selectedCategory) {
-      filtered = filtered.filter(
-        (scholarship) => scholarship.scholarshipCategory === selectedCategory,
-      );
-    }
-
-    // Subject filter
-    if (selectedSubject) {
-      filtered = filtered.filter(
-        (scholarship) => scholarship.subjectCategory === selectedSubject,
-      );
-    }
-
-    setFilteredScholarships(filtered);
-  };
-
-  // Call filter function when any filter changes
+  // Fetch available countries and categories for filters
   useEffect(() => {
-    filterScholarships();
-  }, [searchTerm, selectedCategory, selectedSubject, scholarships]);
+    const fetchFilterOptions = async () => {
+      try {
+        // Fetch all scholarships to get unique countries and categories
+        const response = await api.get("/scholarships?limit=1000");
+        
+        if (response.data.data && Array.isArray(response.data.data)) {
+          const countries = [...new Set(response.data.data.map(s => s.universityCountry))].filter(Boolean).sort();
+          const categories = [...new Set(response.data.data.map(s => s.scholarshipCategory))].filter(Boolean).sort();
+          
+          setAvailableCountries(countries);
+          setAvailableCategories(categories);
+        }
+      } catch (error) {
+        console.error("Error fetching filter options:", error);
+      }
+    };
+
+    fetchFilterOptions();
+  }, []);
 
   // Reset filters
   const resetFilters = () => {
     setSearchTerm("");
     setSelectedCategory("");
-    setSelectedSubject("");
+    setSelectedCountry("");
+    setSortBy("postDate");
+    setSortOrder("desc");
+    setCurrentPage(1);
+    toast.info("Filters reset");
   };
 
-  // Get unique values for filter dropdowns
-  const categories = [
-    ...new Set(scholarships.map((s) => s.scholarshipCategory)),
-  ];
-  const subjects = [...new Set(scholarships.map((s) => s.subjectCategory))];
+  // Handle pagination
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < paginationData.pages) {
+      setCurrentPage(currentPage + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxPages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+    let endPage = Math.min(paginationData.pages, startPage + maxPages - 1);
+    
+    if (endPage - startPage < maxPages - 1) {
+      startPage = Math.max(1, endPage - maxPages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
 
   return (
-    <div className="min-h-screen bg-base-fifty">
+    <div className="min-h-screen bg-base-50">
       {/* Page Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -142,20 +179,23 @@ const AllScholarships = () => {
 
           {/* Filters Section */}
           <div
-            className={`grid grid-cols-1 md:grid-cols-4 gap-4 ${!showFilters && "hidden md:grid"}`}
+            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 ${!showFilters && "hidden md:grid"}`}
           >
             {/* Category Filter */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Scholarship Category
+                Category
               </label>
               <select
                 value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="select select-bordered w-full"
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="select select-bordered w-full select-sm"
               >
                 <option value="">All Categories</option>
-                {categories.map((category) => (
+                {availableCategories.map((category) => (
                   <option key={category} value={category}>
                     {category}
                   </option>
@@ -163,22 +203,61 @@ const AllScholarships = () => {
               </select>
             </div>
 
-            {/* Subject Filter */}
+            {/* Country Filter */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Subject Category
+                Country
               </label>
               <select
-                value={selectedSubject}
-                onChange={(e) => setSelectedSubject(e.target.value)}
-                className="select select-bordered w-full"
+                value={selectedCountry}
+                onChange={(e) => {
+                  setSelectedCountry(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="select select-bordered w-full select-sm"
               >
-                <option value="">All Subjects</option>
-                {subjects.map((subject) => (
-                  <option key={subject} value={subject}>
-                    {subject}
+                <option value="">All Countries</option>
+                {availableCountries.map((country) => (
+                  <option key={country} value={country}>
+                    {country}
                   </option>
                 ))}
+              </select>
+            </div>
+
+            {/* Sort By */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Sort By
+              </label>
+              <select
+                value={sortBy}
+                onChange={(e) => {
+                  setSortBy(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="select select-bordered w-full select-sm"
+              >
+                <option value="postDate">Latest Posted</option>
+                <option value="applicationFees">Application Fees</option>
+              </select>
+            </div>
+
+            {/* Sort Order */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Order
+              </label>
+              <select
+                value={sortOrder}
+                onChange={(e) => {
+                  setSortOrder(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="select select-bordered w-full select-sm"
+              >
+                <option value="desc">Descending</option>
+                <option value="asc">Ascending</option>
               </select>
             </div>
 
@@ -188,96 +267,137 @@ const AllScholarships = () => {
                 onClick={resetFilters}
                 className="btn btn-outline btn-sm w-full"
               >
-                <FiX /> Reset Filters
+                <FiX /> Reset
               </button>
             </div>
           </div>
         </motion.div>
 
-        {/* Results Count */}
+        {/* Results Count and Loading */}
         <div className="mb-6 flex items-center justify-between">
           <p className="text-gray-600 font-semibold">
-            Showing {filteredScholarships.length} of {scholarships.length}{" "}
-            scholarships
+            Showing {paginationData.limit * (paginationData.current - 1) + (scholarships.length > 0 ? 1 : 0)} - {paginationData.limit * (paginationData.current - 1) + scholarships.length} of {paginationData.total} scholarships
           </p>
+          {loading && <span className="loading loading-spinner loading-sm text-[#9f87e2]"></span>}
         </div>
 
         {/* Scholarships Grid */}
-        {filteredScholarships.length > 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {filteredScholarships.map((scholarship, index) => (
-              <motion.div
-                key={scholarship._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                className="card bg-base-100 shadow-lg hover:shadow-xl transition-all"
-              >
-                {/* University Image */}
-                <figure className="h-48 overflow-hidden">
-                  <img
-                    src={scholarship.universityImage}
-                    alt={scholarship.universityName}
-                    className="w-full h-full object-cover"
-                  />
-                </figure>
+        {!loading && scholarships.length > 0 ? (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+            >
+              {scholarships.map((scholarship, index) => (
+                <motion.div
+                  key={scholarship._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  whileHover={{ scale: 1.02 }}
+                  className="card bg-base-100 shadow-lg hover:shadow-xl transition-all"
+                >
+                  {/* University Image */}
+                  <figure className="h-48 overflow-hidden">
+                    <img
+                      src={scholarship.universityImage}
+                      alt={scholarship.universityName}
+                      className="w-full h-full object-cover"
+                    />
+                  </figure>
 
-                <div className="card-body">
-                  {/* Badge */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="badge badge-primary bg-[#9f87e2] text-white border-none">
-                      {scholarship.scholarshipCategory}
-                    </span>
-                    <span className="badge badge-ghost">
-                      {scholarship.subjectCategory}
-                    </span>
+                  <div className="card-body">
+                    {/* Badge */}
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
+                      <span className="badge badge-primary bg-[#9f87e2] text-white border-none">
+                        {scholarship.scholarshipCategory}
+                      </span>
+                      <span className="badge badge-ghost">
+                        {scholarship.degree}
+                      </span>
+                    </div>
+
+                    {/* University Name */}
+                    <h2 className="card-title text-lg">
+                      {scholarship.universityName}
+                    </h2>
+
+                    {/* Scholarship Name */}
+                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                      {scholarship.scholarshipName}
+                    </p>
+
+                    {/* Location */}
+                    <p className="text-sm text-gray-500 flex items-center gap-2">
+                      📍 {scholarship.universityCity},
+                      {scholarship.universityCountry}
+                    </p>
+
+                    {/* Application Fees */}
+                    <p className="text-sm font-semibold text-gray-700 mt-2">
+                      Application Fee:{" "}
+                      <span className="text-[#9f87e2]">
+                        {scholarship.applicationFees === 0
+                          ? "Free"
+                          : `$${scholarship.applicationFees}`}
+                      </span>
+                    </p>
+
+                    {/* View Details Button */}
+                    <div className="card-actions justify-end mt-4">
+                      <Link
+                        to={`/scholarship-details/${scholarship._id}`}
+                        className="btn btn-sm bg-[#9f87e2] text-white border-none hover:bg-[#8b76d4]"
+                      >
+                        View Details
+                      </Link>
+                    </div>
                   </div>
+                </motion.div>
+              ))}
+            </motion.div>
 
-                  {/* University Name */}
-                  <h2 className="card-title text-lg">
-                    {scholarship.universityName}
-                  </h2>
+            {/* Pagination */}
+            {paginationData.pages > 1 && (
+              <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className="btn btn-sm btn-outline"
+                >
+                  <FiChevronLeft /> Prev
+                </button>
 
-                  {/* Scholarship Name */}
-                  <p className="text-sm text-gray-600 mb-2">
-                    {scholarship.scholarshipName}
-                  </p>
+                {getPageNumbers().map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`btn btn-sm ${
+                      page === currentPage
+                        ? "btn-primary bg-[#9f87e2] border-none"
+                        : "btn-outline"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
 
-                  {/* Location */}
-                  <p className="text-sm text-gray-500 flex items-center gap-2">
-                    📍 {scholarship.universityCity},{" "}
-                    {scholarship.universityCountry}
-                  </p>
-
-                  {/* Application Fees */}
-                  <p className="text-sm font-semibold text-gray-700 mt-2">
-                    Application Fee:{" "}
-                    <span className="text-[#9f87e2]">
-                      {scholarship.applicationFees === 0
-                        ? "Free"
-                        : `$${scholarship.applicationFees}`}
-                    </span>
-                  </p>
-
-                  {/* View Details Button */}
-                  <div className="card-actions justify-end mt-4">
-                    <Link
-                      to={`/scholarship-details/${scholarship._id}`}
-                      className="btn btn-sm bg-[#9f87e2] text-white border-none hover:bg-[#8b76d4]"
-                    >
-                      View Details
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === paginationData.pages}
+                  className="btn btn-sm btn-outline"
+                >
+                  Next <FiChevronRight />
+                </button>
+              </div>
+            )}
+          </>
+        ) : loading ? (
+          <div className="flex justify-center py-12">
+            <span className="loading loading-spinner loading-lg text-[#9f87e2]"></span>
+          </div>
         ) : (
           <motion.div
             initial={{ opacity: 0 }}

@@ -19,6 +19,7 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState("Student");
   const [token, setToken] = useState(null);
+  const [initialized, setInitialized] = useState(false);
 
   const registerUser = (email, password) => {
     setLoading(true);
@@ -39,7 +40,10 @@ const AuthProvider = ({ children }) => {
     setLoading(true);
     setToken(null);
     setRole("Student");
-    return signOut(auth);
+    setUser(null);
+    return signOut(auth).finally(() => {
+      setLoading(false);
+    });
   };
 
   const updateUserProfile = (profile) => {
@@ -53,73 +57,72 @@ const AuthProvider = ({ children }) => {
         const idToken = await auth.currentUser.getIdToken();
         return idToken;
       } catch (error) {
-        console.error("Error getting token:", error);
         return null;
       }
     }
     return null;
   };
 
+  // Fetch user role from server
+  const fetchUserRole = async (email) => {
+    try {
+      const res = await api.get(`/users/${encodeURIComponent(email)}/role`);
+      const data = res.data;
+      let r = "Student";
+      if (data && data.role) r = data.role;
+      setRole(r);
+      return r;
+    } catch (error) {
+      setRole("Student");
+      return "Student";
+    }
+  };
+
+  // Main auth state effect - watches Firebase auth changes
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-
       if (currentUser) {
-        // Get Firebase token
+        setUser(currentUser);
         const idToken = await getToken();
         setToken(idToken);
+        await fetchUserRole(currentUser.email);
       } else {
+        setUser(null);
         setToken(null);
         setRole("Student");
       }
 
       setLoading(false);
+      setInitialized(true);
     });
+
     return () => {
       unSubscribe();
     };
   }, []);
 
-  // fetch role from server when user changes
+  // Refetch role when user visits (useful for manual role changes in MongoDB)
   useEffect(() => {
-    if (!user?.email) return;
-    let mounted = true;
-
-    const fetchRole = async () => {
-      try {
-        const res = await api.get(
-          `/users/${encodeURIComponent(user.email)}/role`,
-        );
-        // assume server returns role
-        const data = res.data;
-        let r = "Student";
-        if (data && data.role) r = data.role;
-        if (mounted) setRole(r);
-      } catch (error) {
-        console.error("Error fetching role:", error);
-        // default to Student on error
-        if (mounted) setRole("Student");
-      }
-    };
-
-    fetchRole();
-    return () => {
-      mounted = false;
-    };
-  }, [user]);
+    if (user?.email) {
+      fetchUserRole(user.email);
+    }
+  }, [user?.email]);
 
   const authInfo = {
     user,
     role,
     loading,
     token,
+    initialized,
     logOut,
     updateUserProfile,
     registerUser,
     signInUser,
     signInGoogle,
     getToken,
+    refetchRole: () => (user?.email ? fetchUserRole(user.email) : null),
   };
+
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );

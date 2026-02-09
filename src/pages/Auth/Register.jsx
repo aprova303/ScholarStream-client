@@ -4,6 +4,8 @@ import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router";
 import SocialLogin from "./SocialLogin";
 import axios from "axios";
+import { api } from "../../services/api";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const {
@@ -11,17 +13,15 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { registerUser, updateUserProfile } = useAuth();
+  const { registerUser, updateUserProfile, getToken } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleRegistration = (data) => {
-    //  console.log(data)
     const profileImg = data.photo[0];
     registerUser(data.email, data.password)
       .then((result) => {
-        console.log(result.user);
-        //  store the image and get photo url
+        // Store the image and get photo url
         const formData = new FormData();
         formData.append("image", profileImg);
         const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`;
@@ -29,29 +29,81 @@ const Register = () => {
         axios
           .post(image_API_URL, formData)
           .then((res) => {
-            console.log("image url", res.data.data.display_url);
-            //  update user profile
             const userProfile = {
               displayName: data.name,
               photoURL: res.data.data.display_url,
             };
             updateUserProfile(userProfile)
-              .then(() => {
-                console.log("user profile updated");
-                // Redirect to where user came from or to home page
-                const from = location.state?.from?.pathname || "/";
-                navigate(from, { replace: true });
+              .then(async () => {
+                try {
+                  // Get Firebase token
+                  const token = await getToken();
+
+                  if (!token) {
+                    throw new Error("Failed to get authentication token");
+                  }
+
+                  // Save user to MongoDB via backend API
+                  const saveResponse = await api.post(
+                    "/users/create-or-update",
+                    {
+                      email: result.user.email,
+                      name: data.name,
+                      photoURL: res.data.data.display_url,
+                      firebaseUid: result.user.uid,
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                      },
+                    },
+                  );
+
+                  toast.success("Account created successfully!");
+
+                  // Redirect to where user came from or to home page
+                  const from = location.state?.from?.pathname || "/";
+                  navigate(from, { replace: true });
+                } catch (apiError) {
+                  // Check if server is down
+                  if (apiError.response?.status === 503) {
+                    toast.error(
+                      "Server is unavailable. Make sure the backend is running: node index.js",
+                    );
+                  } else if (apiError.code === "ECONNREFUSED") {
+                    toast.error(
+                      "Cannot connect to server. Make sure it's running on port 3000",
+                    );
+                  } else if (apiError.response?.status === 500) {
+                    toast.error(
+                      "Server error: " +
+                        (apiError.response?.data?.error ||
+                          "Internal server error"),
+                    );
+                  } else {
+                    toast.error(
+                      "Failed to save profile: " +
+                        (apiError.message || "Unknown error"),
+                    );
+                  }
+                  // Still allow user to proceed but warn them
+                  setTimeout(() => {
+                    const from = location.state?.from?.pathname || "/";
+                    navigate(from, { replace: true });
+                  }, 2000);
+                }
               })
               .catch((error) => {
-                console.log("Profile update error:", error);
+                toast.error("Profile update failed");
               });
           })
           .catch((error) => {
-            console.log("Image upload error:", error);
+            toast.error("Image upload failed");
           });
       })
       .catch((error) => {
-        console.log("Registration error:", error.message);
+        toast.error("Registration failed: " + error.message);
       });
   };
   return (
@@ -132,7 +184,6 @@ const Register = () => {
           </Link>
         </p>
       </form>
-      <SocialLogin></SocialLogin>
     </div>
   );
 };

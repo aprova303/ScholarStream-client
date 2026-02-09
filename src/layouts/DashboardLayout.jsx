@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
@@ -7,11 +7,18 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 
 const DashboardLayout = () => {
-  const { user, logOut, loading: authLoading } = useAuth();
+  const { user, logOut, loading: authLoading, refetchRole } = useAuth();
   const { role, roleLoading } = useRole();
   const navigate = useNavigate();
 
   const isLoading = authLoading || roleLoading;
+
+  // Refetch role when dashboard loads to ensure it's up-to-date
+  useEffect(() => {
+    if (user?.email && refetchRole) {
+      refetchRole();
+    }
+  }, [user?.email, refetchRole]);
 
   const getInitials = (name) => {
     if (!name) return "U";
@@ -50,7 +57,6 @@ const DashboardLayout = () => {
         position: "top-right",
         autoClose: 3000,
       });
-      console.error("Logout error:", error);
     }
   };
 

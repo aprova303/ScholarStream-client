@@ -40,7 +40,6 @@ const Navbar = () => {
         position: "top-right",
         autoClose: 3000,
       });
-      console.error("Logout error:", error);
     }
   };
 
@@ -74,7 +73,9 @@ const Navbar = () => {
       <>
         {dashboardLink}
         <li>
-          <NavLink to="/dashboard/student/applications">My Applications</NavLink>
+          <NavLink to="/dashboard/student/applications">
+            My Applications
+          </NavLink>
         </li>
         <li>
           <NavLink to="/dashboard/student/reviews">My Reviews</NavLink>

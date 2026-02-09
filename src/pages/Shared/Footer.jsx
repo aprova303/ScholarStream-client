@@ -7,11 +7,11 @@ const Footer = () => {
   <aside>
     <Logo></Logo>
     <p className="font-bold">
-      ACME Industries Ltd.
+      ScholarStream 
       <br />
-      Providing reliable tech since 1992
+      Providing educational resources since 2008
     </p>
-    <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
+    <p>scholarStream © {new Date().getFullYear()} - All right reserved</p>
   </aside>
   <nav>
     <div className="grid grid-flow-col gap-4">

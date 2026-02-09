@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router";
 import SocialLogin from "./SocialLogin";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const {
@@ -15,24 +16,30 @@ const Login = () => {
   const location = useLocation();
 
   const handleLogin = (data) => {
-    console.log(data);
     signInUser(data.email, data.password)
       .then((result) => {
-        console.log(result.user);
-        // Redirect to where user came from or to home page
+        toast.success("Login successful!");
         const from = location.state?.from?.pathname || "/";
         navigate(from, { replace: true });
       })
       .catch((error) => {
-        console.log(error);
+        if (error.code === "auth/invalid-credential") {
+          toast.error("Invalid email or password");
+        } else if (error.code === "auth/user-not-found") {
+          toast.error("User not found. Please register first.");
+        } else if (error.code === "auth/wrong-password") {
+          toast.error("Wrong password. Please try again.");
+        } else {
+          toast.error("Login failed: " + error.message);
+        }
       });
   };
+
   return (
     <div className="card bg-base-100 w-full mx-auto max-w-sm shrink-0 shadow-2xl mt-10">
       <h3 className="text-3xl text-center font-semibold bg-gradient-to-r from-[#654ea3] to-[#eaafc8] text-transparent bg-clip-text">
         Welcome back
       </h3>
-      {/* <p className="text-center">Please Login</p> */}
       <form className="card-body" onSubmit={handleSubmit(handleLogin)}>
         <fieldset className="fieldset">
           <label className="label">Email</label>
@@ -72,7 +79,7 @@ const Login = () => {
           </Link>
         </p>
       </form>
-      <SocialLogin></SocialLogin>
+      <SocialLogin />
     </div>
   );
 };

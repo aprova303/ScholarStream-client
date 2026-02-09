@@ -20,8 +20,13 @@ import MyApplications from "../pages/Dashboard/Student/MyApplications";
 import MyReviews from "../pages/Dashboard/Student/MyReviews";
 import ModeratorReviews from "../pages/Dashboard/Moderator/ModeratorReviews";
 import AdminRoute from "./AdminRoute";
+import NotFound from "../pages/Shared/NotFound";
 
-const DashboardWrapper = () => <PrivateRoute><DashboardLayout /></PrivateRoute>;
+const DashboardWrapper = () => (
+  <PrivateRoute>
+    <DashboardLayout />
+  </PrivateRoute>
+);
 
 export const router = createBrowserRouter([
   {
@@ -58,55 +63,75 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: 'dashboard',
+    path: "dashboard",
     Component: DashboardWrapper,
     children: [
       {
-        path: 'student-profile',
+        path: "student-profile",
         Component: StudentProfile,
+      },
+      {
+        path: "admin/profile",
+        Component: AdminProfile,
+      },
+      {
+        path: "admin/add-scholarship",
+        element: (
+          <AdminRoute>
+            <AddScholarship></AddScholarship>
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "admin/manage-scholarships",
+        element: (
+          <AdminRoute>
+            <ManageScholarships />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "admin/manage-users",
+        element: (
+          <AdminRoute>
+            <ManageUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "admin/analytics",
+        element: (
+          <AdminRoute>
+            <Analytics></Analytics>
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "moderator/profile",
+        Component: ModeratorProfile,
+      },
+      {
+        path: "moderator/manage-applications",
+        Component: ManageApplications,
+      },
+      {
+        path: "moderator/reviews",
+        Component: ModeratorReviews,
+      },
+      {
+        path: "student/applications",
+        Component: MyApplications,
+      },
+      {
+        path: "student/reviews",
+        Component: MyReviews,
+      },
+    ],
+  },
 
-      }
-      ,
-      {
-        path: 'admin/profile',
-        Component: AdminProfile
-      },
-      {
-        path: 'admin/add-scholarship',
-        element:<AdminRoute><AddScholarship></AddScholarship></AdminRoute>
-      },
-      {
-        path: 'admin/manage-scholarships',
-       element: <AdminRoute><ManageScholarships /></AdminRoute>
-      },
-      {
-        path: 'admin/manage-users',
-        element:<AdminRoute><ManageUsers /></AdminRoute>
-      },
-      {
-        path: 'admin/analytics',
-        element:<AdminRoute><Analytics></Analytics></AdminRoute>
-      },
-      {
-        path: 'moderator/profile',
-        Component: ModeratorProfile
-      },
-      {
-        path: 'moderator/manage-applications',
-        Component: ManageApplications
-      },
-      {
-        path: 'moderator/reviews',
-        Component: ModeratorReviews
-      },
-      {
-        path: 'student/applications',
-        Component: MyApplications
-      },
-      {
-        path: 'student/reviews',
-        Component: MyReviews
-      }
-    ]
-  }
+  // 404 Not Found - Catch-all route (must be last)
+  {
+    path: "*",
+    Component: NotFound,
+  },
 ]);

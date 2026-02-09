@@ -24,7 +24,6 @@ const ScholarshipDetails = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log("Error loading scholarship:", error);
         setLoading(false);
       });
   }, [id]);

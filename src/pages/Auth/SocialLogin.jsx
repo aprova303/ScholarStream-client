@@ -1,22 +1,80 @@
 import React from "react";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate, useLocation } from "react-router";
+import { api } from "../../services/api";
+import { toast } from "react-toastify";
 
 const SocialLogin = () => {
-  const { signInGoogle } = useAuth();
+  const { signInGoogle, getToken } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleGoogleSignIn = () => {
     signInGoogle()
-      .then((result) => {
-        console.log(result.user);
-        // Redirect to where user came from or to home page
-        const from = location.state?.from?.pathname || "/";
-        navigate(from, { replace: true });
+      .then(async (result) => {
+        toast.info("Saving your profile...");
+
+        try {
+          // Get Firebase token
+          const token = await getToken();
+
+          if (!token) {
+            throw new Error("Failed to get authentication token");
+          }
+
+          // Save user to MongoDB via backend API
+          const saveResponse = await api.post(
+            "/users/create-or-update",
+            {
+              email: result.user.email,
+              name: result.user.displayName || "User",
+              photoURL: result.user.photoURL,
+              firebaseUid: result.user.uid,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            },
+          );
+
+          toast.success("Successfully logged in!");
+
+          // Redirect to where user came from or to home page
+          const from = location.state?.from?.pathname || "/";
+          navigate(from, { replace: true });
+        } catch (apiError) {
+          // Check if server is down
+          if (apiError.response?.status === 503) {
+            toast.error(
+              "Server is unavailable. Make sure the backend is running: node index.js",
+            );
+          } else if (apiError.code === "ECONNREFUSED") {
+            toast.error(
+              "Cannot connect to server. Make sure it's running on port 3000",
+            );
+          } else if (apiError.response?.status === 500) {
+            toast.error(
+              "Server error: " +
+                (apiError.response?.data?.error || "Internal server error"),
+            );
+          } else {
+            toast.error(
+              "Failed to save profile: " +
+                (apiError.message || "Unknown error"),
+            );
+          }
+
+          // Allow user to continue anyway after showing error
+          setTimeout(() => {
+            const from = location.state?.from?.pathname || "/";
+            navigate(from, { replace: true });
+          }, 2000);
+        }
       })
       .catch((error) => {
-        console.log(error);
+        toast.error("Google sign-in failed: " + error.message);
       });
   };
 
