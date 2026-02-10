@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
@@ -7,18 +7,11 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 
 const DashboardLayout = () => {
-  const { user, logOut, loading: authLoading, refetchRole } = useAuth();
+  const { user, logOut, loading: authLoading } = useAuth();
   const { role, roleLoading } = useRole();
   const navigate = useNavigate();
 
   const isLoading = authLoading || roleLoading;
-
-  // Refetch role when dashboard loads to ensure it's up-to-date
-  useEffect(() => {
-    if (user?.email && refetchRole) {
-      refetchRole();
-    }
-  }, [user?.email, refetchRole]);
 
   const getInitials = (name) => {
     if (!name) return "U";
@@ -63,11 +56,11 @@ const DashboardLayout = () => {
   const getProfileRoute = () => {
     switch (role) {
       case "Admin":
-        return "/dashboard/profile";
+        return "/dashboard/admin/profile";
       case "Moderator":
-        return "/dashboard/profile";
+        return "/dashboard/moderator/profile";
       default:
-        return "/dashboard/profile";
+        return "/dashboard/student/profile";
     }
   };
 
@@ -76,7 +69,7 @@ const DashboardLayout = () => {
       return (
         <>
           <li>
-            <NavLink to="/dashboard/profile">
+            <NavLink to="/dashboard/student/profile">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -94,7 +87,7 @@ const DashboardLayout = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/dashboard/add-scholarship">
+            <NavLink to="/dashboard/admin/add-scholarship">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -112,7 +105,7 @@ const DashboardLayout = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/dashboard/manage-scholarships">
+            <NavLink to="/dashboard/admin/manage-scholarships">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -132,7 +125,7 @@ const DashboardLayout = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/dashboard/manage-applications">
+            <NavLink to="/dashboard/admin/manage-applications">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -152,7 +145,7 @@ const DashboardLayout = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/dashboard/manage-users">
+            <NavLink to="/dashboard/admin/manage-users">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -169,6 +162,25 @@ const DashboardLayout = () => {
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
               </svg>
               <span className="is-drawer-close:hidden">Manage Users</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/admin/role-requests">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              <span className="is-drawer-close:hidden">Role Requests</span>
             </NavLink>
           </li>
           <li>
@@ -196,7 +208,7 @@ const DashboardLayout = () => {
       return (
         <>
           <li>
-            <NavLink to="/dashboard/profile">
+            <NavLink to="/dashboard/moderator/profile">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -214,7 +226,7 @@ const DashboardLayout = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/dashboard/manage-applications">
+            <NavLink to="/dashboard/moderator/manage-applications">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -234,7 +246,7 @@ const DashboardLayout = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/dashboard/moderator-reviews">
+            <NavLink to="/dashboard/moderator/reviews">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -257,7 +269,7 @@ const DashboardLayout = () => {
     return (
       <>
         <li>
-          <NavLink to="/dashboard/student-profile">
+          <NavLink to="/dashboard/student/profile">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

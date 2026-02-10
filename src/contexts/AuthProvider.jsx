@@ -10,16 +10,13 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.init";
-import { api } from "../services/api";
 
 const googleProvider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [role, setRole] = useState("Student");
   const [token, setToken] = useState(null);
-  const [initialized, setInitialized] = useState(false);
 
   const registerUser = (email, password) => {
     setLoading(true);
@@ -39,7 +36,6 @@ const AuthProvider = ({ children }) => {
   const logOut = () => {
     setLoading(true);
     setToken(null);
-    setRole("Student");
     setUser(null);
     return signOut(auth).finally(() => {
       setLoading(false);
@@ -56,26 +52,11 @@ const AuthProvider = ({ children }) => {
       try {
         const idToken = await auth.currentUser.getIdToken();
         return idToken;
-      } catch (error) {
+      } catch {
         return null;
       }
     }
     return null;
-  };
-
-  // Fetch user role from server
-  const fetchUserRole = async (email) => {
-    try {
-      const res = await api.get(`/users/${encodeURIComponent(email)}/role`);
-      const data = res.data;
-      let r = "Student";
-      if (data && data.role) r = data.role;
-      setRole(r);
-      return r;
-    } catch (error) {
-      setRole("Student");
-      return "Student";
-    }
   };
 
   // Main auth state effect - watches Firebase auth changes
@@ -85,15 +66,12 @@ const AuthProvider = ({ children }) => {
         setUser(currentUser);
         const idToken = await getToken();
         setToken(idToken);
-        await fetchUserRole(currentUser.email);
       } else {
         setUser(null);
         setToken(null);
-        setRole("Student");
       }
 
       setLoading(false);
-      setInitialized(true);
     });
 
     return () => {
@@ -101,26 +79,16 @@ const AuthProvider = ({ children }) => {
     };
   }, []);
 
-  // Refetch role when user visits (useful for manual role changes in MongoDB)
-  useEffect(() => {
-    if (user?.email) {
-      fetchUserRole(user.email);
-    }
-  }, [user?.email]);
-
   const authInfo = {
     user,
-    role,
     loading,
     token,
-    initialized,
     logOut,
     updateUserProfile,
     registerUser,
     signInUser,
     signInGoogle,
     getToken,
-    refetchRole: () => (user?.email ? fetchUserRole(user.email) : null),
   };
 
   return (

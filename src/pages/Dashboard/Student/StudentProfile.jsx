@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
+import RequestRoleModal from "../../../components/RequestRoleModal";
 
 const StudentProfile = () => {
   const { user, role } = useAuth() || {};
   const [isEditing, setIsEditing] = useState(false);
+  const [roleModalOpen, setRoleModalOpen] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -119,7 +121,7 @@ const StudentProfile = () => {
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
           <h3 className="card-title">Quick Actions</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <a href="/all-scholarships" className="btn btn-primary">
               Browse Scholarships
             </a>
@@ -129,9 +131,25 @@ const StudentProfile = () => {
             >
               View My Applications
             </a>
+            {role === "Student" && (
+              <button
+                onClick={() => setRoleModalOpen(true)}
+                className="btn btn-accent"
+              >
+                Request Moderator/Admin
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Role Request Modal */}
+      <RequestRoleModal
+        isOpen={roleModalOpen}
+        onClose={() => setRoleModalOpen(false)}
+        onSuccess={() => window.location.reload()}
+        userName={user?.displayName || "User"}
+      />
     </div>
   );
 };

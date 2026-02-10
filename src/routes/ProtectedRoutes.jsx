@@ -46,8 +46,15 @@ export const StudentRoute = ({ children }) => {
     return <Navigate to="/login" />;
   }
 
+  // If not a student, redirect to their correct dashboard
   if (role !== "Student") {
-    return <Navigate to="/dashboard" />;
+    if (role === "Admin") {
+      return <Navigate to="/dashboard/admin/profile" replace />;
+    } else if (role === "Moderator") {
+      return <Navigate to="/dashboard/moderator/profile" replace />;
+    }
+    // Fallback for unknown roles
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -73,8 +80,14 @@ export const ModeratorRoute = ({ children }) => {
     return <Navigate to="/login" />;
   }
 
+  // Moderators and Admins can access moderator routes
   if (role !== "Moderator" && role !== "Admin") {
-    return <Navigate to="/" />;
+    // If not a moderator/admin, redirect to their correct dashboard
+    if (role === "Student") {
+      return <Navigate to="/dashboard/student/profile" replace />;
+    }
+    // Fallback for unknown roles
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -101,7 +114,14 @@ export const AdminRoute = ({ children }) => {
   }
 
   if (role !== "Admin") {
-    return <Navigate to="/" />;
+    // If not an admin, redirect to their correct dashboard
+    if (role === "Moderator") {
+      return <Navigate to="/dashboard/moderator/profile" replace />;
+    } else if (role === "Student") {
+      return <Navigate to="/dashboard/student/profile" replace />;
+    }
+    // Fallback for unknown roles
+    return <Navigate to="/" replace />;
   }
 
   return children;

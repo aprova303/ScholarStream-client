@@ -6,27 +6,28 @@ import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import AllScholarships from "../pages/Scholarship/all_scholarships";
 import ScholarshipDetails from "../pages/Scholarship/scholarshipDetails";
-import PrivateRoute from "./PrivateRoute";
-import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardRedirect from "./DashboardRedirect";
 import StudentProfile from "../pages/Dashboard/Student/StudentProfile";
 import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
 import AddScholarship from "../pages/Dashboard/Admin/AddScholarship";
 import ManageScholarships from "../pages/Dashboard/Admin/ManageScholarships";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import Analytics from "../pages/Dashboard/Admin/analytics";
+import ManageRoleRequests from "../pages/Dashboard/Admin/ManageRoleRequests";
 import ModeratorProfile from "../pages/Dashboard/Moderator/ModeratorProfile";
 import ManageApplications from "../pages/Dashboard/Moderator/ManageApplications";
 import MyApplications from "../pages/Dashboard/Student/MyApplications";
 import MyReviews from "../pages/Dashboard/Student/MyReviews";
 import ModeratorReviews from "../pages/Dashboard/Moderator/ModeratorReviews";
 import AdminRoute from "./AdminRoute";
+import { StudentRoute, ModeratorRoute } from "./ProtectedRoutes";
 import NotFound from "../pages/Shared/NotFound";
-
-const DashboardWrapper = () => (
-  <PrivateRoute>
-    <DashboardLayout />
-  </PrivateRoute>
-);
+import {
+  AdminDashboardWrapper,
+  ModeratorDashboardWrapper,
+  StudentDashboardWrapper,
+  DashboardRedirectWrapper,
+} from "./DashboardWrappers";
 
 export const router = createBrowserRouter([
   {
@@ -64,67 +65,132 @@ export const router = createBrowserRouter([
   },
   {
     path: "dashboard",
-    Component: DashboardWrapper,
     children: [
       {
-        path: "student-profile",
-        Component: StudentProfile,
+        index: true,
+        Component: DashboardRedirectWrapper,
       },
       {
-        path: "admin/profile",
-        Component: AdminProfile,
+        path: "admin",
+        Component: AdminDashboardWrapper,
+        children: [
+          {
+            path: "profile",
+            element: (
+              <AdminRoute>
+                <AdminProfile />
+              </AdminRoute>
+            ),
+          },
+          {
+            path: "add-scholarship",
+            element: (
+              <AdminRoute>
+                <AddScholarship></AddScholarship>
+              </AdminRoute>
+            ),
+          },
+          {
+            path: "manage-scholarships",
+            element: (
+              <AdminRoute>
+                <ManageScholarships />
+              </AdminRoute>
+            ),
+          },
+          {
+            path: "manage-applications",
+            element: (
+              <AdminRoute>
+                <ManageApplications />
+              </AdminRoute>
+            ),
+          },
+          {
+            path: "manage-users",
+            element: (
+              <AdminRoute>
+                <ManageUsers />
+              </AdminRoute>
+            ),
+          },
+          {
+            path: "analytics",
+            element: (
+              <AdminRoute>
+                <Analytics></Analytics>
+              </AdminRoute>
+            ),
+          },
+          {
+            path: "role-requests",
+            element: (
+              <AdminRoute>
+                <ManageRoleRequests></ManageRoleRequests>
+              </AdminRoute>
+            ),
+          },
+        ],
       },
       {
-        path: "admin/add-scholarship",
-        element: (
-          <AdminRoute>
-            <AddScholarship></AddScholarship>
-          </AdminRoute>
-        ),
+        path: "moderator",
+        Component: ModeratorDashboardWrapper,
+        children: [
+          {
+            path: "profile",
+            element: (
+              <ModeratorRoute>
+                <ModeratorProfile />
+              </ModeratorRoute>
+            ),
+          },
+          {
+            path: "manage-applications",
+            element: (
+              <ModeratorRoute>
+                <ManageApplications />
+              </ModeratorRoute>
+            ),
+          },
+          {
+            path: "reviews",
+            element: (
+              <ModeratorRoute>
+                <ModeratorReviews />
+              </ModeratorRoute>
+            ),
+          },
+        ],
       },
       {
-        path: "admin/manage-scholarships",
-        element: (
-          <AdminRoute>
-            <ManageScholarships />
-          </AdminRoute>
-        ),
-      },
-      {
-        path: "admin/manage-users",
-        element: (
-          <AdminRoute>
-            <ManageUsers />
-          </AdminRoute>
-        ),
-      },
-      {
-        path: "admin/analytics",
-        element: (
-          <AdminRoute>
-            <Analytics></Analytics>
-          </AdminRoute>
-        ),
-      },
-      {
-        path: "moderator/profile",
-        Component: ModeratorProfile,
-      },
-      {
-        path: "moderator/manage-applications",
-        Component: ManageApplications,
-      },
-      {
-        path: "moderator/reviews",
-        Component: ModeratorReviews,
-      },
-      {
-        path: "student/applications",
-        Component: MyApplications,
-      },
-      {
-        path: "student/reviews",
-        Component: MyReviews,
+        path: "student",
+        Component: StudentDashboardWrapper,
+        children: [
+          {
+            path: "profile",
+            element: (
+              <StudentRoute>
+                <StudentProfile />
+              </StudentRoute>
+            ),
+          },
+          {
+            path: "applications",
+            element: (
+              <StudentRoute>
+                <MyApplications />
+              </StudentRoute>
+            ),
+          },
+          {
+            path: "reviews",
+            element: (
+              <StudentRoute>
+                <MyReviews />
+              </StudentRoute>
+            ),
+          },
+        ],
       },
     ],
   },
