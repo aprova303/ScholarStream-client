@@ -407,7 +407,7 @@ const ScholarshipDetails = () => {
               </div>
 
               {/* Share Section */}
-              <div className="mt-6 card bg-base-100 shadow-md">
+              {/* <div className="mt-6 card bg-base-100 shadow-md">
                 <div className="card-body">
                   <p className="text-sm text-gray-600 font-semibold mb-3">
                     Share This Opportunity
@@ -421,7 +421,7 @@ const ScholarshipDetails = () => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </motion.div>
         </div>

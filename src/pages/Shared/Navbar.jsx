@@ -87,40 +87,40 @@ const Navbar = () => {
       <>
         {dashboardLink}
         <li>
+          <NavLink to="/dashboard/moderator/manage-applications">
+            Manage Applications
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/dashboard/moderator/reviews">Reviews</NavLink>
+        </li>
+      </>
+    );
+
+    roleLinks.Admin = (
+      <>
+        {dashboardLink}
+        {/* <li>
+          <NavLink to="/dashboard/add-scholarship">Add Scholarship</NavLink>
+        </li>
+        <li>
+          <NavLink to="/dashboard/manage-scholarships">
+            Manage Scholarships
+          </NavLink>
+        </li>
+        <li>
           <NavLink to="/dashboard/manage-applications">
             Manage Applications
           </NavLink>
         </li>
         <li>
-          <NavLink to="/dashboard/moderator-reviews">Reviews</NavLink>
+          <NavLink to="/dashboard/manage-users">Manage Users</NavLink>
         </li>
+        <li>
+          <NavLink to="/dashboard/analytics">Analytics</NavLink>
+        </li> */}
       </>
     );
-
-    // roleLinks.Admin = (
-    //   <>
-    //     {dashboardLink}
-    //     <li>
-    //       <NavLink to="/dashboard/add-scholarship">Add Scholarship</NavLink>
-    //     </li>
-    //     <li>
-    //       <NavLink to="/dashboard/manage-scholarships">
-    //         Manage Scholarships
-    //       </NavLink>
-    //     </li>
-    //     <li>
-    //       <NavLink to="/dashboard/manage-applications">
-    //         Manage Applications
-    //       </NavLink>
-    //     </li>
-    //     <li>
-    //       <NavLink to="/dashboard/manage-users">Manage Users</NavLink>
-    //     </li>
-    //     <li>
-    //       <NavLink to="/dashboard/analytics">Analytics</NavLink>
-    //     </li>
-    //   </>
-    // );
 
     return (
       <>
