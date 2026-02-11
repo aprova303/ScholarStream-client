@@ -406,22 +406,6 @@ const ScholarshipDetails = () => {
                 </div>
               </div>
 
-              {/* Share Section */}
-              {/* <div className="mt-6 card bg-base-100 shadow-md">
-                <div className="card-body">
-                  <p className="text-sm text-gray-600 font-semibold mb-3">
-                    Share This Opportunity
-                  </p>
-                  <div className="flex gap-2">
-                    <button className="btn btn-xs btn-outline flex-1">
-                      📧 Email
-                    </button>
-                    <button className="btn btn-xs btn-outline flex-1">
-                      🔗 Copy Link
-                    </button>
-                  </div>
-                </div>
-              </div> */}
             </div>
           </motion.div>
         </div>

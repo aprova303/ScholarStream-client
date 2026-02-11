@@ -6,6 +6,9 @@ import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import AllScholarships from "../pages/Scholarship/all_scholarships";
 import ScholarshipDetails from "../pages/Scholarship/scholarshipDetails";
+import CheckoutPage from "../pages/Payment/CheckoutPage";
+import PaymentSuccessPage from "../pages/Payment/PaymentSuccessPage";
+import PaymentFailurePage from "../pages/Payment/PaymentFailurePage";
 import DashboardRedirect from "./DashboardRedirect";
 import StudentProfile from "../pages/Dashboard/Student/StudentProfile";
 import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
@@ -46,6 +49,18 @@ export const router = createBrowserRouter([
       {
         path: "scholarship-details/:id",
         Component: ScholarshipDetails,
+      },
+      {
+        path: "checkout/:scholarshipId",
+        Component: CheckoutPage,
+      },
+      {
+        path: "payment-success",
+        Component: PaymentSuccessPage,
+      },
+      {
+        path: "payment-cancel",
+        Component: PaymentFailurePage,
       },
     ],
   },

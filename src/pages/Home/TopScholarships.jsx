@@ -151,7 +151,7 @@ const TopScholarships = () => {
 
                   {/* View Details Button */}
                   <button
-                    onClick={() => navigate(`/scholarship/${scholarship._id}`)}
+                    onClick={() => navigate(`/scholarship-details/${scholarship._id}`)}
                     className="btn btn-primary w-full"
                   >
                     View Details
