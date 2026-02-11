@@ -52,7 +52,7 @@ const AdminProfile = () => {
                 <p className="text-sm text-gray-500">Email Address</p>
                 <p className="text-lg font-semibold">{user?.email}</p>
               </div>
-
+{/* 
               <div>
                 <p className="text-sm text-gray-500">Role</p>
                 <div className="badge badge-lg bg-gradient-to-r from-[#654ea3] to-[#eaafc8] text-white">
@@ -66,7 +66,7 @@ const AdminProfile = () => {
                   <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                   Active
                 </div>
-              </div>
+              </div> */}
             </div>
           ) : (
             <div className="space-y-4">

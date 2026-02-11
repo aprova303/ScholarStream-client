@@ -1,21 +1,21 @@
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../../services/api";
-
-const fetchScholarships = async () => {
-  const res = await api.get("/scholarships");
-  return res.data;
-};
+import useAxiosSecure from "../../../contexts/useAxiosSecure";
 
 const ManageScholarships = () => {
+  const axiosSecure = useAxiosSecure();
   const qc = useQueryClient();
+
   const { data: scholarships = [], isLoading } = useQuery({
     queryKey: ["scholarships"],
-    queryFn: fetchScholarships,
+    queryFn: async () => {
+      const res = await axiosSecure.get("/scholarships");
+      return res.data.data || res.data || [];
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => api.delete(`/scholarships/${id}`),
+    mutationFn: (id) => axiosSecure.delete(`/scholarships/${id}`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["scholarships"] }),
   });
 
@@ -95,9 +95,14 @@ const ManageScholarships = () => {
                           </span>
                         </td>
                         <td className="space-x-2">
-                          <button className="btn btn-sm btn-outline">
-                            Update
-                          </button>
+                          <a
+                            href={`/dashboard/admin/update-scholarship/${s._id || s.id}`}
+                          >
+                            {" "}
+                            <button className="btn btn-sm btn-outline">
+                              Update
+                            </button>
+                          </a>
                           <button
                             onClick={() => {
                               if (window.confirm("Are you sure?")) {
@@ -153,9 +158,12 @@ const ManageScholarships = () => {
                   </div>
 
                   <div className="card-actions justify-end pt-2 gap-2">
-                    <button className="btn btn-sm btn-outline flex-1">
+                    <a
+                      href={`/dashboard/admin/update-scholarship/${s._id || s.id}`}
+                      className="btn btn-sm btn-outline flex-1"
+                    >
                       Update
-                    </button>
+                    </a>
                     <button
                       onClick={() => {
                         if (window.confirm("Are you sure?")) {

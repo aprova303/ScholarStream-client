@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../../services/api";
-
-const fetchApplications = async () => {
-  const res = await api.get("/applications");
-  return res.data;
-};
+import useAxiosSecure from "../../../contexts/useAxiosSecure";
 
 const ManageApplications = () => {
+  const axiosSecure = useAxiosSecure();
   const [filterStatus, setFilterStatus] = useState("");
   const qc = useQueryClient();
   const { data: apps = [], isLoading } = useQuery({
     queryKey: ["applications"],
-    queryFn: fetchApplications,
+    queryFn: async () => {
+      const res = await axiosSecure.get("/applications");
+      return res.data;
+    },
   });
 
   const updateApplication = useMutation({
-    mutationFn: ({ id, updates }) => api.patch(`/applications/${id}`, updates),
+    mutationFn: ({ id, updates }) =>
+      axiosSecure.patch(`/applications/${id}`, updates),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["applications"] }),
   });
 

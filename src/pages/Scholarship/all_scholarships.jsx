@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
-import { FiSearch, FiFilter, FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import {
+  FiSearch,
+  FiFilter,
+  FiX,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { api } from "../../services/api";
 import { toast } from "react-toastify";
 
@@ -19,7 +25,7 @@ const AllScholarships = () => {
     current: 1,
     limit: 12,
     total: 0,
-    pages: 0
+    pages: 0,
   });
   const [availableCountries, setAvailableCountries] = useState([]);
   const [availableCategories, setAvailableCategories] = useState([]);
@@ -29,7 +35,7 @@ const AllScholarships = () => {
     const fetchScholarships = async () => {
       try {
         setLoading(true);
-        
+
         // Build query parameters
         const params = new URLSearchParams();
         if (searchTerm) params.append("search", searchTerm);
@@ -41,7 +47,7 @@ const AllScholarships = () => {
         params.append("limit", 12);
 
         const response = await api.get(`/scholarships?${params.toString()}`);
-        
+
         setScholarships(response.data.data);
         setPaginationData(response.data.pagination);
       } catch (error) {
@@ -53,7 +59,14 @@ const AllScholarships = () => {
     };
 
     fetchScholarships();
-  }, [searchTerm, selectedCategory, selectedCountry, sortBy, sortOrder, currentPage]);
+  }, [
+    searchTerm,
+    selectedCategory,
+    selectedCountry,
+    sortBy,
+    sortOrder,
+    currentPage,
+  ]);
 
   // Fetch available countries and categories for filters
   useEffect(() => {
@@ -61,11 +74,19 @@ const AllScholarships = () => {
       try {
         // Fetch all scholarships to get unique countries and categories
         const response = await api.get("/scholarships?limit=1000");
-        
+
         if (response.data.data && Array.isArray(response.data.data)) {
-          const countries = [...new Set(response.data.data.map(s => s.universityCountry))].filter(Boolean).sort();
-          const categories = [...new Set(response.data.data.map(s => s.scholarshipCategory))].filter(Boolean).sort();
-          
+          const countries = [
+            ...new Set(response.data.data.map((s) => s.universityCountry)),
+          ]
+            .filter(Boolean)
+            .sort();
+          const categories = [
+            ...new Set(response.data.data.map((s) => s.scholarshipCategory)),
+          ]
+            .filter(Boolean)
+            .sort();
+
           setAvailableCountries(countries);
           setAvailableCategories(categories);
         }
@@ -114,11 +135,11 @@ const AllScholarships = () => {
     const maxPages = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
     let endPage = Math.min(paginationData.pages, startPage + maxPages - 1);
-    
+
     if (endPage - startPage < maxPages - 1) {
       startPage = Math.max(1, endPage - maxPages + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
@@ -276,9 +297,17 @@ const AllScholarships = () => {
         {/* Results Count and Loading */}
         <div className="mb-6 flex items-center justify-between">
           <p className="text-gray-600 font-semibold">
-            Showing {paginationData.limit * (paginationData.current - 1) + (scholarships.length > 0 ? 1 : 0)} - {paginationData.limit * (paginationData.current - 1) + scholarships.length} of {paginationData.total} scholarships
+            Showing{" "}
+            {paginationData.limit * (paginationData.current - 1) +
+              (scholarships.length > 0 ? 1 : 0)}{" "}
+            -{" "}
+            {paginationData.limit * (paginationData.current - 1) +
+              scholarships.length}{" "}
+            of {paginationData.total} scholarships
           </p>
-          {loading && <span className="loading loading-spinner loading-sm text-[#9f87e2]"></span>}
+          {loading && (
+            <span className="loading loading-spinner loading-sm text-[#9f87e2]"></span>
+          )}
         </div>
 
         {/* Scholarships Grid */}

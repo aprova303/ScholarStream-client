@@ -1,24 +1,25 @@
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../../services/api";
+import useAxiosSecure from "../../../contexts/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 
-const fetchMyReviews = async (email) => {
-  const res = await api.get(`/reviews?email=${encodeURIComponent(email)}`);
-  return res.data;
-};
-
 const MyReviews = () => {
+  const axiosSecure = useAxiosSecure();
   const { user } = useAuth() || {};
   const qc = useQueryClient();
   const { data: reviews = [], isLoading } = useQuery({
     queryKey: ["my-reviews", user?.email],
-    queryFn: () => fetchMyReviews(user?.email),
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/reviews?email=${encodeURIComponent(user?.email)}`,
+      );
+      return res.data;
+    },
     enabled: !!user?.email,
   });
 
   const deleteReviewMutation = useMutation({
-    mutationFn: (id) => api.delete(`/reviews/${id}`),
+    mutationFn: (id) => axiosSecure.delete(`/reviews/${id}`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["my-reviews"] }),
   });
 

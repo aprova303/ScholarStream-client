@@ -8,6 +8,7 @@ import {
   FiDollarSign,
 } from "react-icons/fi";
 import { AiOutlineStar } from "react-icons/ai";
+import { api } from "../../services/api";
 
 const ScholarshipDetails = () => {
   const { id } = useParams();
@@ -16,16 +17,18 @@ const ScholarshipDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/scholarships.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const found = data.find((s) => s._id === id);
-        setScholarship(found);
+    const fetchScholarship = async () => {
+      try {
+        const response = await api.get(`/scholarships/${id}`);
+        setScholarship(response.data);
+      } catch (error) {
+        console.error("Error fetching scholarship:", error);
+      } finally {
         setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchScholarship();
   }, [id]);
 
   if (loading) {
@@ -56,7 +59,7 @@ const ScholarshipDetails = () => {
 
   // Calculate average rating
   const averageRating =
-    scholarship.reviews.length > 0
+    scholarship && scholarship.reviews && scholarship.reviews.length > 0
       ? (
           scholarship.reviews.reduce((sum, review) => sum + review.rating, 0) /
           scholarship.reviews.length
@@ -266,7 +269,9 @@ const ScholarshipDetails = () => {
                 </div>
               </div>
 
-              {scholarship.reviews.length > 0 ? (
+              {scholarship &&
+              scholarship.reviews &&
+              scholarship.reviews.length > 0 ? (
                 <div className="space-y-6">
                   {scholarship.reviews.map((review, index) => (
                     <motion.div
@@ -390,7 +395,11 @@ const ScholarshipDetails = () => {
                     <span className="text-lg font-bold text-gray-800">
                       {averageRating}
                       <span className="text-sm text-gray-600 ml-2">
-                        ({scholarship.reviews.length} reviews)
+                        (
+                        {scholarship && scholarship.reviews
+                          ? scholarship.reviews.length
+                          : 0}{" "}
+                        reviews)
                       </span>
                     </span>
                   </div>

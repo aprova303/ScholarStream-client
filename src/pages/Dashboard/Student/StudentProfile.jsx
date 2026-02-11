@@ -55,7 +55,7 @@ const StudentProfile = () => {
                 <p className="text-lg font-semibold">{user?.email}</p>
               </div>
 
-              <div>
+              {/* <div>
                 <p className="text-sm text-gray-500">Role</p>
                 <div className="badge badge-lg badge-primary text-white">
                   {role}
@@ -68,7 +68,7 @@ const StudentProfile = () => {
                   <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                   Active
                 </div>
-              </div>
+              </div> */}
             </div>
           ) : (
             <div className="space-y-4">

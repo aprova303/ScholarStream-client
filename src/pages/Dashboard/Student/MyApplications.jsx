@@ -1,24 +1,25 @@
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../../services/api";
+import useAxiosSecure from "../../../contexts/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 
-const fetchMyApplications = async (email) => {
-  const res = await api.get(`/applications?email=${encodeURIComponent(email)}`);
-  return res.data;
-};
-
 const MyApplications = () => {
+  const axiosSecure = useAxiosSecure();
   const { user } = useAuth() || {};
   const qc = useQueryClient();
   const { data: apps = [], isLoading } = useQuery({
     queryKey: ["my-applications", user?.email],
-    queryFn: () => fetchMyApplications(user?.email),
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/applications?email=${encodeURIComponent(user?.email)}`,
+      );
+      return res.data;
+    },
     enabled: !!user?.email,
   });
 
   const deleteApplicationMutation = useMutation({
-    mutationFn: (id) => api.delete(`/applications/${id}`),
+    mutationFn: (id) => axiosSecure.delete(`/applications/${id}`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["my-applications"] }),
   });
 

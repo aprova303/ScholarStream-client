@@ -13,17 +13,17 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { api } from "../../../services/api";
-
-const fetchStats = async () => {
-  const res = await api.get("/analytics");
-  return res.data;
-};
+import useAxiosSecure from "../../../contexts/useAxiosSecure";
 
 const Analytics = () => {
+  const axiosSecure = useAxiosSecure();
+
   const { data = {}, isLoading } = useQuery({
     queryKey: ["analytics"],
-    queryFn: fetchStats,
+    queryFn: async () => {
+      const res = await axiosSecure.get("/analytics");
+      return res.data;
+    },
     retry: false,
   });
 

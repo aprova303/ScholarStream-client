@@ -22,11 +22,65 @@ const Register = () => {
     setIsRegistering(true);
 
     try {
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email)) {
+        toast.error("Please enter a valid email address");
+        setIsRegistering(false);
+        return;
+      }
+
+      // Validate password strength (Firebase requires min 6 characters)
+      if (data.password.length < 6) {
+        toast.error("Password must be at least 6 characters");
+        setIsRegistering(false);
+        return;
+      }
+
+      console.log("Attempting Firebase registration with:", {
+        email: data.email,
+        passwordLength: data.password.length,
+      });
+
       // Step 1: Create Firebase user (this creates user in Firebase)
-      const firebaseResult = await registerUser(data.email, data.password);
+      let firebaseResult;
+      try {
+        firebaseResult = await registerUser(data.email, data.password);
+      } catch (firebaseError) {
+        console.error("Firebase registration error:", {
+          code: firebaseError.code,
+          message: firebaseError.message,
+          customData: firebaseError.customData,
+        });
+
+        if (firebaseError.code === "auth/email-already-in-use") {
+          toast.error(
+            "This email is already registered. Please login instead.",
+          );
+        } else if (firebaseError.code === "auth/weak-password") {
+          toast.error(
+            "Password is too weak. Use uppercase letters and special characters.",
+          );
+        } else if (firebaseError.code === "auth/invalid-email") {
+          toast.error("Invalid email address.");
+        } else if (firebaseError.code === "auth/operation-not-allowed") {
+          toast.error(
+            "Registration is currently disabled. Please try again later.",
+          );
+        } else {
+          toast.error(
+            "Firebase error: " +
+              (firebaseError.message || "Could not create account"),
+          );
+        }
+        setIsRegistering(false);
+        return;
+      }
 
       if (!firebaseResult.user) {
-        throw new Error("Failed to create Firebase account");
+        toast.error("Failed to create Firebase account");
+        setIsRegistering(false);
+        return;
       }
 
       // Step 2: Upload image to ImgBB
@@ -56,18 +110,43 @@ const Register = () => {
         toast.warning("Profile update partially failed");
       }
 
-      // Step 4: Get Firebase token
-      const token = await getToken();
+      // Step 4: Get Firebase token (get it directly from the newly created user)
+      let token;
+      try {
+        // Try to get token from the just-created Firebase user
+        token = await firebaseResult.user.getIdToken();
+        console.log("Got token from Firebase user:", {
+          tokenLength: token.length,
+        });
+      } catch (tokenError) {
+        console.error("Failed to get token from Firebase user:", tokenError);
+        // Fallback: try from context (with retry)
+        for (let i = 0; i < 3; i++) {
+          token = await getToken();
+          if (token) break;
+          if (i < 2) await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 500ms before retry
+        }
+      }
 
       if (!token) {
-        throw new Error(
-          "Failed to get authentication token. Please login manually.",
+        toast.error(
+          "Failed to get authentication token. Please refresh and try logging in.",
         );
+        setIsRegistering(false);
+        return;
       }
 
       // Step 5: Save user to MongoDB (this saves the profile to MongoDB)
       try {
-        await api.post(
+        console.log("Sending user data to MongoDB:", {
+          email: firebaseResult.user.email,
+          name: data.name,
+          hasPhotoURL: !!photoURL,
+          firebaseUid: firebaseResult.user.uid,
+          tokenLength: token.length,
+        });
+
+        const mongoResponse = await api.post(
           "/users/create-or-update",
           {
             email: firebaseResult.user.email,
@@ -82,14 +161,47 @@ const Register = () => {
             },
           },
         );
+
+        console.log("MongoDB save successful:", mongoResponse.data);
+
+        if (!mongoResponse.data.success) {
+          toast.warning(
+            "Profile saved with issues: " +
+              (mongoResponse.data.message || "Unknown issue"),
+          );
+        }
       } catch (mongoError) {
-        // MongoDB save failed - but user exists in Firebase
-        toast.error(
-          "Server error saving profile: " +
-            (mongoError.response?.data?.error || mongoError.message),
-        );
-        // Still redirect - user can login and try again
-        throw mongoError;
+        // MongoDB save failed
+        console.error("MongoDB save error:", {
+          status: mongoError.response?.status,
+          statusText: mongoError.response?.statusText,
+          data: mongoError.response?.data,
+          message: mongoError.message,
+          code: mongoError.code,
+        });
+
+        // Check if it's a network error vs API error
+        if (mongoError.code === "ERR_NETWORK") {
+          toast.error(
+            "Cannot connect to server. Make sure it's running on port 3000",
+          );
+        } else if (mongoError.response?.status === 401) {
+          toast.error("Authentication failed. Please try logging in.");
+        } else if (mongoError.response?.status === 503) {
+          toast.error(
+            "Server is unavailable. Make sure the backend is running: node index.js",
+          );
+        } else {
+          toast.error(
+            "Failed to save profile to database: " +
+              (mongoError.response?.data?.error || mongoError.message),
+          );
+        }
+
+        // User exists in Firebase but not in MongoDB
+        // Let them try again on next login
+        setIsRegistering(false);
+        return;
       }
 
       toast.success("✅ Account created successfully!");
@@ -99,24 +211,10 @@ const Register = () => {
       navigate(from, { replace: true });
     } catch (error) {
       setIsRegistering(false);
+      console.error("Registration error:", error);
 
-      if (error.code === "auth/email-already-in-use") {
-        toast.error("This email is already registered. Please login instead.");
-      } else if (error.code === "auth/weak-password") {
-        toast.error(
-          "Password is too weak. Use uppercase letters and special characters.",
-        );
-      } else if (error.code === "auth/invalid-email") {
-        toast.error("Invalid email address.");
-      } else if (error.response?.status === 503) {
-        toast.error(
-          "Server is unavailable. Make sure the backend is running: node index.js",
-        );
-      } else if (error.code === "ECONNREFUSED") {
-        toast.error(
-          "Cannot connect to server. Make sure it's running on port 3000",
-        );
-      } else {
+      // Errors are already handled above, this is a fallback
+      if (!toast.isActive) {
         toast.error(
           "Registration failed: " + (error.message || "Unknown error"),
         );

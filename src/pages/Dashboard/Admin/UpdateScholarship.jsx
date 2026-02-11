@@ -1,36 +1,73 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams, useNavigate } from "react-router";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
 
-const AddScholarship = () => {
+const UpdateScholarship = () => {
   const axiosSecure = useAxiosSecure();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm();
-  const qc = useQueryClient();
+
+  // Fetch scholarship data
+  const { data: scholarship, isLoading } = useQuery({
+    queryKey: ["scholarship", id],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/scholarships/${id}`);
+      return res.data;
+    },
+  });
+
+  // Populate form when scholarship data loads
+  useEffect(() => {
+    if (scholarship) {
+      reset({
+        scholarshipName: scholarship.scholarshipName || "",
+        universityName: scholarship.universityName || "",
+        image: scholarship.universityImage || "",
+        country: scholarship.universityCountry || "",
+        city: scholarship.universityCity || "",
+        worldRank: scholarship.universityWorldRank || "",
+        subjectCategory: scholarship.subjectCategory || "",
+        scholarshipCategory: scholarship.scholarshipCategory || "",
+        degree: scholarship.degree || "",
+        tuitionFees: scholarship.tuitionFees || "",
+        applicationFees: scholarship.applicationFees || "",
+        serviceCharge: scholarship.serviceCharge || "",
+        deadline: scholarship.applicationDeadline || "",
+        description: scholarship.description || "",
+        requirements: Array.isArray(scholarship.requirements)
+          ? scholarship.requirements.join(", ")
+          : scholarship.requirements || "",
+      });
+    }
+  }, [scholarship, reset]);
 
   const mutation = useMutation({
-    mutationFn: (payload) => axiosSecure.post("/scholarships", payload),
+    mutationFn: (payload) => axiosSecure.patch(`/scholarships/${id}`, payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["scholarships"] });
-      reset();
-      alert("Scholarship added successfully!");
+      qc.invalidateQueries({ queryKey: ["scholarship", id] });
+      alert("Scholarship updated successfully!");
+      navigate("/dashboard/admin/manage-scholarships");
     },
     onError: (error) => {
       console.error("Error details:", error.response?.data || error.message);
       alert(
-        "Error adding scholarship: " +
+        "Error updating scholarship: " +
           (error.response?.data?.error || error.message),
       );
     },
   });
 
   const onSubmit = (data) => {
-    // Map form field names to schema field names
     const payload = {
       scholarshipName: data.scholarshipName,
       universityName: data.universityName,
@@ -49,19 +86,26 @@ const AddScholarship = () => {
       requirements: data.requirements
         ? data.requirements.split(",").map((r) => r.trim())
         : [],
-      // postedUserEmail is auto-set from JWT in controller, don't send from form
     };
     mutation.mutate(payload);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-12">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-          Add New Scholarship
+          Update Scholarship
         </h1>
-        <p className="text-gray-500 mt-2">Create a new scholarship listing</p>
+        <p className="text-gray-500 mt-2">Edit scholarship details</p>
       </div>
 
       <div className="card bg-base-100 shadow-xl">
@@ -105,6 +149,17 @@ const AddScholarship = () => {
 
                 <div className="form-control">
                   <label className="label">
+                    <span className="label-text">University Image URL</span>
+                  </label>
+                  <input
+                    {...register("image")}
+                    placeholder="Enter image URL"
+                    className="input input-bordered"
+                  />
+                </div>
+
+                <div className="form-control">
+                  <label className="label">
                     <span className="label-text">Country *</span>
                   </label>
                   <input
@@ -134,10 +189,20 @@ const AddScholarship = () => {
                     </span>
                   )}
                 </div>
+
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">World Rank</span>
+                  </label>
+                  <input
+                    {...register("worldRank", { min: 0 })}
+                    type="number"
+                    placeholder="Enter world rank"
+                    className="input input-bordered"
+                  />
+                </div>
               </div>
             </div>
-
-            <div className="divider"></div>
 
             {/* Scholarship Details */}
             <div>
@@ -145,34 +210,6 @@ const AddScholarship = () => {
                 Scholarship Details
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Image URL</span>
-                  </label>
-                  <input
-                    {...register("image")}
-                    placeholder="Enter image URL"
-                    className="input input-bordered"
-                  />
-                </div>
-
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">World Rank *</span>
-                  </label>
-                  <input
-                    {...register("worldRank", { required: "Required" })}
-                    placeholder="Enter world rank (e.g., 100)"
-                    type="number"
-                    className="input input-bordered"
-                  />
-                  {errors.worldRank && (
-                    <span className="text-error text-xs mt-1">
-                      {errors.worldRank.message}
-                    </span>
-                  )}
-                </div>
-
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text">Subject Category *</span>
@@ -193,17 +230,13 @@ const AddScholarship = () => {
                   <label className="label">
                     <span className="label-text">Scholarship Category *</span>
                   </label>
-                  <select
+                  <input
                     {...register("scholarshipCategory", {
                       required: "Required",
                     })}
-                    className="select select-bordered"
-                  >
-                    <option value="">Select a category</option>
-                    <option value="Full Fund">Full Fund</option>
-                    <option value="Partial">Partial</option>
-                    <option value="Self-fund">Self-fund</option>
-                  </select>
+                    placeholder="e.g., Merit-based"
+                    className="input input-bordered"
+                  />
                   {errors.scholarshipCategory && (
                     <span className="text-error text-xs mt-1">
                       {errors.scholarshipCategory.message}
@@ -213,83 +246,23 @@ const AddScholarship = () => {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Degree Level *</span>
+                    <span className="label-text">Degree *</span>
                   </label>
-                  <select
+                  <input
                     {...register("degree", { required: "Required" })}
-                    className="select select-bordered"
-                  >
-                    <option value="">Select a degree</option>
-                    <option value="Diploma">Diploma</option>
-                    <option value="Bachelor">Bachelor</option>
-                    <option value="Masters">Masters</option>
-                  </select>
+                    placeholder="e.g., Bachelor, Master"
+                    className="input input-bordered"
+                  />
                   {errors.degree && (
                     <span className="text-error text-xs mt-1">
                       {errors.degree.message}
                     </span>
                   )}
                 </div>
-              </div>
-            </div>
-
-            <div className="divider"></div>
-
-            {/* Financial Information */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">
-                Financial Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Tuition Fees (Optional)</span>
-                  </label>
-                  <input
-                    {...register("tuitionFees")}
-                    placeholder="Enter tuition fees"
-                    type="number"
-                    className="input input-bordered"
-                  />
-                </div>
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Application Fees *</span>
-                  </label>
-                  <input
-                    {...register("applicationFees", { required: "Required" })}
-                    placeholder="Enter application fees"
-                    type="number"
-                    className="input input-bordered"
-                  />
-                  {errors.applicationFees && (
-                    <span className="text-error text-xs mt-1">
-                      {errors.applicationFees.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Service Charge *</span>
-                  </label>
-                  <input
-                    {...register("serviceCharge", { required: "Required" })}
-                    placeholder="Enter service charge"
-                    type="number"
-                    className="input input-bordered"
-                  />
-                  {errors.serviceCharge && (
-                    <span className="text-error text-xs mt-1">
-                      {errors.serviceCharge.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Deadline *</span>
+                    <span className="label-text">Application Deadline *</span>
                   </label>
                   <input
                     {...register("deadline", { required: "Required" })}
@@ -305,58 +278,105 @@ const AddScholarship = () => {
               </div>
             </div>
 
-            <div className="divider"></div>
-
-            <div className="divider"></div>
-
-            {/* Additional Information */}
+            {/* Financial Information */}
             <div>
               <h3 className="text-lg font-semibold mb-4">
-                Additional Information
+                Financial Information
               </h3>
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Description (Optional)</span>
+                    <span className="label-text">Tuition Fees</span>
                   </label>
-                  <textarea
-                    {...register("description")}
-                    placeholder="Enter scholarship description"
-                    className="textarea textarea-bordered"
-                    rows="3"
+                  <input
+                    {...register("tuitionFees")}
+                    type="number"
+                    placeholder="Enter tuition fees"
+                    className="input input-bordered"
                   />
                 </div>
+
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">
-                      Requirements (Optional, comma-separated)
-                    </span>
+                    <span className="label-text">Application Fees *</span>
                   </label>
-                  <textarea
-                    {...register("requirements")}
-                    placeholder="e.g., GPA > 3.5, TOEFL required, Work experience"
-                    className="textarea textarea-bordered"
-                    rows="3"
+                  <input
+                    {...register("applicationFees", { required: "Required" })}
+                    type="number"
+                    placeholder="Enter application fees"
+                    className="input input-bordered"
                   />
+                  {errors.applicationFees && (
+                    <span className="text-error text-xs mt-1">
+                      {errors.applicationFees.message}
+                    </span>
+                  )}
+                </div>
+
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Service Charge *</span>
+                  </label>
+                  <input
+                    {...register("serviceCharge", { required: "Required" })}
+                    type="number"
+                    placeholder="Enter service charge"
+                    className="input input-bordered"
+                  />
+                  {errors.serviceCharge && (
+                    <span className="text-error text-xs mt-1">
+                      {errors.serviceCharge.message}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="card-actions justify-end">
-              <button
-                type="button"
-                onClick={() => reset()}
-                className="btn btn-outline"
-              >
-                Reset
-              </button>
+            {/* Description & Requirements */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">
+                Description & Requirements
+              </h3>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Description</span>
+                </label>
+                <textarea
+                  {...register("description")}
+                  placeholder="Enter scholarship description"
+                  rows="4"
+                  className="textarea textarea-bordered"
+                ></textarea>
+              </div>
+
+              <div className="form-control mt-4">
+                <label className="label">
+                  <span className="label-text">Requirements</span>
+                </label>
+                <textarea
+                  {...register("requirements")}
+                  placeholder="Enter requirements (comma-separated)"
+                  rows="3"
+                  className="textarea textarea-bordered"
+                ></textarea>
+              </div>
+            </div>
+
+            {/* Submit Buttons */}
+            <div className="flex gap-4 pt-4">
               <button
                 type="submit"
                 disabled={mutation.isLoading}
-                className="btn btn-primary"
+                className="btn btn-primary flex-1"
               >
-                {mutation.isLoading ? "Adding..." : "Add Scholarship"}
+                {mutation.isLoading ? "Updating..." : "Update Scholarship"}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard/admin/manage-scholarships")}
+                className="btn btn-outline flex-1"
+              >
+                Cancel
               </button>
             </div>
           </form>
@@ -366,4 +386,4 @@ const AddScholarship = () => {
   );
 };
 
-export default AddScholarship;
+export default UpdateScholarship;

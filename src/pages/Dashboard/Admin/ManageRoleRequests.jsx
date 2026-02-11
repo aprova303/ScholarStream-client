@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { api } from "../../../services/api";
-import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../contexts/useAxiosSecure";
 import { toast } from "react-toastify";
 
 const ManageRoleRequests = () => {
+  const axiosSecure = useAxiosSecure();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [responseMessage, setResponseMessage] = useState("");
   const [processing, setProcessing] = useState(false);
-  const { getToken } = useAuth();
 
   useEffect(() => {
     fetchRequests();
@@ -17,12 +16,7 @@ const ManageRoleRequests = () => {
 
   const fetchRequests = async () => {
     try {
-      const token = await getToken();
-      const response = await api.get("/role-requests/all", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosSecure.get("/role-requests/all");
       setRequests(response.data);
     } catch (error) {
       toast.error("Failed to fetch role requests");
@@ -36,16 +30,9 @@ const ManageRoleRequests = () => {
 
     setProcessing(true);
     try {
-      const token = await getToken();
-      await api.put(
-        `/role-requests/approve/${selectedRequest._id}`,
-        { adminResponse: responseMessage },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+      await axiosSecure.put(`/role-requests/approve/${selectedRequest._id}`, {
+        adminResponse: responseMessage,
+      });
 
       toast.success(
         `Approved ${selectedRequest.userName} as ${selectedRequest.requestedRole}`,
@@ -65,16 +52,9 @@ const ManageRoleRequests = () => {
 
     setProcessing(true);
     try {
-      const token = await getToken();
-      await api.put(
-        `/role-requests/reject/${selectedRequest._id}`,
-        { adminResponse: responseMessage },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+      await axiosSecure.put(`/role-requests/reject/${selectedRequest._id}`, {
+        adminResponse: responseMessage,
+      });
 
       toast.success("Role request rejected");
       setSelectedRequest(null);

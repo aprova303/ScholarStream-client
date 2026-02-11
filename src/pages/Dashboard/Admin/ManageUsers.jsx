@@ -1,27 +1,28 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../../services/api";
-
-const fetchUsers = async () => {
-  const res = await api.get("/users");
-  return res.data;
-};
+import useAxiosSecure from "../../../contexts/useAxiosSecure";
 
 const ManageUsers = () => {
+  const axiosSecure = useAxiosSecure();
   const [filterRole, setFilterRole] = useState("");
   const qc = useQueryClient();
+
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["users"],
-    queryFn: fetchUsers,
+    queryFn: async () => {
+      const res = await axiosSecure.get("/users");
+      return res.data;
+    },
   });
 
   const changeRole = useMutation({
-    mutationFn: ({ id, role }) => api.patch(`/users/${id}`, { role }),
+    mutationFn: ({ id, role }) =>
+      axiosSecure.patch(`/users/${id}/role`, { role }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["users"] }),
   });
 
   const deleteUser = useMutation({
-    mutationFn: (id) => api.delete(`/users/${id}`),
+    mutationFn: (id) => axiosSecure.delete(`/users/${id}`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["users"] }),
   });
 

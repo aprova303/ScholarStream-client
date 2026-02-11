@@ -10,6 +10,7 @@ import DashboardRedirect from "./DashboardRedirect";
 import StudentProfile from "../pages/Dashboard/Student/StudentProfile";
 import AdminProfile from "../pages/Dashboard/Admin/AdminProfile";
 import AddScholarship from "../pages/Dashboard/Admin/AddScholarship";
+import UpdateScholarship from "../pages/Dashboard/Admin/UpdateScholarship";
 import ManageScholarships from "../pages/Dashboard/Admin/ManageScholarships";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import Analytics from "../pages/Dashboard/Admin/analytics";
@@ -87,6 +88,14 @@ export const router = createBrowserRouter([
             element: (
               <AdminRoute>
                 <AddScholarship></AddScholarship>
+              </AdminRoute>
+            ),
+          },
+          {
+            path: "update-scholarship/:id",
+            element: (
+              <AdminRoute>
+                <UpdateScholarship></UpdateScholarship>
               </AdminRoute>
             ),
           },
