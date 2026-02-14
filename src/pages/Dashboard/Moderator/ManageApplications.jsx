@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
+import { toast } from "react-toastify";
+import ApplicationDetailsModal from "../../../components/ApplicationDetailsModal";
+import FeedbackModal from "../../../components/FeedbackModal";
 
 const ManageApplications = () => {
   const axiosSecure = useAxiosSecure();
   const [filterStatus, setFilterStatus] = useState("");
+  const [detailsApp, setDetailsApp] = useState(null);
+  const [detailsScholarship, setDetailsScholarship] = useState(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [feedbackApp, setFeedbackApp] = useState(null);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const qc = useQueryClient();
+
   const { data: apps = [], isLoading } = useQuery({
     queryKey: ["applications"],
     queryFn: async () => {
@@ -14,14 +23,22 @@ const ManageApplications = () => {
     },
   });
 
-  const updateApplication = useMutation({
+  const updateApplicationMutation = useMutation({
     mutationFn: ({ id, updates }) =>
       axiosSecure.patch(`/applications/${id}`, updates),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["applications"] }),
+    onSuccess: () => {
+      toast.success("Application updated successfully");
+      qc.invalidateQueries({ queryKey: ["applications"] });
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.error || "Failed to update application",
+      );
+    },
   });
 
   const filteredApps = filterStatus
-    ? apps.filter((a) => a.status === filterStatus)
+    ? apps.filter((a) => a.applicationStatus === filterStatus)
     : apps;
 
   const getStatusBadge = (status) => {
@@ -38,6 +55,41 @@ const ManageApplications = () => {
     return status === "paid" ? "badge-success" : "badge-error";
   };
 
+  const handleDetailsClick = async (app) => {
+    setDetailsApp(app);
+    // Optionally fetch scholarship details
+    try {
+      const scholarshipRes = await axiosSecure.get(
+        `/scholarships/${app.scholarshipId}`,
+      );
+      setDetailsScholarship(scholarshipRes.data);
+    } catch (error) {
+      console.log("Scholarship details not found");
+    }
+    setIsDetailsOpen(true);
+  };
+
+  const handleFeedbackClick = (app) => {
+    setFeedbackApp(app);
+    setIsFeedbackOpen(true);
+  };
+
+  const handleStatusChange = (appId, newStatus) => {
+    updateApplicationMutation.mutate({
+      id: appId,
+      updates: { applicationStatus: newStatus },
+    });
+  };
+
+  const handleCancelApplication = (appId) => {
+    if (confirm("Are you sure you want to reject this application?")) {
+      updateApplicationMutation.mutate({
+        id: appId,
+        updates: { applicationStatus: "rejected" },
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -46,7 +98,7 @@ const ManageApplications = () => {
           Manage Applications
         </h1>
         <p className="text-gray-500 mt-2">
-          Review and update scholarship applications
+          Review and manage scholarship applications
         </p>
       </div>
 
@@ -89,67 +141,79 @@ const ManageApplications = () => {
               <div className="hidden md:block card bg-base-100 shadow-xl">
                 <div className="card-body p-4 md:p-6">
                   <div className="overflow-x-auto">
-                    <table className="table w-full">
+                    <table className="table w-full text-sm">
                       <thead>
                         <tr className="bg-base-200">
                           <th>Applicant Name</th>
                           <th>Email</th>
                           <th>University</th>
+                          <th>Feedback</th>
                           <th>Status</th>
                           <th>Payment</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredApps.map((a) => (
-                          <tr key={a._id || a.id} className="hover:bg-base-200">
+                        {filteredApps.map((app) => (
+                          <tr key={app._id} className="hover:bg-base-100">
+                            <td className="font-semibold">{app.userName}</td>
+                            <td className="text-xs">{app.userEmail}</td>
+                            <td>{app.universityName}</td>
                             <td>
-                              <div className="font-semibold">
-                                {a.applicantName}
-                              </div>
-                            </td>
-                            <td className="text-sm">{a.applicantEmail}</td>
-                            <td>
-                              <div className="font-semibold">
-                                {a.universityName}
+                              <div className="max-w-xs">
+                                <p className="text-xs line-clamp-2">
+                                  {app.feedback || "No feedback"}
+                                </p>
                               </div>
                             </td>
                             <td>
                               <span
-                                className={`badge ${getStatusBadge(a.status)}`}
+                                className={`badge ${getStatusBadge(
+                                  app.applicationStatus,
+                                )}`}
                               >
-                                {a.status}
+                                {app.applicationStatus}
                               </span>
                             </td>
                             <td>
                               <span
-                                className={`badge ${getPaymentBadge(a.paymentStatus)}`}
+                                className={`badge ${getPaymentBadge(
+                                  app.paymentStatus,
+                                )}`}
                               >
-                                {a.paymentStatus}
+                                {app.paymentStatus}
                               </span>
                             </td>
                             <td className="space-x-1">
-                              <button className="btn btn-xs btn-outline">
+                              <button
+                                onClick={() => handleDetailsClick(app)}
+                                className="btn btn-xs btn-outline"
+                              >
                                 Details
                               </button>
-                              <button className="btn btn-xs btn-outline">
+                              <button
+                                onClick={() => handleFeedbackClick(app)}
+                                className="btn btn-xs btn-outline btn-info"
+                              >
                                 Feedback
                               </button>
                               <select
-                                defaultValue={a.status}
+                                value={app.applicationStatus}
                                 onChange={(e) =>
-                                  updateApplication.mutate({
-                                    id: a._id || a.id,
-                                    updates: { status: e.target.value },
-                                  })
+                                  handleStatusChange(app._id, e.target.value)
                                 }
                                 className="select select-xs select-bordered"
                               >
                                 <option value="pending">Pending</option>
                                 <option value="processing">Processing</option>
                                 <option value="completed">Completed</option>
-                                <option value="rejected">Rejected</option>
                               </select>
+                              <button
+                                onClick={() => handleCancelApplication(app._id)}
+                                className="btn btn-xs btn-outline btn-error"
+                              >
+                                Cancel
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -161,19 +225,14 @@ const ManageApplications = () => {
 
               {/* Mobile Card View */}
               <div className="md:hidden space-y-4">
-                {filteredApps.map((a) => (
-                  <div
-                    key={a._id || a.id}
-                    className="card bg-base-100 shadow-md"
-                  >
+                {filteredApps.map((app) => (
+                  <div key={app._id} className="card bg-base-100 shadow-md">
                     <div className="card-body gap-3">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-bold text-lg">
-                            {a.applicantName}
-                          </h3>
+                          <h3 className="font-bold text-lg">{app.userName}</h3>
                           <p className="text-sm text-gray-500">
-                            {a.applicantEmail}
+                            {app.userEmail}
                           </p>
                         </div>
                       </div>
@@ -181,22 +240,38 @@ const ManageApplications = () => {
                       <div className="space-y-2 text-sm">
                         <div>
                           <span className="font-semibold">University:</span>{" "}
-                          {a.universityName}
+                          {app.universityName}
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="font-semibold">Status:</span>
-                          <span className={`badge ${getStatusBadge(a.status)}`}>
-                            {a.status}
+                          <span
+                            className={`badge ${getStatusBadge(
+                              app.applicationStatus,
+                            )}`}
+                          >
+                            {app.applicationStatus}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="font-semibold">Payment:</span>
                           <span
-                            className={`badge ${getPaymentBadge(a.paymentStatus)}`}
+                            className={`badge ${getPaymentBadge(
+                              app.paymentStatus,
+                            )}`}
                           >
-                            {a.paymentStatus}
+                            {app.paymentStatus}
                           </span>
                         </div>
+                        {app.feedback && (
+                          <div>
+                            <span className="font-semibold text-xs">
+                              Feedback:
+                            </span>
+                            <p className="text-xs text-gray-600 mt-1">
+                              {app.feedback}
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       <div className="divider my-2"></div>
@@ -208,28 +283,36 @@ const ManageApplications = () => {
                           </span>
                         </label>
                         <select
-                          defaultValue={a.status}
+                          value={app.applicationStatus}
                           onChange={(e) =>
-                            updateApplication.mutate({
-                              id: a._id || a.id,
-                              updates: { status: e.target.value },
-                            })
+                            handleStatusChange(app._id, e.target.value)
                           }
                           className="select select-sm select-bordered w-full"
                         >
                           <option value="pending">Pending</option>
                           <option value="processing">Processing</option>
                           <option value="completed">Completed</option>
-                          <option value="rejected">Rejected</option>
                         </select>
                       </div>
 
-                      <div className="card-actions justify-end gap-2 pt-2">
-                        <button className="btn btn-sm btn-outline flex-1">
+                      <div className="card-actions justify-end gap-2 pt-2 flex-wrap">
+                        <button
+                          onClick={() => handleDetailsClick(app)}
+                          className="btn btn-sm btn-outline flex-1"
+                        >
                           Details
                         </button>
-                        <button className="btn btn-sm btn-outline flex-1">
+                        <button
+                          onClick={() => handleFeedbackClick(app)}
+                          className="btn btn-sm btn-outline btn-info flex-1"
+                        >
                           Feedback
+                        </button>
+                        <button
+                          onClick={() => handleCancelApplication(app._id)}
+                          className="btn btn-sm btn-outline btn-error flex-1"
+                        >
+                          Reject
                         </button>
                       </div>
                     </div>
@@ -240,6 +323,25 @@ const ManageApplications = () => {
           )}
         </>
       )}
+
+      {/* Modals */}
+      <ApplicationDetailsModal
+        isOpen={isDetailsOpen}
+        application={detailsApp}
+        scholarship={detailsScholarship}
+        onClose={() => {
+          setIsDetailsOpen(false);
+          setDetailsApp(null);
+        }}
+      />
+      <FeedbackModal
+        isOpen={isFeedbackOpen}
+        application={feedbackApp}
+        onClose={() => {
+          setIsFeedbackOpen(false);
+          setFeedbackApp(null);
+        }}
+      />
     </div>
   );
 };

@@ -24,7 +24,7 @@ import MyApplications from "../pages/Dashboard/Student/MyApplications";
 import MyReviews from "../pages/Dashboard/Student/MyReviews";
 import ModeratorReviews from "../pages/Dashboard/Moderator/ModeratorReviews";
 import AdminRoute from "./AdminRoute";
-import { StudentRoute, ModeratorRoute } from "./ProtectedRoutes";
+import { StudentRoute, ModeratorRoute, PrivateRoute } from "./ProtectedRoutes";
 import NotFound from "../pages/Shared/NotFound";
 import {
   AdminDashboardWrapper,
@@ -52,7 +52,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "checkout/:scholarshipId",
-        Component: CheckoutPage,
+        element: (
+          <StudentRoute>
+            <CheckoutPage />
+          </StudentRoute>
+        ),
       },
       {
         path: "payment-success",

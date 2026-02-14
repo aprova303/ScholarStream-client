@@ -18,9 +18,10 @@ export const createCheckoutSession = async (scholarshipId, applicationData, axio
 /**
  * Confirm payment and save application
  */
-export const confirmPayment = async (sessionId, applicationData, axiosInstance = api) => {
+export const confirmPayment = async (sessionId, applicationData, axiosInstance) => {
   try {
-    const response = await axiosInstance.post('/payment/confirm-payment', {
+    const instance = axiosInstance || api;
+    const response = await instance.post('/payment/confirm-payment', {
       sessionId,
       applicationData
     });

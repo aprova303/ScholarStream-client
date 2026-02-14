@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
+import ReviewEditModal from "../../../components/ReviewEditModal";
+import { toast } from "react-toastify";
 
 const MyReviews = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth() || {};
   const qc = useQueryClient();
+  const [editingReview, setEditingReview] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const { data: reviews = [], isLoading } = useQuery({
     queryKey: ["my-reviews", user?.email],
     queryFn: async () => {
@@ -20,8 +25,24 @@ const MyReviews = () => {
 
   const deleteReviewMutation = useMutation({
     mutationFn: (id) => axiosSecure.delete(`/reviews/${id}`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["my-reviews"] }),
+    onSuccess: () => {
+      toast.success("Review deleted successfully");
+      qc.invalidateQueries({ queryKey: ["my-reviews"] });
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.error || "Failed to delete review");
+    },
   });
+
+  const handleEditClick = (review) => {
+    setEditingReview(review);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingReview(null);
+  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -46,7 +67,7 @@ const MyReviews = () => {
           My Reviews
         </h1>
         <p className="text-gray-500 mt-2">
-          Share your experiences with scholarships
+          Manage your scholarship reviews and ratings
         </p>
       </div>
 
@@ -63,46 +84,145 @@ const MyReviews = () => {
           </div>
         </div>
       ) : (
-        <div className="grid gap-6">
-          {reviews.map((r) => (
-            <div
-              key={r._id || r.id}
-              className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow"
-            >
-              <div className="card-body">
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex-1">
-                    <h3 className="card-title">{r.scholarshipName}</h3>
-                    <p className="text-sm text-gray-500">{r.universityName}</p>
-                  </div>
-                  <button
-                    onClick={() => deleteReviewMutation.mutate(r._id || r.id)}
-                    className="btn btn-ghost btn-sm btn-circle"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex gap-1 text-xl">
-                    {renderStars(r.rating)}
-                  </div>
-                  <span className="badge badge-lg">{r.rating} / 5</span>
-                </div>
-
-                <div className="bg-base-200 p-4 rounded-lg mb-4">
-                  <p className="text-sm">{r.comment}</p>
-                </div>
-
-                <div className="flex justify-between items-center text-xs text-gray-500">
-                  <span>{new Date(r.date).toLocaleDateString()}</span>
-                  <button className="btn btn-xs btn-outline">Edit</button>
-                </div>
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden md:block card bg-base-100 shadow-xl">
+            <div className="card-body p-4 md:p-6">
+              <div className="overflow-x-auto">
+                <table className="table w-full">
+                  <thead>
+                    <tr className="bg-base-200">
+                      <th>Scholarship Name</th>
+                      <th>University Name</th>
+                      <th>Review Comment</th>
+                      <th>Review Date</th>
+                      <th>Rating</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reviews.map((review) => (
+                      <tr key={review._id} className="hover:bg-base-200">
+                        <td>
+                          <div className="font-semibold">
+                            {review.scholarshipName || "N/A"}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="font-semibold">
+                            {review.universityName}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="max-w-xs">
+                            <p className="text-sm text-gray-700 line-clamp-2">
+                              {review.reviewComment}
+                            </p>
+                          </div>
+                        </td>
+                        <td className="text-sm">
+                          {new Date(review.reviewDate).toLocaleDateString()}
+                        </td>
+                        <td>
+                          <div className="flex gap-1">
+                            {renderStars(review.ratingPoint)}
+                            <span className="ml-2 badge badge-sm">
+                              {review.ratingPoint}/5
+                            </span>
+                          </div>
+                        </td>
+                        <td className="space-x-1">
+                          <button
+                            onClick={() => handleEditClick(review)}
+                            className="btn btn-xs btn-outline btn-info"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() =>
+                              deleteReviewMutation.mutate(review._id)
+                            }
+                            disabled={deleteReviewMutation.isPending}
+                            className="btn btn-xs btn-outline btn-error"
+                          >
+                            {deleteReviewMutation.isPending ? (
+                              <span className="loading loading-spinner loading-xs"></span>
+                            ) : (
+                              "Delete"
+                            )}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {reviews.map((review) => (
+              <div key={review._id} className="card bg-base-100 shadow-md">
+                <div className="card-body gap-3">
+                  <div>
+                    <h3 className="font-bold text-lg">
+                      {review.scholarshipName || "N/A"}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {review.universityName}
+                    </p>
+                  </div>
+
+                  <div className="bg-base-200 p-3 rounded-lg">
+                    <p className="text-sm">{review.reviewComment}</p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1">
+                      {renderStars(review.ratingPoint)}
+                    </div>
+                    <span className="badge badge-sm">
+                      {review.ratingPoint}/5
+                    </span>
+                  </div>
+
+                  <div className="text-xs text-gray-500">
+                    {new Date(review.reviewDate).toLocaleDateString()}
+                  </div>
+
+                  <div className="card-actions justify-end gap-2 pt-2">
+                    <button
+                      onClick={() => handleEditClick(review)}
+                      className="btn btn-sm btn-outline btn-info flex-1"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteReviewMutation.mutate(review._id)}
+                      disabled={deleteReviewMutation.isPending}
+                      className="btn btn-sm btn-outline btn-error flex-1"
+                    >
+                      {deleteReviewMutation.isPending ? (
+                        <span className="loading loading-spinner loading-xs"></span>
+                      ) : (
+                        "Delete"
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
+
+      {/* Edit Modal */}
+      <ReviewEditModal
+        isOpen={isModalOpen}
+        review={editingReview}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };

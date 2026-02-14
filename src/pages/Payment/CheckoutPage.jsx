@@ -62,12 +62,14 @@ const CheckoutPage = () => {
 
     try {
       // Step 1: Create checkout session
+      const applicationData = {
+        ...formData,
+        applicationFees: scholarship.applicationFees,
+      };
+
       const checkoutData = await createCheckoutSession(
         scholarshipId,
-        {
-          ...formData,
-          applicationFees: scholarship.applicationFees,
-        },
+        applicationData,
         axiosSecure,
       );
 
@@ -79,6 +81,12 @@ const CheckoutPage = () => {
       });
 
       if (checkoutData.sessionId) {
+        // Store application data in localStorage before Stripe redirect
+        localStorage.setItem(
+          "pendingApplicationData",
+          JSON.stringify(applicationData),
+        );
+
         // Step 2: Load Stripe from global window and redirect to Checkout
         const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
         if (!publishableKey) {

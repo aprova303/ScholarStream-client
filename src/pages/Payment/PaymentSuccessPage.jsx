@@ -6,16 +6,21 @@ import { toast } from "react-toastify";
 import { confirmPayment } from "../../services/paymentService";
 import { getApplicationById } from "../../services/paymentService";
 import { api } from "../../services/api";
+import useAxiosSecure from "../../contexts/useAxiosSecure";
+import useAuth from "../../hooks/useAuth";
 
 const PaymentSuccessPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const sessionId = searchParams.get("session_id");
+  const axiosSecure = useAxiosSecure();
+  const { token } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [application, setApplication] = useState(null);
   const [scholarship, setScholarship] = useState(null);
   const [error, setError] = useState(null);
+  const [transactionId, setTransactionId] = useState(null);
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -26,17 +31,40 @@ const PaymentSuccessPage = () => {
           return;
         }
 
+        if (!token) {
+          setError("Authentication required. Please log in again.");
+          setLoading(false);
+          return;
+        }
+
+        // Retrieve application data from localStorage
+        const storedApplication = localStorage.getItem(
+          "pendingApplicationData",
+        );
+        if (!storedApplication) {
+          setError("Application data not found. Please try applying again.");
+          setLoading(false);
+          return;
+        }
+
+        const applicationData = JSON.parse(storedApplication);
+
         // Extract application data from the page or API
         // For now, we'll get it from the confirm payment endpoint
-        const result = await confirmPayment(sessionId, {});
+        const result = await confirmPayment(
+          sessionId,
+          applicationData,
+          axiosSecure,
+        );
 
         if (result.success && result.application) {
           setApplication(result.application);
+          setTransactionId(result.transactionId);
 
           // Fetch scholarship details
           if (result.application.scholarshipId) {
             try {
-              const scholarshipData = await api.get(
+              const scholarshipData = await axiosSecure.get(
                 `/scholarships/${result.application.scholarshipId}`,
               );
               setScholarship(scholarshipData.data);
@@ -45,6 +73,8 @@ const PaymentSuccessPage = () => {
             }
           }
 
+          // Clear the stored application data
+          localStorage.removeItem("pendingApplicationData");
           toast.success("Payment completed successfully!");
         } else {
           setError("Payment verification failed");
@@ -60,8 +90,13 @@ const PaymentSuccessPage = () => {
       }
     };
 
-    verifyPayment();
-  }, [sessionId]);
+    if (sessionId && token) {
+      verifyPayment();
+    } else if (sessionId && !token) {
+      // Token is still loading, don't show error yet
+      console.log("Waiting for authentication token...");
+    }
+  }, [sessionId, token, axiosSecure]);
 
   if (loading) {
     return (
@@ -144,6 +179,15 @@ const PaymentSuccessPage = () => {
               </h2>
 
               <div className="space-y-4 mb-6">
+                <div className="pb-4 border-b">
+                  <p className="text-sm text-gray-600 font-semibold">
+                    Transaction ID
+                  </p>
+                  <p className="text-sm font-mono text-gray-800 mt-1 break-all">
+                    {transactionId || "Pending"}
+                  </p>
+                </div>
+
                 <div className="pb-4 border-b">
                   <p className="text-sm text-gray-600 font-semibold">
                     Application Status
