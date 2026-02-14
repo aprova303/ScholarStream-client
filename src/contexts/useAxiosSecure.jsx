@@ -9,7 +9,7 @@ const useAxiosSecure = () => {
   // Create axios instance once
   if (!axiosSecureRef.current) {
     axiosSecureRef.current = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "https://scholar-stream-server-ten.vercel.app",
     });
   }
 

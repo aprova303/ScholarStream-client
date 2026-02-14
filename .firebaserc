@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "scholarstream-e6c33",
+    "prod": "scholarstream-e6c33"
+  },
+  "targets": {},
+  "etags": {}
+}
