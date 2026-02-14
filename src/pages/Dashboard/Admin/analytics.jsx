@@ -31,6 +31,7 @@ const Analytics = () => {
   const applicationStatusData = [
     { name: "Pending", value: data.pendingApplications || 0 },
     { name: "Processing", value: data.processingApplications || 0 },
+    { name: "Approved", value: data.approvedApplications || 0 },
     { name: "Completed", value: data.completedApplications || 0 },
     { name: "Rejected", value: data.rejectedApplications || 0 },
   ];
@@ -72,21 +73,53 @@ const Analytics = () => {
 
         <div className="card bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg">
           <div className="card-body p-4 md:p-6">
-            <h3 className="card-title text-lg">Fees Collected</h3>
+            <h3 className="card-title text-lg">Revenue Collected</h3>
             <p className="text-3xl md:text-4xl font-bold">
-              ${isLoading ? "--" : (data.totalFees ?? "N/A")}
+              ${isLoading ? "--" : (data.totalFees?.toLocaleString() ?? "N/A")}
             </p>
-            <p className="text-sm opacity-75">Total revenue</p>
+            <p className="text-sm opacity-75">
+              {isLoading ? "--" : data.paidApplications || 0} paid applications
+            </p>
           </div>
         </div>
 
         <div className="card bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-lg">
           <div className="card-body p-4 md:p-6">
+            <h3 className="card-title text-lg">Total Applications</h3>
+            <p className="text-3xl md:text-4xl font-bold">
+              {isLoading ? "--" : (data.totalApplications ?? "N/A")}
+            </p>
+            <p className="text-sm opacity-75">Across all scholarships</p>
+          </div>
+        </div>
+
+        <div className="card bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg">
+          <div className="card-body p-4 md:p-6">
             <h3 className="card-title text-lg">Total Scholarships</h3>
             <p className="text-3xl md:text-4xl font-bold">
               {isLoading ? "--" : (data.totalScholarships ?? "N/A")}
             </p>
-            <p className="text-sm opacity-75">Active scholarships</p>
+            <p className="text-sm opacity-75">Active offers</p>
+          </div>
+        </div>
+
+        <div className="card bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-lg">
+          <div className="card-body p-4 md:p-6">
+            <h3 className="card-title text-lg">Total Reviews</h3>
+            <p className="text-3xl md:text-4xl font-bold">
+              {isLoading ? "--" : (data.totalReviews ?? "N/A")}
+            </p>
+            <p className="text-sm opacity-75">Student feedback</p>
+          </div>
+        </div>
+
+        <div className="card bg-gradient-to-br from-pink-500 to-pink-600 text-white shadow-lg">
+          <div className="card-body p-4 md:p-6">
+            <h3 className="card-title text-lg">Pending Payment</h3>
+            <p className="text-3xl md:text-4xl font-bold">
+              {isLoading ? "--" : (data.unpaidApplications ?? "N/A")}
+            </p>
+            <p className="text-sm opacity-75">Waiting for payment</p>
           </div>
         </div>
       </div>
@@ -158,7 +191,7 @@ const Analytics = () => {
           <div className="card-body">
             <h2 className="card-title">Applications Overview</h2>
             <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+              <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
                 <span className="text-sm font-medium">
                   Pending Applications
                 </span>
@@ -166,11 +199,27 @@ const Analytics = () => {
                   {isLoading ? "--" : (data.pendingApplications ?? 0)}
                 </span>
               </div>
+              <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                <span className="text-sm font-medium">
+                  Processing Applications
+                </span>
+                <span className="badge badge-info text-xs">
+                  {isLoading ? "--" : (data.processingApplications ?? 0)}
+                </span>
+              </div>
               <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                <span className="text-sm font-medium">
+                  Approved Applications
+                </span>
+                <span className="badge badge-success text-xs">
+                  {isLoading ? "--" : (data.approvedApplications ?? 0)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-cyan-50 rounded-lg">
                 <span className="text-sm font-medium">
                   Completed Applications
                 </span>
-                <span className="badge badge-success text-xs">
+                <span className="badge badge-primary text-xs">
                   {isLoading ? "--" : (data.completedApplications ?? 0)}
                 </span>
               </div>
@@ -180,14 +229,6 @@ const Analytics = () => {
                 </span>
                 <span className="badge badge-error text-xs">
                   {isLoading ? "--" : (data.rejectedApplications ?? 0)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-amber-50 rounded-lg">
-                <span className="text-sm font-medium">
-                  Processing Applications
-                </span>
-                <span className="badge badge-info text-xs">
-                  {isLoading ? "--" : (data.processingApplications ?? 0)}
                 </span>
               </div>
             </div>

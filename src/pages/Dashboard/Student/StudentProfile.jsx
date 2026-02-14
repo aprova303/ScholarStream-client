@@ -1,11 +1,58 @@
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../contexts/useAxiosSecure";
 import RequestRoleModal from "../../../components/RequestRoleModal";
 
 const StudentProfile = () => {
   const { user, role } = useAuth() || {};
+  const axiosSecure = useAxiosSecure();
   const [isEditing, setIsEditing] = useState(false);
   const [roleModalOpen, setRoleModalOpen] = useState(false);
+
+  // Fetch applications count
+  const { data: applications = [] } = useQuery({
+    queryKey: ["my-applications-count", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/applications?email=${encodeURIComponent(user?.email)}`,
+      );
+      return res.data;
+    },
+    enabled: !!user?.email,
+  });
+
+  // Fetch reviews count
+  const { data: reviews = [] } = useQuery({
+    queryKey: ["my-reviews-count", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/reviews?email=${encodeURIComponent(user?.email)}`,
+      );
+      return res.data;
+    },
+    enabled: !!user?.email,
+  });
+
+  // Calculate stats
+  const totalApplications = applications.length;
+  const approvedApplications = applications.filter(
+    (app) => app.applicationStatus === "approved",
+  ).length;
+  const rejectedApplications = applications.filter(
+    (app) => app.applicationStatus === "rejected",
+  ).length;
+  const pendingApplications = applications.filter(
+    (app) => app.applicationStatus === "pending",
+  ).length;
+  const totalReviews = reviews.length;
+  const averageRating =
+    reviews.length > 0
+      ? (
+          reviews.reduce((sum, review) => sum + review.ratingPoint, 0) /
+          reviews.length
+        ).toFixed(1)
+      : 0;
 
   return (
     <div className="space-y-6">
@@ -55,20 +102,20 @@ const StudentProfile = () => {
                 <p className="text-lg font-semibold">{user?.email}</p>
               </div>
 
-              {/* <div>
-                <p className="text-sm text-gray-500">Role</p>
-                <div className="badge badge-lg badge-primary text-white">
-                  {role}
+              <div>
+                <p className="text-sm text-gray-500">Account Role</p>
+                <div className="badge badge-lg badge-primary text-white mt-2">
+                  {role || "Student"}
                 </div>
               </div>
 
               <div>
                 <p className="text-sm text-gray-500">Account Status</p>
-                <div className="badge badge-success gap-2">
+                <div className="badge badge-success gap-2 mt-2">
                   <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                   Active
                 </div>
-              </div> */}
+              </div>
             </div>
           ) : (
             <div className="space-y-4">
@@ -93,26 +140,41 @@ const StudentProfile = () => {
 
       {/* Student Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card bg-base-200">
+        <div className="card bg-base-200 shadow-md">
           <div className="card-body">
             <h3 className="text-sm font-semibold text-gray-600">
-              Applications
+              Total Applications
             </h3>
-            <p className="text-3xl font-bold">--</p>
+            <p className="text-3xl font-bold text-primary">
+              {totalApplications}
+            </p>
+            <p className="text-xs text-gray-500 mt-2">
+              {pendingApplications} pending
+            </p>
           </div>
         </div>
-        <div className="card bg-base-200">
+
+        <div className="card bg-base-200 shadow-md">
           <div className="card-body">
             <h3 className="text-sm font-semibold text-gray-600">
               Approved Apps
             </h3>
-            <p className="text-3xl font-bold">--</p>
+            <p className="text-3xl font-bold text-success">
+              {approvedApplications}
+            </p>
+            <p className="text-xs text-gray-500 mt-2">
+              {rejectedApplications} rejected
+            </p>
           </div>
         </div>
-        <div className="card bg-base-200">
+
+        <div className="card bg-base-200 shadow-md">
           <div className="card-body">
             <h3 className="text-sm font-semibold text-gray-600">My Reviews</h3>
-            <p className="text-3xl font-bold">--</p>
+            <p className="text-3xl font-bold text-accent">{totalReviews}</p>
+            <p className="text-xs text-gray-500 mt-2">
+              Avg Rating: ⭐ {averageRating}
+            </p>
           </div>
         </div>
       </div>
