@@ -3,11 +3,15 @@ import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import { api } from "../../services/api";
 import { toast } from "react-toastify";
+import { FaSun, FaMoon } from "react-icons/fa";
+import useTheme from "../../hooks/useTheme";
 
 const TopScholarships = () => {
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+// const { theme, toggleTheme } = useTheme();
+
 
   useEffect(() => {
     const fetchTopScholarships = async () => {
@@ -44,7 +48,8 @@ const TopScholarships = () => {
   }
 
   return (
-    <section className="py-16 bg-base-100">
+    // <section className={`py-16  ${theme === "dark" ? "bg-gray-800 text-white" : "bg-white"}`}>
+        <section className="py-16 bg-base-100">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -53,10 +58,10 @@ const TopScholarships = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+          <h2 className={`text-4xl font-bold ${theme === "dark" ? "text-white" : "text-gray-800"} mb-4`}>
             Top Scholarships
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className={`text-gray-600 text-lg font-semibold max-w-2xl mx-auto ${theme === "dark" ? "text-gray-100" : ""}`}>
             Browse our most recent scholarship opportunities from top
             universities around the world
           </p>

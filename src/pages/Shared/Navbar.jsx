@@ -5,11 +5,14 @@ import useRole from "../../hooks/useRole";
 import Logo from "../../components/Logo";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { FaSun, FaMoon } from "react-icons/fa";
+import useTheme from "../../hooks/useTheme";
 
 const Navbar = () => {
   const { user, logOut, loading: authLoading } = useAuth();
   const { role, roleLoading } = useRole();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   const isLoading = authLoading || roleLoading;
 
@@ -133,11 +136,11 @@ const Navbar = () => {
   const links = renderRoleBasedLinks();
 
   return (
-    <div className="navbar bg-base-200 shadow-sm sticky top-0 z-40">
+    <div className={`navbar bg-base-200 shadow-sm sticky top-0 z-40 ${theme === "dark" ? "bg-gray-900 text-white" : ""}`}>
       {/* Navbar Start - Logo & Mobile Menu */}
       <div className="navbar-start">
         <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+          <div tabIndex={0} role="button" className={`btn btn-ghost lg:hidden ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -155,7 +158,7 @@ const Navbar = () => {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
+            className={`menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow ${theme === "dark" ? "bg-gray-900 text-white" : ""}`}
           >
             {links}
             {user && (
@@ -184,6 +187,18 @@ const Navbar = () => {
 
       {/* Navbar End - Auth Section */}
       <div className="navbar-end gap-2">
+        <button
+          onClick={toggleTheme}
+          className="btn btn-ghost btn-circle"
+          title="Toggle Theme"
+        >
+          {theme === "light" ? (
+            <FaMoon className="text-lg" />
+          ) : (
+            <FaSun className="text-lg text-yellow-400" />
+          )}
+        </button>
+
         {isLoading ? (
           <span className="loading loading-spinner loading-sm"></span>
         ) : user ? (
@@ -206,13 +221,14 @@ const Navbar = () => {
             {/* Dropdown menu */}
             <ul
               tabIndex={0}
-              className="dropdown-content menu bg-base-100 rounded-box z-50 w-64 p-2 shadow"
+              className={`dropdown-content menu bg-base-100 rounded-box z-50 w-64 p-2 shadow ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}
+            
             >
               <li className="menu-title">
                 <span>{user.displayName || user.email}</span>
               </li>
               <li className="menu-title">
-                <span className="text-xs text-gray-500 font-semibold">
+                <span className={`text-xs text-gray-500 font-semibold ${theme === "dark" ? "text-gray-400" : ""}`}>
                   Role: {role}
                 </span>
               </li>
@@ -231,11 +247,11 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="flex gap-2">
-            <Link className="btn bg-[#9f87e2] text-white btn-sm" to="/login">
+            <Link className={`btn  border-none transition-colors duration-300 text-white btn-sm ${theme === "dark" ? "bg-[#9f87e2]" : "bg-[#9f87e2]"}`} to="/login">
               Login
             </Link>
             <Link
-              className="btn bg-[#9f87e2] text-white btn-sm hidden sm:inline-flex"
+              className={`btn border-none text-white btn-sm hidden sm:inline-flex ${theme === "dark" ? "bg-[#9f87e2]" : "bg-[#9f87e2]"}`}
               to="/register"
             >
               Register
