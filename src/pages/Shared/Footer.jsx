@@ -7,12 +7,16 @@ const Footer = () => {
   <aside>
     <Logo></Logo>
     <p className="font-bold">
-      ScholarStream 
+
       <br />
       Providing educational resources since 2008
     </p>
     <p>scholarStream © {new Date().getFullYear()} - All right reserved</p>
   </aside>
+  {/* <nav>
+    <a className="link link-hover">About us</a>
+    <a className="link link-hover">Contact</a>
+  </nav> */}
   <nav>
     <div className="grid grid-flow-col gap-4">
       <a>

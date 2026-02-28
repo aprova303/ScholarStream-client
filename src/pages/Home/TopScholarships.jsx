@@ -10,7 +10,7 @@ const TopScholarships = () => {
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-// const { theme, toggleTheme } = useTheme();
+const { theme, toggleTheme } = useTheme();
 
 
   useEffect(() => {
@@ -48,8 +48,8 @@ const TopScholarships = () => {
   }
 
   return (
-    // <section className={`py-16  ${theme === "dark" ? "bg-gray-800 text-white" : "bg-white"}`}>
-        <section className="py-16 bg-base-100">
+    // <section className={`py-16 bg-base-100  ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}>
+         <section className="py-16 bg-base-100">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -69,7 +69,8 @@ const TopScholarships = () => {
 
         {/* Scholarships Grid */}
         {scholarships.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          // <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {scholarships.map((scholarship, index) => (
               <motion.div
                 key={scholarship._id}

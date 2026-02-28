@@ -7,6 +7,7 @@ export default {
   },
   plugins: [daisyui],
   daisyui: {
-    themes: ["light", "dark"], // Enable both themes
+    themes: ["light", "dark"],
+    darkTheme: "dark",
   },
 };

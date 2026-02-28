@@ -6,13 +6,13 @@ import Logo from "../../components/Logo";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { FaSun, FaMoon } from "react-icons/fa";
-import useTheme from "../../hooks/useTheme";
+import useThemeContext from "../../hooks/useThemContext";
 
 const Navbar = () => {
   const { user, logOut, loading: authLoading } = useAuth();
   const { role, roleLoading } = useRole();
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useThemeContext();
 
   const isLoading = authLoading || roleLoading;
 
