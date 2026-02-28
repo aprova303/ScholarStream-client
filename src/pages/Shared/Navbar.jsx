@@ -56,6 +56,12 @@ const Navbar = () => {
         <li>
           <NavLink to="/all-scholarships">All Scholarships</NavLink>
         </li>
+         <li>
+          <NavLink to="/about">About</NavLink>
+        </li>
+         <li>
+          <NavLink to="/terms">Terms</NavLink>
+        </li>
       </>
     );
 
@@ -82,6 +88,9 @@ const Navbar = () => {
         </li>
         <li>
           <NavLink to="/dashboard/student/reviews">My Reviews</NavLink>
+        </li>
+        <li>
+          <NavLink to="/contact-us">Contact Us</NavLink>
         </li>
       </>
     );
@@ -136,11 +145,17 @@ const Navbar = () => {
   const links = renderRoleBasedLinks();
 
   return (
-    <div className={`navbar bg-base-200 shadow-sm sticky top-0 z-40 ${theme === "dark" ? "bg-gray-900 text-white" : ""}`}>
+    <div
+      className={`navbar bg-base-200 shadow-sm sticky top-0 z-40 ${theme === "dark" ? "bg-gray-900 text-white" : ""}`}
+    >
       {/* Navbar Start - Logo & Mobile Menu */}
       <div className="navbar-start">
         <div className="dropdown">
-          <div tabIndex={0} role="button" className={`btn btn-ghost lg:hidden ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}>
+          <div
+            tabIndex={0}
+            role="button"
+            className={`btn btn-ghost lg:hidden ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -222,13 +237,14 @@ const Navbar = () => {
             <ul
               tabIndex={0}
               className={`dropdown-content menu bg-base-100 rounded-box z-50 w-64 p-2 shadow ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}
-            
             >
               <li className="menu-title">
                 <span>{user.displayName || user.email}</span>
               </li>
               <li className="menu-title">
-                <span className={`text-xs text-gray-500 font-semibold ${theme === "dark" ? "text-gray-400" : ""}`}>
+                <span
+                  className={`text-xs text-gray-500 font-semibold ${theme === "dark" ? "text-gray-400" : ""}`}
+                >
                   Role: {role}
                 </span>
               </li>
@@ -247,7 +263,10 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="flex gap-2">
-            <Link className={`btn  border-none transition-colors duration-300 text-white btn-sm ${theme === "dark" ? "bg-[#9f87e2]" : "bg-[#9f87e2]"}`} to="/login">
+            <Link
+              className={`btn  border-none transition-colors duration-300 text-white btn-sm ${theme === "dark" ? "bg-[#9f87e2]" : "bg-[#9f87e2]"}`}
+              to="/login"
+            >
               Login
             </Link>
             <Link

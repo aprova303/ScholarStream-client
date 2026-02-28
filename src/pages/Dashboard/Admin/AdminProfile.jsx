@@ -2,11 +2,20 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const AdminProfile = () => {
   const { user, role } = useAuth() || {};
+  const { theme } = useThemeContext();
   const axiosSecure = useAxiosSecure();
   const [isEditing, setIsEditing] = useState(false);
+
+  const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
 
   // Fetch admin analytics
   const { data: analytics = {} } = useQuery({
@@ -19,20 +28,26 @@ const AdminProfile = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div
+      className={`space-y-6 ${bgColor} transition-colors duration-300 min-h-screen p-4 md:p-8`}
+    >
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        <h1 className={`text-3xl md:text-4xl font-bold ${textColor}`}>
           Admin Profile
         </h1>
-        <p className="text-gray-500 mt-2">Manage your admin account settings</p>
+        <p className={`${secondaryText} mt-2`}>
+          Manage your admin account settings
+        </p>
       </div>
 
       {/* Profile Card */}
-      <div className="card bg-base-100 shadow-xl">
+      <div className={`card ${cardBg} shadow-xl`}>
         <div className="card-body p-4 md:p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="card-title text-2xl">Account Information</h2>
+            <h2 className={`card-title text-2xl ${textColor}`}>
+              Account Information
+            </h2>
             <button
               onClick={() => setIsEditing(!isEditing)}
               className="btn btn-sm btn-outline"
@@ -157,7 +172,7 @@ const AdminProfile = () => {
 
       {/* Detailed Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="card bg-base-100 shadow-xl">
+        <div className={`card ${cardBg} shadow-xl`}>
           <div className="card-body">
             <h3 className="card-title text-lg">Application Status Overview</h3>
             <div className="space-y-2 mt-4">
@@ -195,7 +210,7 @@ const AdminProfile = () => {
           </div>
         </div>
 
-        <div className="card bg-base-100 shadow-xl">
+        <div className={`card ${cardBg} shadow-xl`}>
           <div className="card-body">
             <h3 className="card-title text-lg">User Distribution</h3>
             <div className="space-y-3 mt-4">
@@ -230,7 +245,7 @@ const AdminProfile = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="card bg-base-100 shadow-xl">
+      <div className={`card ${cardBg} shadow-xl`}>
         <div className="card-body">
           <h3 className="card-title">Quick Actions</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">

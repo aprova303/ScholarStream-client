@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import useThemeContext from "../../hooks/useThemContext";
 import {
   FaSearch,
   FaClipboardList,
@@ -10,6 +11,7 @@ import {
 } from "react-icons/fa";
 
 const Features = () => {
+  const { theme } = useThemeContext();
   const features = [
     {
       icon: FaSearch,
@@ -50,7 +52,7 @@ const Features = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className={`py-16 bg-base-100  ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}>
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -78,7 +80,7 @@ const Features = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+                className={`bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow ${theme === "dark" ? "bg-bg text-white" : ""}`}
               >
                 <div className="flex flex-col items-center text-center">
                   <div className="bg-gradient-to-br from-[#9f87e2] to-[#eaafc8] p-4 rounded-full mb-4">

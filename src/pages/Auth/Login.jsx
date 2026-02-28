@@ -36,7 +36,9 @@ const Login = () => {
   };
 
   return (
-    <div className="card bg-base-100 w-full mx-auto max-w-sm shrink-0 shadow-2xl mt-10">
+    <div
+      className={`card w-full mx-auto max-w-sm shrink-0 shadow-2xl mt-10 transition-colors duration-300`}
+    >
       <h3 className="text-3xl text-center font-semibold bg-gradient-to-r from-[#654ea3] to-[#eaafc8] text-transparent bg-clip-text">
         Welcome back
       </h3>

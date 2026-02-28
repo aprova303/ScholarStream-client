@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaBell } from "react-icons/fa";
 import { toast } from "react-toastify";
+import useThemeContext from "../../hooks/useThemContext";
 
 const Newsletter = () => {
+  const { theme } = useThemeContext();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
@@ -25,7 +27,13 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-r from-[#9f87e2] to-[#eaafc8] text-white">
+    <section
+      className={`py-16 transition-colors duration-300 ${
+        theme === "light"
+          ? "bg-gradient-to-r from-[#9f87e2] to-[#eaafc8] text-white"
+          : "bg-gradient-to-r from-gray-800 to-gray-900 text-white"
+      }`}
+    >
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -68,7 +76,7 @@ const Newsletter = () => {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-lg border-white focus:outline-none focus:ring-2 focus:ring-white text-gray-900"
+                className={`w-full pl-12 pr-4 py-3 rounded-lg border-white focus:outline-none focus:ring-2 focus:ring-white text-gray-900 ${theme === "dark" ? "bg-gray-700 text-white" : ""}`}
                 disabled={subscribed}
               />
             </div>

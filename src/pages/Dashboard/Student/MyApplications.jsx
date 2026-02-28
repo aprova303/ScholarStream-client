@@ -6,11 +6,19 @@ import ApplicationDetailsModal from "../../../components/ApplicationDetailsModal
 import ApplicationEditModal from "../../../components/ApplicationEditModal";
 import AddReviewModal from "../../../components/AddReviewModal";
 import { toast } from "react-toastify";
-
+import useThemeContext from "../../../hooks/useThemContext";
 const MyApplications = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth() || {};
   const qc = useQueryClient();
+  const { theme } = useThemeContext();
+
+const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
 
   // Modal states
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
@@ -123,12 +131,12 @@ const MyApplications = () => {
       ) : (
         /* Applications Table - Desktop */
         <>
-          <div className="hidden md:block card bg-base-100 shadow-xl">
+          <div className={`hidden md:block card bg-base-100 shadow-xl ${cardBg}`}>
             <div className="card-body p-4 md:p-6">
               <div className="overflow-x-auto">
                 <table className="table w-full">
                   <thead>
-                    <tr className="bg-base-200">
+                    <tr className={`bg-base-200 ${bgColor} ${textColor}`}>
                       <th>University Name</th>
                       <th>Address</th>
                       <th>Subject</th>
@@ -141,7 +149,7 @@ const MyApplications = () => {
                   </thead>
                   <tbody>
                     {apps.map((app) => (
-                      <tr key={app._id} className="hover:bg-base-200">
+                      <tr key={app._id} className="">
                         <td className="font-semibold">{app.universityName}</td>
                         <td className="text-sm">
                           {app.scholarshipId?.universityCity || "N/A"}

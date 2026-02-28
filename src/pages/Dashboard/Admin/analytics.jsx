@@ -14,9 +14,18 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const Analytics = () => {
   const axiosSecure = useAxiosSecure();
+  
+  const {theme} = useThemeContext();
+
+    const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
 
   const { data = {}, isLoading } = useQuery({
     queryKey: ["analytics"],
@@ -51,10 +60,10 @@ const Analytics = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-800">
+        <h1 className={`text-4xl font-bold ${textColor}`}>
           Analytics & Dashboard
         </h1>
-        <p className="text-gray-500 mt-2">
+        <p className={`text-${secondaryText} mt-2`}>
           Platform statistics and performance metrics
         </p>
       </div>
@@ -187,44 +196,44 @@ const Analytics = () => {
       {/* Detailed Statistics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Application Details Card */}
-        <div className="card bg-base-100 shadow-xl">
+        <div className={`card bg-base-100 shadow-xl ${cardBg}`}>
           <div className="card-body">
-            <h2 className="card-title">Applications Overview</h2>
+            <h2 className={`card-title ${textColor}`}>Applications Overview</h2>
             <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
-                <span className="text-sm font-medium">
+              <div className={`flex justify-between items-center p-3  rounded-lg ${cardBg}`}>
+                <span className={`text-sm font-medium ${textColor}`}>
                   Pending Applications
                 </span>
                 <span className="badge badge-warning text-xs">
                   {isLoading ? "--" : (data.pendingApplications ?? 0)}
                 </span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                <span className="text-sm font-medium">
+              <div className={`flex justify-between items-center p-3 bg-blue-50 rounded-lg ${cardBg}`}>
+                <span className={`text-sm font-medium ${textColor}`}>
                   Processing Applications
                 </span>
                 <span className="badge badge-info text-xs">
                   {isLoading ? "--" : (data.processingApplications ?? 0)}
                 </span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                <span className="text-sm font-medium">
+              <div className={`flex justify-between items-center p-3  rounded-lg ${cardBg}`}>
+                <span className={`text-sm font-medium ${textColor}`}>
                   Approved Applications
                 </span>
                 <span className="badge badge-success text-xs">
                   {isLoading ? "--" : (data.approvedApplications ?? 0)}
                 </span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-cyan-50 rounded-lg">
-                <span className="text-sm font-medium">
+              <div className={`flex justify-between items-center p-3 bg-cyan-50 rounded-lg ${cardBg}`}>
+                <span className={`text-sm font-medium ${textColor}`}>
                   Completed Applications
                 </span>
                 <span className="badge badge-primary text-xs">
                   {isLoading ? "--" : (data.completedApplications ?? 0)}
                 </span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                <span className="text-sm font-medium">
+              <div className={`flex justify-between items-center p-3  rounded-lg ${cardBg}`}>
+                <span className={`text-sm font-medium ${textColor}`}>
                   Rejected Applications
                 </span>
                 <span className="badge badge-error text-xs">
@@ -236,24 +245,24 @@ const Analytics = () => {
         </div>
 
         {/* User Role Distribution Card */}
-        <div className="card bg-base-100 shadow-xl">
+        <div className={`card bg-base-100 shadow-xl ${cardBg}`}>
           <div className="card-body">
-            <h2 className="card-title">User Statistics</h2>
+            <h2 className={`card-title ${textColor}`}>User Statistics</h2>
             <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-cyan-50 rounded-lg">
-                <span className="text-sm font-medium">Total Students</span>
+              <div className={`flex justify-between items-center p-3 bg-cyan-50 rounded-lg ${cardBg}`}>
+                <span className={`text-sm font-medium ${textColor}`}>Total Students</span>
                 <span className="font-bold text-lg text-cyan-600">
                   {isLoading ? "--" : (data.studentCount ?? 0)}
                 </span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-violet-50 rounded-lg">
-                <span className="text-sm font-medium">Total Moderators</span>
+              <div className={`flex justify-between items-center p-3  rounded-lg ${cardBg}`}>
+                <span className={`text-sm font-medium ${textColor}`}>Total Moderators</span>
                 <span className="font-bold text-lg text-violet-600">
                   {isLoading ? "--" : (data.moderatorCount ?? 0)}
                 </span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-pink-50 rounded-lg">
-                <span className="text-sm font-medium">Total Admins</span>
+              <div className={`flex justify-between items-center p-3  rounded-lg ${cardBg}`}>
+                <span className={`text-sm font-medium ${textColor}`}>Total Admins</span>
                 <span className="font-bold text-lg text-pink-600">
                   {isLoading ? "--" : (data.adminCount ?? 0)}
                 </span>

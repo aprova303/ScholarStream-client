@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { motion } from "framer-motion";
+import useThemeContext from "../../hooks/useThemContext";
 import {
   FiArrowLeft,
   FiCalendar,
@@ -13,6 +14,7 @@ import { api } from "../../services/api";
 const ScholarshipDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { theme } = useThemeContext();
   const [scholarship, setScholarship] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +35,11 @@ const ScholarshipDetails = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div
+        className={`flex justify-center items-center min-h-screen transition-colors duration-300 ${
+          theme === "light" ? "bg-white" : "bg-gray-900"
+        }`}
+      >
         <span className="loading loading-spinner loading-lg text-[#9f87e2]"></span>
       </div>
     );
@@ -41,9 +47,17 @@ const ScholarshipDetails = () => {
 
   if (!scholarship) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div
+        className={`flex justify-center items-center min-h-screen transition-colors duration-300 ${
+          theme === "light" ? "bg-white" : "bg-gray-900 text-white"
+        }`}
+      >
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-700 mb-4">
+          <h2
+            className={`text-2xl font-bold mb-4 transition-colors duration-300 ${
+              theme === "light" ? "text-gray-700" : "text-gray-200"
+            }`}
+          >
             Scholarship not found
           </h2>
           <button
@@ -67,7 +81,7 @@ const ScholarshipDetails = () => {
       : 0;
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className={`min-h-screen bg-base-100 ${theme === "dark" ? "bg-gray-900 text-white" : ""}`}>
       {/* Back Button */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -122,43 +136,43 @@ const ScholarshipDetails = () => {
           >
             {/* Key Information Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-base-200 p-4 rounded-lg text-center">
-                <p className="text-gray-600 text-sm font-semibold mb-2">
+              <div className={`bg-base-200 p-4 rounded-lg text-center ${theme === "dark" ? "bg-gray-800" : ""}`}>
+                <p className={`text-gray-600 text-sm font-semibold mb-2 ${theme === "dark" ? "text-gray-300" : ""}`}>
                   World Rank
                 </p>
                 <p className="text-3xl font-bold text-[#9f87e2]">
                   #{scholarship.universityWorldRank}
                 </p>
               </div>
-              <div className="bg-base-200 p-4 rounded-lg text-center">
-                <p className="text-gray-600 text-sm font-semibold mb-2">
+              <div className={`bg-base-200 p-4 rounded-lg text-center ${theme === "dark" ? "bg-gray-800" : ""}`}>
+                <p className={`text-gray-600 text-sm font-semibold mb-2 ${theme === "dark" ? "text-gray-300" : ""}`}>
                   Category
                 </p>
-                <p className="text-lg font-bold text-gray-800">
+                <p className={`text-lg font-bold ${theme === "dark" ? "text-white" : "text-gray-800"}`}>
                   {scholarship.scholarshipCategory}
                 </p>
               </div>
-              <div className="bg-base-200 p-4 rounded-lg text-center">
-                <p className="text-gray-600 text-sm font-semibold mb-2">
+              <div className={`bg-base-200 p-4 rounded-lg text-center ${theme === "dark" ? "bg-gray-800" : ""}`}>
+                <p className={`text-gray-600 text-sm font-semibold mb-2 ${theme === "dark" ? "text-gray-300" : ""}`}>
                   Subject
                 </p>
-                <p className="text-lg font-bold text-gray-800">
+                <p className={`text-lg font-bold ${theme === "dark" ? "text-white" : "text-gray-800"}`}>
                   {scholarship.subjectCategory}
                 </p>
               </div>
-              <div className="bg-base-200 p-4 rounded-lg text-center">
-                <p className="text-gray-600 text-sm font-semibold mb-2">
+              <div className={`bg-base-200 p-4 rounded-lg text-center ${theme === "dark" ? "bg-gray-800" : ""}`}>
+                <p className={`text-gray-600 text-sm font-semibold mb-2 ${theme === "dark" ? "text-gray-300" : ""}`}>
                   Deadline
                 </p>
-                <p className="text-lg font-bold text-gray-800">
+                <p className={`text-lg font-bold ${theme === "dark" ? "text-white" : "text-gray-800"}`}>
                   {new Date(scholarship.deadline).toLocaleDateString()}
                 </p>
               </div>
             </div>
 
             {/* Details Section */}
-            <div className="bg-base-100 rounded-lg p-6 mb-8 border border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">
+            <div className={`bg-base-100 rounded-lg p-6 mb-8 border border-gray-200 ${theme === "dark" ? "bg-gray-800 border-gray-700" : ""}`}>
+              <h2 className={`text-2xl font-bold ${theme === "dark" ? "text-white" : "text-gray-800"} mb-6`}>
                 Scholarship Details
               </h2>
 
@@ -185,7 +199,7 @@ const ScholarshipDetails = () => {
                     <p className="text-gray-600 text-sm font-semibold">
                       Application Fee
                     </p>
-                    <p className="text-lg font-semibold text-gray-800">
+                    <p className={`text-lg font-semibold ${theme === "dark" ? "text-white" : "text-gray-800"}`}>
                       {scholarship.applicationFees === 0
                         ? "Free"
                         : `$${scholarship.applicationFees}`}
@@ -199,10 +213,10 @@ const ScholarshipDetails = () => {
                 <div className="flex items-center gap-4">
                   <FiCalendar className="text-[#9f87e2] text-2xl" />
                   <div>
-                    <p className="text-gray-600 text-sm font-semibold">
+                    <p className={`text-gray-600 text-sm font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>
                       Application Deadline
                     </p>
-                    <p className="text-lg font-semibold text-gray-800">
+                    <p className={`text-lg font-semibold ${theme === "dark" ? "text-white" : "text-gray-800"}`}>
                       {new Date(scholarship.deadline).toLocaleDateString(
                         "en-US",
                         {
@@ -218,25 +232,25 @@ const ScholarshipDetails = () => {
 
               {/* Stipend */}
               <div>
-                <p className="text-gray-600 text-sm font-semibold mb-2">
+                <p className={`text-gray-600 text-sm font-semibold mb-2 ${theme === "dark" ? "text-gray-300" : ""}`}>
                   Stipend/Coverage
                 </p>
-                <p className="text-lg font-semibold text-[#9f87e2]">
+                <p className={`text-lg font-semibold ${theme === "dark" ? "text-[#9f87e2]" : "text-[#9f87e2]"}`}>
                   {scholarship.stipend}
                 </p>
               </div>
             </div>
 
             {/* Description */}
-            <div className="bg-base-100 rounded-lg p-6 mb-8 border border-gray-200">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+            <div className={`bg-base-100 rounded-lg p-6 mb-8 border border-gray-200 ${theme === "dark" ? "bg-gray-800 border-gray-700" : ""}`}>
+              <h3 className={`text-2xl font-bold ${theme === "dark" ? "text-white" : "text-gray-800"} mb-4`}>
                 About This Scholarship
               </h3>
               <p className="text-gray-700 leading-relaxed mb-4">
                 {scholarship.description}
               </p>
 
-              <h4 className="text-xl font-bold text-gray-800 mb-3 mt-6">
+              <h4 className={`text-xl font-bold ${theme === "dark" ? "text-white" : "text-gray-800"} mb-3 mt-6`}>
                 Eligibility Criteria
               </h4>
               <p className="text-gray-700 leading-relaxed">
@@ -245,9 +259,9 @@ const ScholarshipDetails = () => {
             </div>
 
             {/* Reviews Section */}
-            <div className="bg-base-100 rounded-lg p-6 border border-gray-200">
+            <div className={`bg-base-100 rounded-lg p-6 border border-gray-200 ${theme === "dark" ? "bg-gray-800 border-gray-700" : ""}`}>
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-800">
+                <h3 className={`text-2xl font-bold ${theme === "dark" ? "text-white" : "text-gray-800"}`}>
                   Reviews & Ratings
                 </h3>
                 <div className="flex items-center gap-2">
@@ -263,7 +277,7 @@ const ScholarshipDetails = () => {
                       />
                     ))}
                   </div>
-                  <span className="text-lg font-bold text-gray-800">
+                  <span className={`text-lg font-bold ${theme === "dark" ? "text-white" : "text-gray-800"}`}>
                     {averageRating}
                   </span>
                 </div>
@@ -279,7 +293,7 @@ const ScholarshipDetails = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.4, delay: index * 0.1 }}
-                      className="border-l-4 border-[#9f87e2] pl-6 pb-6"
+                      className={`border-l-4 ${theme === "dark" ? "border-[#9f87e2]" : "border-[#9f87e2]"} pl-6 pb-6`}
                     >
                       {/* Reviewer Info */}
                       <div className="flex items-center gap-4 mb-4">
@@ -289,10 +303,10 @@ const ScholarshipDetails = () => {
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div className="flex-1">
-                          <p className="font-semibold text-gray-800">
+                          <p className={`font-semibold ${theme === "dark" ? "text-white" : "text-gray-800"}`}>
                             {review.reviewerName}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
                             {new Date(review.date).toLocaleDateString("en-US", {
                               year: "numeric",
                               month: "short",
@@ -317,12 +331,12 @@ const ScholarshipDetails = () => {
                       </div>
 
                       {/* Comment */}
-                      <p className="text-gray-700 italic">"{review.comment}"</p>
+                      <p className={`text-gray-700 italic ${theme === "dark" ? "text-gray-300" : ""}`}>"{review.comment}"</p>
                     </motion.div>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-600 text-center py-8">
+                <p className={`text-gray-600 text-center py-8 ${theme === "dark" ? "text-gray-400" : ""}`}>
                   No reviews yet. Be the first to review this scholarship!
                 </p>
               )}
@@ -346,17 +360,17 @@ const ScholarshipDetails = () => {
               </button>
 
               {/* Quick Info Card */}
-              <div className="card bg-base-200 shadow-lg">
+              <div className={`card bg-base-200 shadow-lg ${theme === "dark" ? "bg-gray-800" : ""}`}>
                 <div className="card-body">
-                  <h3 className="card-title text-lg mb-4">Quick Info</h3>
+                  <h3 className={`card-title text-lg mb-4 ${theme === "dark" ? "text-white" : "text-gray-800"}`}>Quick Info</h3>
 
-                  <div className="divider my-2"></div>
+                  <div className={`divider my-2 ${theme === "dark" ? "divider-dark" : ""}`}></div>
 
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 font-semibold mb-1">
+                    <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"} font-semibold mb-1`}>
                       Application Fee
                     </p>
-                    <p className="text-lg font-bold text-[#9f87e2]">
+                    <p className={`text-lg font-bold ${theme === "dark" ? "text-[#9f87e2]" : "text-[#9f87e2]"}`}>
                       {scholarship.applicationFees === 0
                         ? "Free"
                         : `$${scholarship.applicationFees}`}
@@ -364,10 +378,10 @@ const ScholarshipDetails = () => {
                   </div>
 
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 font-semibold mb-1">
+                    <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"} font-semibold mb-1`}>
                       Deadline
                     </p>
-                    <p className="text-sm font-bold text-gray-800">
+                    <p className={`text-sm font-bold ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}>
                       {new Date(scholarship.deadline).toLocaleDateString(
                         "en-US",
                         {
@@ -380,10 +394,10 @@ const ScholarshipDetails = () => {
                   </div>
 
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 font-semibold mb-1">
+                    <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"} font-semibold mb-1`}>
                       Award Amount
                     </p>
-                    <p className="text-sm font-bold text-gray-800">
+                    <p className={`text-sm font-bold ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}>
                       {scholarship.stipend}
                     </p>
                   </div>
@@ -392,7 +406,7 @@ const ScholarshipDetails = () => {
 
                   <div className="flex items-center gap-2">
                     <AiOutlineStar className="text-2xl fill-yellow-400 text-yellow-400" />
-                    <span className="text-lg font-bold text-gray-800">
+                    <span className={`text-lg font-bold ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}>
                       {averageRating}
                       <span className="text-sm text-gray-600 ml-2">
                         (
@@ -405,7 +419,6 @@ const ScholarshipDetails = () => {
                   </div>
                 </div>
               </div>
-
             </div>
           </motion.div>
         </div>

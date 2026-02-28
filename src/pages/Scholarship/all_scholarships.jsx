@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
+import useThemeContext from "../../hooks/useThemContext";
 import {
   FiSearch,
   FiFilter,
@@ -12,6 +13,7 @@ import { api } from "../../services/api";
 import { toast } from "react-toastify";
 
 const AllScholarships = () => {
+  const { theme } = useThemeContext();
   const [scholarships, setScholarships] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -147,7 +149,7 @@ const AllScholarships = () => {
   };
 
   return (
-    <div className="min-h-screen bg-base-50">
+    <div className={`min-h-screen bg-base-50 ${theme === "dark" ? "bg-gray-900 text-white" : ""}`}>
       {/* Page Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -166,16 +168,16 @@ const AllScholarships = () => {
         </div>
       </motion.div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className={`container mx-auto px-4 py-8 ${theme === "dark" ? "bg-gray-900 text-white" : ""}`}>
         {/* Search and Filter Bar */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-white rounded-lg shadow-md p-6 mb-8"
+          className={` rounded-lg shadow-md p-6 mb-8 ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
         >
           {/* Search Bar */}
-          <div className="mb-6">
+          <div className={`pb-10 ${theme === "dark" ? "text-white" : ""}`}>
             <div className="relative">
               <FiSearch className="absolute left-4 top-3.5 text-gray-400 text-xl" />
               <input
@@ -183,7 +185,7 @@ const AllScholarships = () => {
                 placeholder="Search by scholarship name, university, or degree..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9f87e2]"
+                className={`w-full pl-12 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9f87e2] ${theme === "dark" ? "bg-gray-700 text-white border-gray-600" : "border-gray-300"}`}
               />
             </div>
           </div>
@@ -204,7 +206,7 @@ const AllScholarships = () => {
           >
             {/* Category Filter */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className={`block text-sm font-semibold mb-2 ${theme === "dark" ? "text-white" : "text-gray-700"}`}>
                 Category
               </label>
               <select
@@ -213,7 +215,7 @@ const AllScholarships = () => {
                   setSelectedCategory(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="select select-bordered w-full select-sm"
+                className={`select select-bordered w-full select-sm ${theme === "dark" ? "bg-gray-700 text-white border-gray-600" : ""}`}
               >
                 <option value="">All Categories</option>
                 {availableCategories.map((category) => (
@@ -226,7 +228,7 @@ const AllScholarships = () => {
 
             {/* Country Filter */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className={`block text-sm font-semibold mb-2 ${theme === "dark" ? "text-white" : "text-gray-700"}`}>
                 Country
               </label>
               <select
@@ -235,7 +237,7 @@ const AllScholarships = () => {
                   setSelectedCountry(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="select select-bordered w-full select-sm"
+                className={`select select-bordered w-full select-sm ${theme === "dark" ? "bg-gray-700 text-white border-gray-600" : ""}`}
               >
                 <option value="">All Countries</option>
                 {availableCountries.map((country) => (
@@ -248,7 +250,7 @@ const AllScholarships = () => {
 
             {/* Sort By */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className={`block text-sm font-semibold mb-2 ${theme === "dark" ? "text-white" : "text-gray-700"}`}>
                 Sort By
               </label>
               <select
@@ -257,7 +259,7 @@ const AllScholarships = () => {
                   setSortBy(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="select select-bordered w-full select-sm"
+                className={`select select-bordered w-full select-sm ${theme === "dark" ? "bg-gray-700 text-white border-gray-600" : ""}`}
               >
                 <option value="postDate">Latest Posted</option>
                 <option value="applicationFees">Application Fees</option>
@@ -266,7 +268,7 @@ const AllScholarships = () => {
 
             {/* Sort Order */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className={`block text-sm font-semibold mb-2 ${theme === "dark" ? "text-white" : "text-gray-700"}`}>
                 Order
               </label>
               <select
@@ -275,7 +277,7 @@ const AllScholarships = () => {
                   setSortOrder(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="select select-bordered w-full select-sm"
+                className={`select select-bordered w-full select-sm ${theme === "dark" ? "bg-gray-700 text-white border-gray-600" : ""}`}
               >
                 <option value="desc">Descending</option>
                 <option value="asc">Ascending</option>
@@ -286,7 +288,7 @@ const AllScholarships = () => {
             <div className="flex items-end">
               <button
                 onClick={resetFilters}
-                className="btn btn-outline btn-sm w-full"
+                className={`btn btn-outline btn-sm w-full ${theme === "dark" ? "text-white border-gray-600 hover:bg-gray-700" : ""}`}
               >
                 <FiX /> Reset
               </button>
@@ -327,7 +329,7 @@ const AllScholarships = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: index * 0.05 }}
                   whileHover={{ scale: 1.02 }}
-                  className="card bg-base-100 shadow-lg hover:shadow-xl transition-all"
+                  className={`card bg-base-100 shadow-lg hover:shadow-xl transition-all ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
                 >
                   {/* University Image */}
                   <figure className="h-48 overflow-hidden">
@@ -344,7 +346,7 @@ const AllScholarships = () => {
                       <span className="badge badge-primary bg-[#9f87e2] text-white border-none">
                         {scholarship.scholarshipCategory}
                       </span>
-                      <span className="badge badge-ghost">
+                      <span className={`badge badge-ghost ${theme === "dark" ? "bg-gray-700 text-white border-none" : ""}`}>
                         {scholarship.degree}
                       </span>
                     </div>

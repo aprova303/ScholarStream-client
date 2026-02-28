@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../contexts/useAxiosSecure";
 import { toast } from "react-toastify";
+import useThemeContext from "../hooks/useThemContext";
 
 const FeedbackModal = ({ isOpen, application, onClose }) => {
   const axiosSecure = useAxiosSecure();
   const qc = useQueryClient();
   const [feedback, setFeedback] = useState("");
-
+   const {theme} = useThemeContext();
   useEffect(() => {
     if (application && isOpen) {
       setFeedback(application.feedback || "");
@@ -76,7 +77,7 @@ const FeedbackModal = ({ isOpen, application, onClose }) => {
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               placeholder="Provide feedback about this application..."
-              className="textarea textarea-bordered h-24"
+              className={`textarea textarea-bordered h-24 ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
               required
             />
             <label className="label">

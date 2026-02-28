@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { motion } from "framer-motion";
+import useThemeContext from "../../hooks/useThemContext";
 import { FiArrowLeft, FiDollarSign, FiLock } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { api } from "../../services/api";
@@ -9,6 +10,7 @@ import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../contexts/useAxiosSecure";
 
 const CheckoutPage = () => {
+  const { theme } = useThemeContext();
   const { scholarshipId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();

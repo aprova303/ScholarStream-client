@@ -2,13 +2,22 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
+import useThemeContext from "../../../hooks/useThemContext";
 import RequestRoleModal from "../../../components/RequestRoleModal";
 
 const StudentProfile = () => {
   const { user, role } = useAuth() || {};
+  const { theme } = useThemeContext();
   const axiosSecure = useAxiosSecure();
   const [isEditing, setIsEditing] = useState(false);
   const [roleModalOpen, setRoleModalOpen] = useState(false);
+
+  const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
 
   // Fetch applications count
   const { data: applications = [] } = useQuery({
@@ -55,7 +64,9 @@ const StudentProfile = () => {
       : 0;
 
   return (
-    <div className="space-y-6">
+    <div
+      className={`space-y-6 ${bgColor} transition-colors duration-300 min-h-screen p-4 md:p-8`}
+    >
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
@@ -65,10 +76,12 @@ const StudentProfile = () => {
       </div>
 
       {/* Profile Card */}
-      <div className="card bg-base-100 shadow-xl">
+      <div className={`card ${cardBg} shadow-xl ${borderColor}`}>
         <div className="card-body p-4 md:p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="card-title text-2xl">Account Information</h2>
+            <h2 className={`card-title text-2xl ${textColor}`}>
+              Account Information
+            </h2>
             <button
               onClick={() => setIsEditing(!isEditing)}
               className="btn btn-sm btn-outline"
@@ -140,7 +153,7 @@ const StudentProfile = () => {
 
       {/* Student Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card bg-base-200 shadow-md">
+        <div className={`card bg-base-200 shadow-md ${bgColor} `}>
           <div className="card-body">
             <h3 className="text-sm font-semibold text-gray-600">
               Total Applications
@@ -154,7 +167,7 @@ const StudentProfile = () => {
           </div>
         </div>
 
-        <div className="card bg-base-200 shadow-md">
+        <div className={`card bg-base-200 shadow-md ${bgColor}`}>
           <div className="card-body">
             <h3 className="text-sm font-semibold text-gray-600">
               Approved Apps
@@ -168,7 +181,7 @@ const StudentProfile = () => {
           </div>
         </div>
 
-        <div className="card bg-base-200 shadow-md">
+        <div className={`card bg-base-200 shadow-md ${bgColor}`}>
           <div className="card-body">
             <h3 className="text-sm font-semibold text-gray-600">My Reviews</h3>
             <p className="text-3xl font-bold text-accent">{totalReviews}</p>
@@ -180,7 +193,7 @@ const StudentProfile = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="card bg-base-100 shadow-xl">
+      <div className={`card bg-base-100 shadow-xl ${bgColor}`}>
         <div className="card-body">
           <h3 className="card-title">Quick Actions</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

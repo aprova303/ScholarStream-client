@@ -4,9 +4,11 @@ import useAxiosSecure from "../../../contexts/useAxiosSecure";
 import { toast } from "react-toastify";
 import ApplicationDetailsModal from "../../../components/ApplicationDetailsModal";
 import FeedbackModal from "../../../components/FeedbackModal";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const ManageApplications = () => {
   const axiosSecure = useAxiosSecure();
+  const { theme } = useThemeContext();
   const [filterStatus, setFilterStatus] = useState("");
   const [detailsApp, setDetailsApp] = useState(null);
   const [detailsScholarship, setDetailsScholarship] = useState(null);
@@ -15,6 +17,11 @@ const ManageApplications = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const qc = useQueryClient();
 
+  const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
   const { data: apps = [], isLoading } = useQuery({
     queryKey: ["applications"],
     queryFn: async () => {
@@ -91,13 +98,19 @@ const ManageApplications = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div
+      className={`space-y-6 ${bgColor} transition-colors duration-300 min-h-screen p-4 md:p-8`}
+    >
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        <h1
+          className={`text-3xl md:text-4xl font-bold ${theme === "dark" ? "text-gray-50" : "text-gray-800"}`}
+        >
           Manage Applications
         </h1>
-        <p className="text-gray-500 mt-2">
+        <p
+          className={`text-${theme === "dark" ? "gray-400" : "gray-500"} mt-2`}
+        >
           Review and manage scholarship applications
         </p>
       </div>
@@ -109,13 +122,15 @@ const ManageApplications = () => {
       ) : (
         <>
           {/* Filter Section */}
-          <div className="card bg-base-100 shadow-lg">
+          <div
+            className={`card bg-base-100 shadow-lg ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
+          >
             <div className="card-body">
               <h3 className="card-title">Filter by Status</h3>
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="select select-bordered w-full md:max-w-xs"
+                className={`select select-bordered w-full md:max-w-xs ${theme === "dark" ? "bg-gray-700 text-white border-none" : ""}`}
               >
                 <option value="">All Status</option>
                 <option value="pending">Pending</option>
@@ -132,18 +147,28 @@ const ManageApplications = () => {
           {filteredApps.length === 0 ? (
             <div className="card bg-base-100 shadow-lg">
               <div className="card-body text-center py-12">
-                <p className="text-gray-500 text-lg">No applications found</p>
+                <p
+                  className={`text-${theme === "dark" ? "gray-400" : "gray-500"} text-lg`}
+                >
+                  No applications found
+                </p>
               </div>
             </div>
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden md:block card bg-base-100 shadow-xl">
+              <div
+                className={`hidden md:block card bg-base-100 shadow-xl ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
+              >
                 <div className="card-body p-4 md:p-6">
                   <div className="overflow-x-auto">
-                    <table className="table w-full text-sm">
+                    <table
+                      className={`table w-full text-sm ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
+                    >
                       <thead>
-                        <tr className="bg-base-200">
+                        <tr
+                          className={`bg-base-200 ${theme === "dark" ? "bg-gray-700 text-white" : ""}`}
+                        >
                           <th>Applicant Name</th>
                           <th>Email</th>
                           <th>University</th>
@@ -155,7 +180,10 @@ const ManageApplications = () => {
                       </thead>
                       <tbody>
                         {filteredApps.map((app) => (
-                          <tr key={app._id} className="hover:bg-base-100">
+                          <tr
+                            key={app._id}
+                            className={` ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
+                          >
                             <td className="font-semibold">{app.userName}</td>
                             <td className="text-xs">{app.userEmail}</td>
                             <td>{app.universityName}</td>
@@ -202,7 +230,7 @@ const ManageApplications = () => {
                                 onChange={(e) =>
                                   handleStatusChange(app._id, e.target.value)
                                 }
-                                className="select select-xs select-bordered"
+                                className={`select select-xs select-bordered mt-3 mb-3 ${theme === "dark" ? "bg-gray-700 text-white" : ""}`}
                               >
                                 <option value="pending">Pending</option>
                                 <option value="processing">Processing</option>
@@ -210,7 +238,7 @@ const ManageApplications = () => {
                               </select>
                               <button
                                 onClick={() => handleCancelApplication(app._id)}
-                                className="btn btn-xs btn-outline btn-error"
+                                className={`btn btn-xs btn-outline btn-error ${theme === "dark" ? "bg-gray-700 text-white" : ""}`}
                               >
                                 Cancel
                               </button>
@@ -224,14 +252,19 @@ const ManageApplications = () => {
               </div>
 
               {/* Mobile Card View */}
-              <div className="md:hidden space-y-4">
+              <div className="md:hidden space-y-4 ">
                 {filteredApps.map((app) => (
-                  <div key={app._id} className="card bg-base-100 shadow-md">
+                  <div
+                    key={app._id}
+                    className={`card bg-base-100 shadow-md ${theme === "dark" ? "bg-gray-700 text-white" : ""}`}
+                  >
                     <div className="card-body gap-3">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-bold text-lg">{app.userName}</h3>
-                          <p className="text-sm text-gray-500">
+                          <h3 className="font-bold text-lg ">{app.userName}</h3>
+                          <p
+                            className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}
+                          >
                             {app.userEmail}
                           </p>
                         </div>
@@ -239,11 +272,19 @@ const ManageApplications = () => {
 
                       <div className="space-y-2 text-sm">
                         <div>
-                          <span className="font-semibold">University:</span>{" "}
+                          <span
+                            className={`font-semibold  ${theme === "dark" ? "text-gray-300" : ""}`}
+                          >
+                            University:
+                          </span>{" "}
                           {app.universityName}
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="font-semibold">Status:</span>
+                          <span
+                            className={`font-semibold ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}
+                          >
+                            Status:
+                          </span>
                           <span
                             className={`badge ${getStatusBadge(
                               app.applicationStatus,
@@ -253,7 +294,11 @@ const ManageApplications = () => {
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="font-semibold">Payment:</span>
+                          <span
+                            className={`font-semibold ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}
+                          >
+                            Payment:
+                          </span>
                           <span
                             className={`badge ${getPaymentBadge(
                               app.paymentStatus,
@@ -267,7 +312,9 @@ const ManageApplications = () => {
                             <span className="font-semibold text-xs">
                               Feedback:
                             </span>
-                            <p className="text-xs text-gray-600 mt-1">
+                            <p
+                              className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"} mt-1`}
+                            >
                               {app.feedback}
                             </p>
                           </div>

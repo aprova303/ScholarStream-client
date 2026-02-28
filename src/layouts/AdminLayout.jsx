@@ -2,12 +2,15 @@ import React from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import useAuth from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
+import useThemeContext from "../hooks/useThemContext";
+import { FaSun, FaMoon } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 
 const AdminLayout = () => {
   const { user, logOut, loading: authLoading } = useAuth();
   const { role, isLoading: roleLoading } = useRole();
+  const { theme, toggleTheme } = useThemeContext();
   const navigate = useNavigate();
 
   const isLoading = authLoading || roleLoading;
@@ -65,7 +68,13 @@ const AdminLayout = () => {
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
-        <nav className="navbar w-full bg-gradient-to-r from-[#654ea3] to-[#eaafc8] shadow-lg sticky top-0 z-30">
+        <nav
+          className={`navbar w-full shadow-lg sticky top-0 z-30 transition-all duration-300 ${
+            theme === "light"
+              ? "bg-gradient-to-r from-[#654ea3] to-[#eaafc8] text-white"
+              : "bg-gradient-to-r from-gray-900 to-gray-800 text-white"
+          }`}
+        >
           <div className="flex-1 flex gap-10">
             <label
               htmlFor="my-drawer-4"
@@ -93,8 +102,19 @@ const AdminLayout = () => {
             <div className="badge badge-primary text-white">{role}</div>
           </div>
 
-          {/* Right navbar: User Profile */}
-          <div className="flex-none">
+          {/* Right navbar: Theme Toggle & User Profile */}
+          <div className="flex-none gap-2 flex items-center">
+            <button
+              onClick={toggleTheme}
+              className="btn btn-ghost btn-circle text-white hover:bg-white/20 transition-colors duration-300"
+              title="Toggle Theme"
+            >
+              {theme === "light" ? (
+                <FaMoon className="text-lg" />
+              ) : (
+                <FaSun className="text-lg text-yellow-400" />
+              )}
+            </button>
             <div className="dropdown dropdown-end">
               <button tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 {user?.photoURL ? (
@@ -111,16 +131,27 @@ const AdminLayout = () => {
               </button>
               <ul
                 tabIndex={0}
-                className="dropdown-content menu bg-base-300 rounded-box z-[1] w-52 p-2 shadow"
+                className={`dropdown-content menu rounded-box z-[1] w-52 p-2 shadow transition-colors duration-300 ${
+                  theme === "light" ? "bg-base-300" : "bg-gray-800 text-white"
+                }`}
               >
                 <li className="menu-title">
                   <span>{user?.displayName || user?.email}</span>
                 </li>
                 <li className="menu-title">
-                  <span className="text-xs text-gray-600">Role: {role}</span>
+                  <span
+                    className={`text-xs transition-colors duration-300 ${
+                      theme === "light" ? "text-gray-600" : "text-gray-400"
+                    }`}
+                  >
+                    Role: {role}
+                  </span>
                 </li>
                 <li>
                   <a
+                  className={`text-xs transition-colors duration-300 ${
+                      theme === "light" ? "text-gray-600" : "text-gray-400"
+                    }`}
                     onClick={() => {
                       navigate("/dashboard/admin/profile");
                       document.getElementById("my-drawer-4").checked = false;
@@ -130,14 +161,22 @@ const AdminLayout = () => {
                   </a>
                 </li>
                 <li>
-                  <a onClick={handleLogout}>Logout</a>
+                  <a 
+                  className={`text-xs transition-colors duration-300 ${
+                      theme === "light" ? "text-gray-600" : "text-gray-400"
+                    }`}
+                  onClick={handleLogout}>Logout</a>
                 </li>
               </ul>
             </div>
           </div>
         </nav>
         {/* Page content here */}
-        <main className="flex-1 p-4 md:p-8 bg-base-100 overflow-auto">
+        <main
+          className={`flex-1 p-4 md:p-8 overflow-auto transition-colors duration-300 ${
+            theme === "light" ? "bg-base-100" : "bg-gray-900 text-white"
+          }`}
+        >
           <div className="max-w-7xl mx-auto">
             <Outlet></Outlet>
           </div>
@@ -150,7 +189,11 @@ const AdminLayout = () => {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-40 is-drawer-open:w-40">
+        <div
+          className={`flex min-h-full flex-col items-start transition-colors duration-300 is-drawer-close:w-40 is-drawer-open:w-40 ${
+            theme === "light" ? "bg-base-200" : "bg-gray-800 text-white"
+          }`}
+        >
           {/* Sidebar content here */}
           <ul className="menu w-full grow">
             {/* Homepage Link */}

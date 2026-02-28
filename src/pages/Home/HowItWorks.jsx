@@ -1,8 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
+import useThemeContext from "../../hooks/useThemContext";
 import { FaUserPlus, FaSearch, FaFileAlt, FaTrophy } from "react-icons/fa";
 
 const HowItWorks = () => {
+  const { theme } = useThemeContext();
   const steps = [
     {
       number: 1,
@@ -35,7 +37,13 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section className="py-16 bg-gradient-to-b from-gray-50 to-base-100">
+    <section
+      className={`py-16 transition-colors duration-300 ${
+        theme === "light"
+          ? "bg-gradient-to-b from-gray-50 to-base-100"
+          : "bg-gray-900 to-gray-800 text-white"
+      }`}
+    >
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -46,7 +54,11 @@ const HowItWorks = () => {
           className="text-center mb-12"
         >
           <h2 className="text-4xl font-bold mb-4">How It Works</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+          <p
+            className={`text-lg max-w-2xl mx-auto transition-colors duration-300 ${
+              theme === "light" ? "text-gray-600" : "text-gray-300"
+            }`}
+          >
             Simple, straightforward process to secure your scholarship in just 4
             easy steps
           </p>
@@ -70,7 +82,11 @@ const HowItWorks = () => {
                   className="relative"
                 >
                   {/* Step Card */}
-                  <div className="bg-white rounded-lg p-8 text-center shadow-lg">
+                  <div
+                    className={`rounded-lg p-8 text-center shadow-lg transition-colors duration-300 ${
+                      theme === "light" ? "bg-white" : "bg-gray-800"
+                    }`}
+                  >
                     {/* Number Badge */}
                     <div className="flex justify-center mb-6">
                       <motion.div

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
 import { toast } from "react-toastify";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const ManageRoleRequests = () => {
   const axiosSecure = useAxiosSecure();
@@ -9,6 +10,13 @@ const ManageRoleRequests = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [responseMessage, setResponseMessage] = useState("");
   const [processing, setProcessing] = useState(false);
+const {theme} = useThemeContext();
+
+    const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
 
   useEffect(() => {
     fetchRequests();
@@ -79,12 +87,13 @@ const ManageRoleRequests = () => {
   const reviewedRequests = requests.filter((r) => r.status !== "Pending");
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Manage Role Requests</h1>
+    <div className={`p-6 ${bgColor}`}>
+      <h1 className={`text-3xl font-bold mb-6 ${textColor}`}>Manage Role Requests</h1>
 
       {/* Pending Requests */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4 text-[#9f87e2]">
+        <h2 className={`text-2xl font-semibold mb-4 ${secondaryText}`}>
+
           Pending Requests ({pendingRequests.length})
         </h2>
         {pendingRequests.length === 0 ? (
@@ -114,7 +123,7 @@ const ManageRoleRequests = () => {
               <tbody>
                 {pendingRequests.map((req) => (
                   <tr key={req._id} className="hover:bg-gray-50">
-                    <td className="border border-gray-300 px-4 py-2">
+                    <td className={`border ${borderColor} px-4 py-2`}>
                       <div className="flex items-center gap-2">
                         {req.userId?.photoURL && (
                           <img
@@ -126,18 +135,18 @@ const ManageRoleRequests = () => {
                         {req.userName}
                       </div>
                     </td>
-                    <td className="border border-gray-300 px-4 py-2">
+                    <td className={`border ${borderColor} px-4 py-2`}>
                       {req.email}
                     </td>
-                    <td className="border border-gray-300 px-4 py-2">
+                    <td className={`border ${borderColor} px-4 py-2`}>
                       <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
                         {req.requestedRole}
                       </span>
                     </td>
-                    <td className="border border-gray-300 px-4 py-2 text-sm">
+                    <td className={`border ${borderColor} px-4 py-2 text-sm`}>
                       {new Date(req.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="border border-gray-300 px-4 py-2 text-center">
+                    <td className={`border ${borderColor} px-4 py-2 text-center`}>
                       <button
                         onClick={() => setSelectedRequest(req)}
                         className="bg-[#9f87e2] text-white px-3 py-1 rounded hover:bg-[#8a76c9]"
@@ -183,13 +192,13 @@ const ManageRoleRequests = () => {
               <tbody>
                 {reviewedRequests.map((req) => (
                   <tr key={req._id} className="hover:bg-gray-50">
-                    <td className="border border-gray-300 px-4 py-2">
+                    <td className={`border ${borderColor} px-4 py-2`}>
                       {req.userName}
                     </td>
-                    <td className="border border-gray-300 px-4 py-2">
+                    <td className={`border ${borderColor} px-4 py-2`}>
                       {req.requestedRole}
                     </td>
-                    <td className="border border-gray-300 px-4 py-2">
+                    <td className={`border ${borderColor} px-4 py-2`}>
                       <span
                         className={`px-2 py-1 rounded text-sm ${
                           req.status === "Approved"

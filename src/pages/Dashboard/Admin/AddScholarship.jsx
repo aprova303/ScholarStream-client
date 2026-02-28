@@ -2,9 +2,20 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const AddScholarship = () => {
   const axiosSecure = useAxiosSecure();
+
+
+const {theme} = useThemeContext();
+
+   const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
   const {
     register,
     handleSubmit,
@@ -64,7 +75,7 @@ const AddScholarship = () => {
         <p className="text-gray-500 mt-2">Create a new scholarship listing</p>
       </div>
 
-      <div className="card bg-base-100 shadow-xl">
+      <div className={`card ${cardBg} shadow-xl`}>
         <div className="card-body p-4 md:p-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Basic Information */}
@@ -78,7 +89,7 @@ const AddScholarship = () => {
                   <input
                     {...register("scholarshipName", { required: "Required" })}
                     placeholder="Enter scholarship name"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                   {errors.scholarshipName && (
                     <span className="text-error text-xs mt-1">
@@ -94,7 +105,7 @@ const AddScholarship = () => {
                   <input
                     {...register("universityName", { required: "Required" })}
                     placeholder="Enter university name"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                   {errors.universityName && (
                     <span className="text-error text-xs mt-1">
@@ -110,7 +121,7 @@ const AddScholarship = () => {
                   <input
                     {...register("country", { required: "Required" })}
                     placeholder="Enter country"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                   {errors.country && (
                     <span className="text-error text-xs mt-1">
@@ -126,7 +137,7 @@ const AddScholarship = () => {
                   <input
                     {...register("city", { required: "Required" })}
                     placeholder="Enter city"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                   {errors.city && (
                     <span className="text-error text-xs mt-1">
@@ -152,7 +163,7 @@ const AddScholarship = () => {
                   <input
                     {...register("image")}
                     placeholder="Enter image URL"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                 </div>
 
@@ -164,7 +175,7 @@ const AddScholarship = () => {
                     {...register("worldRank", { required: "Required" })}
                     placeholder="Enter world rank (e.g., 100)"
                     type="number"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                   {errors.worldRank && (
                     <span className="text-error text-xs mt-1">
@@ -180,7 +191,7 @@ const AddScholarship = () => {
                   <input
                     {...register("subjectCategory", { required: "Required" })}
                     placeholder="e.g., Engineering, Medicine"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                   {errors.subjectCategory && (
                     <span className="text-error text-xs mt-1">
@@ -197,7 +208,7 @@ const AddScholarship = () => {
                     {...register("scholarshipCategory", {
                       required: "Required",
                     })}
-                    className="select select-bordered"
+                    className={`select select-bordered ${inputBg} ${borderColor}`}
                   >
                     <option value="">Select a category</option>
                     <option value="Full Fund">Full Fund</option>
@@ -217,7 +228,7 @@ const AddScholarship = () => {
                   </label>
                   <select
                     {...register("degree", { required: "Required" })}
-                    className="select select-bordered"
+                    className={`select select-bordered ${inputBg} ${borderColor}`}
                   >
                     <option value="">Select a degree</option>
                     <option value="Diploma">Diploma</option>
@@ -249,7 +260,7 @@ const AddScholarship = () => {
                     {...register("tuitionFees")}
                     placeholder="Enter tuition fees"
                     type="number"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                 </div>
 
@@ -261,7 +272,7 @@ const AddScholarship = () => {
                     {...register("applicationFees", { required: "Required" })}
                     placeholder="Enter application fees"
                     type="number"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                   {errors.applicationFees && (
                     <span className="text-error text-xs mt-1">
@@ -278,7 +289,7 @@ const AddScholarship = () => {
                     {...register("serviceCharge", { required: "Required" })}
                     placeholder="Enter service charge"
                     type="number"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                   {errors.serviceCharge && (
                     <span className="text-error text-xs mt-1">
@@ -294,7 +305,7 @@ const AddScholarship = () => {
                   <input
                     {...register("deadline", { required: "Required" })}
                     type="date"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                   {errors.deadline && (
                     <span className="text-error text-xs mt-1">
@@ -322,7 +333,7 @@ const AddScholarship = () => {
                   <textarea
                     {...register("description")}
                     placeholder="Enter scholarship description"
-                    className="textarea textarea-bordered"
+                    className={`textarea textarea-bordered ${inputBg} ${borderColor}`}
                     rows="3"
                   />
                 </div>
@@ -335,7 +346,7 @@ const AddScholarship = () => {
                   <textarea
                     {...register("requirements")}
                     placeholder="e.g., GPA > 3.5, TOEFL required, Work experience"
-                    className="textarea textarea-bordered"
+                    className={`textarea textarea-bordered ${inputBg} ${borderColor}`}
                     rows="3"
                   />
                 </div>

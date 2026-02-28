@@ -2,11 +2,20 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const ModeratorProfile = () => {
   const { user, role } = useAuth() || {};
+  const { theme } = useThemeContext();
   const axiosSecure = useAxiosSecure();
   const [isEditing, setIsEditing] = useState(false);
+
+  const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
 
   // Fetch moderator analytics
   const { data: analytics = {} } = useQuery({
@@ -19,20 +28,26 @@ const ModeratorProfile = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div
+      className={`space-y-6 ${bgColor} transition-colors duration-300 min-h-screen p-4 md:p-8`}
+    >
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        <h1 className={`text-3xl md:text-4xl font-bold ${textColor}`}>
           Moderator Profile
         </h1>
-        <p className="text-gray-500 mt-2">Manage your moderator account</p>
+        <p className={`${secondaryText} mt-2`}>
+          Manage your moderator account settings
+        </p>
       </div>
 
       {/* Profile Card */}
-      <div className="card bg-base-100 shadow-xl">
+      <div className={`card ${cardBg} shadow-xl`}>
         <div className="card-body p-4 md:p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="card-title text-2xl">Account Information</h2>
+            <h2 className={`card-title text-2xl ${textColor}`}>
+              Account Information
+            </h2>
             <button
               onClick={() => setIsEditing(!isEditing)}
               className="btn btn-sm btn-outline"
@@ -145,7 +160,9 @@ const ModeratorProfile = () => {
 
       {/* Detailed Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="card bg-base-100 shadow-xl">
+        <div
+          className={`card bg-base-100 shadow-xl ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
+        >
           <div className="card-body">
             <h3 className="card-title text-lg">Application Status Summary</h3>
             <div className="space-y-2 mt-4">
@@ -183,7 +200,9 @@ const ModeratorProfile = () => {
           </div>
         </div>
 
-        <div className="card bg-base-100 shadow-xl">
+        <div
+          className={`card bg-base-100 shadow-xl ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
+        >
           <div className="card-body">
             <h3 className="card-title text-lg">Review Activity</h3>
             <div className="space-y-4 mt-4">
@@ -193,7 +212,9 @@ const ModeratorProfile = () => {
                   {analytics.totalReviews || 0}
                 </span>
               </div>
-              <div className="divider my-2"></div>
+              <div
+                className={`divider my-2 ${theme === "dark" ? "divider-dark" : ""}`}
+              ></div>
               <p className="text-sm text-gray-500">
                 You are reviewing {analytics.totalApplications || 0} total
                 applications across the platform
@@ -204,7 +225,9 @@ const ModeratorProfile = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="card bg-base-100 shadow-xl">
+      <div
+        className={`card bg-base-100 shadow-xl ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
+      >
         <div className="card-body">
           <h3 className="card-title">Quick Actions</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">

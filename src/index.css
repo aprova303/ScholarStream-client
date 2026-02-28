@@ -11,3 +11,46 @@ html {
 body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+:root, [data-theme="light"]{
+      --color-primary: #9f87e2;
+      --color-secondary: #eaafc8;
+      --color-bg: #ffffff;
+      --color-text:#4b5563;
+}
+
+
+[data-theme="dark"]{
+      --color-primary: #b8a3ff;
+      --color-secondary: #f5d4e6;
+      /* --color-bg: #1f2937; */
+      --color-bg: #111827;
+      --color-text: #e5e7eb;
+}
+
+
+@layer utilities {
+      .text-primary {
+            @apply text-[var(--color-primary)] font-semibold;
+      }
+}
+
+
+.text-secondary {
+      @apply text-[var(--color-text)] dark:text-[var(--color-text)];
+
+
+}
+
+
+.bg-primary {
+      @apply bg-[var(--color-primary)];
+}
+
+
+.bg-secondary {
+      @apply bg-[var(--color-secondary)];
+}
+.bg-bg{
+  @apply bg-[var(--color-bg)];
+}

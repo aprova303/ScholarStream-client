@@ -1,11 +1,21 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
   const [filterRole, setFilterRole] = useState("");
   const qc = useQueryClient();
+
+const {theme} = useThemeContext();
+    
+  const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["users"],
@@ -58,40 +68,40 @@ const ManageUsers = () => {
       ) : (
         <>
           {/* Filter Section */}
-          <div className="card bg-base-100 shadow-lg">
+          <div className={`card ${cardBg} shadow-lg`}>
             <div className="card-body">
               <h3 className="card-title">Filter by Role</h3>
               <select
                 value={filterRole}
                 onChange={(e) => setFilterRole(e.target.value)}
-                className="select select-bordered w-full md:max-w-xs"
+                className={`select select-bordered w-full md:max-w-xs ${inputBg} ${borderColor}`}
               >
                 <option value="">All Roles</option>
                 <option value="Student">Student</option>
                 <option value="Moderator">Moderator</option>
                 <option value="Admin">Admin</option>
               </select>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className={`text-sm ${secondaryText} mt-2`}>
                 Showing {filteredUsers.length} of {users.length} users
               </p>
             </div>
           </div>
 
           {filteredUsers.length === 0 ? (
-            <div className="card bg-base-100 shadow-lg">
+            <div className={`card ${cardBg} shadow-lg`}>
               <div className="card-body text-center py-12">
-                <p className="text-gray-500 text-lg">No users found</p>
+                <p className={`text-${secondaryText} text-lg`}>No users found</p>
               </div>
             </div>
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden md:block card bg-base-100 shadow-xl">
+              <div className={`hidden md:block card bg-base-100 shadow-xl ${cardBg}`}>
                 <div className="card-body p-4 md:p-6">
                   <div className="overflow-x-auto">
                     <table className="table w-full">
                       <thead>
-                        <tr className="bg-base-200">
+                        <tr className={`bg-base-200 ${cardBg} ${textColor}`}>
                           <th>Name</th>
                           <th>Email</th>
                           <th>Current Role</th>
@@ -101,11 +111,11 @@ const ManageUsers = () => {
                       </thead>
                       <tbody>
                         {filteredUsers.map((u) => (
-                          <tr key={u._id || u.id} className="hover:bg-base-200">
+                          <tr key={u._id || u.id} className={`hover:${cardBg}`}>
                             <td>
                               <div className="flex items-center space-x-3">
                                 <div className="avatar placeholder">
-                                  <div className="bg-base-300 text-base-content rounded-full w-10">
+                                  <div className={`bg-base-300 text-base-content rounded-full w-10 ${cardBg}`}>
                                     <span>{u.name?.charAt(0) || "?"}</span>
                                   </div>
                                 </div>
@@ -138,7 +148,7 @@ const ManageUsers = () => {
                                     role: e.target.value,
                                   })
                                 }
-                                className="select select-sm select-bordered"
+                                className={`select select-sm select-bordered ${inputBg} ${borderColor}`}
                               >
                                 <option value="Student">Student</option>
                                 <option value="Moderator">Moderator</option>

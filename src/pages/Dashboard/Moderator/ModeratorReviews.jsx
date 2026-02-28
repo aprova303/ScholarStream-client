@@ -2,11 +2,12 @@ import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
 import { toast } from "react-toastify";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const ModeratorReviews = () => {
   const axiosSecure = useAxiosSecure();
   const qc = useQueryClient();
-
+const {theme} = useThemeContext();
   const { data: reviews = [], isLoading } = useQuery({
     queryKey: ["all-reviews"],
     queryFn: async () => {
@@ -45,11 +46,11 @@ const ModeratorReviews = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+      <div className="mb-8}">
+        <h1 className={`text-3xl md:text-4xl font-bold ${theme === "dark" ? "text-gray-50" : "text-gray-800"}`}>
           All Reviews
         </h1>
-        <p className="text-gray-500 mt-2">
+        <p className={`text-${theme === "dark" ? "gray-400" : "gray-500"} mt-2`}>
           Moderate student reviews and feedback
         </p>
       </div>
@@ -61,18 +62,18 @@ const ModeratorReviews = () => {
       ) : reviews.length === 0 ? (
         <div className="card bg-base-100 shadow-lg">
           <div className="card-body text-center py-12">
-            <p className="text-gray-500 text-lg">No reviews available yet</p>
+            <p className={`text-${theme === "dark" ? "gray-400" : "gray-500"} text-lg`}>No reviews available yet</p>
           </div>
         </div>
       ) : (
         <>
           {/* Desktop Table View */}
-          <div className="hidden md:block card bg-base-100 shadow-xl">
+          <div className={`hidden md:block card bg-base-100 shadow-xl ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}>
             <div className="card-body p-4 md:p-6">
               <div className="overflow-x-auto">
-                <table className="table w-full text-sm">
+                <table className={`table w-full text-sm ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}>
                   <thead>
-                    <tr className="bg-base-200">
+                    <tr className={`bg-base-200 ${theme === "dark" ? "bg-gray-700 text-white" : ""}`}>
                       <th>Scholarship Name</th>
                       <th>University Name</th>
                       <th>Reviewer Name</th>
@@ -84,7 +85,7 @@ const ModeratorReviews = () => {
                   </thead>
                   <tbody>
                     {reviews.map((review) => (
-                      <tr key={review._id} className="hover:bg-base-100">
+                      <tr key={review._id} className={`hover:bg-base-100 ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}>
                         <td className="font-semibold">
                           {review.scholarshipName || "N/A"}
                         </td>

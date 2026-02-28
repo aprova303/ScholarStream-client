@@ -32,6 +32,9 @@ import {
   StudentDashboardWrapper,
   DashboardRedirectWrapper,
 } from "./DashboardWrappers";
+import ContactUs from "../pages/Home/ContactUs";
+import About from "../pages/Home/About";
+import Terms from "../pages/Home/Terms";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +48,22 @@ export const router = createBrowserRouter([
       {
         path: "all-scholarships",
         Component: AllScholarships,
+      },
+      {
+        path: "about",
+        Component: About,
+      },
+      {
+        path: "terms",
+        Component: Terms,
+      },
+      {
+        path: "contact-us",
+        element: (
+          <StudentRoute>
+            <ContactUs />
+          </StudentRoute>
+        ),
       },
       {
         path: "scholarship-details/:id",
@@ -207,6 +226,14 @@ export const router = createBrowserRouter([
             element: (
               <StudentRoute>
                 <MyApplications />
+              </StudentRoute>
+            ),
+          },
+          {
+            path: "contact-us",
+            element: (
+              <StudentRoute>
+                <ContactUs />
               </StudentRoute>
             ),
           },

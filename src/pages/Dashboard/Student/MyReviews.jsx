@@ -4,6 +4,7 @@ import useAxiosSecure from "../../../contexts/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import ReviewEditModal from "../../../components/ReviewEditModal";
 import { toast } from "react-toastify";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const MyReviews = () => {
   const axiosSecure = useAxiosSecure();
@@ -11,6 +12,15 @@ const MyReviews = () => {
   const qc = useQueryClient();
   const [editingReview, setEditingReview] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+const {theme } = useThemeContext();
+  
+  const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
+
 
   const { data: reviews = [], isLoading } = useQuery({
     queryKey: ["my-reviews", user?.email],
@@ -76,7 +86,7 @@ const MyReviews = () => {
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       ) : reviews.length === 0 ? (
-        <div className="card bg-base-100 shadow-lg">
+        <div className={`card ${cardBg} shadow-lg`}>
           <div className="card-body text-center py-12">
             <p className="text-gray-500 text-lg">
               No reviews yet. Complete an application and share your feedback!

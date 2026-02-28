@@ -4,14 +4,13 @@ import { motion } from "framer-motion";
 import { api } from "../../services/api";
 import { toast } from "react-toastify";
 import { FaSun, FaMoon } from "react-icons/fa";
-import useTheme from "../../hooks/useTheme";
+import useThemeContext from "../../hooks/useThemContext";
 
 const TopScholarships = () => {
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-const { theme, toggleTheme } = useTheme();
-
+  const { theme, toggleTheme } = useThemeContext();
 
   useEffect(() => {
     const fetchTopScholarships = async () => {
@@ -48,8 +47,9 @@ const { theme, toggleTheme } = useTheme();
   }
 
   return (
-    // <section className={`py-16 bg-base-100  ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}>
-         <section className="py-16 bg-base-100">
+
+    <section className={`py-16 bg-base-100  ${theme === "dark" ? "bg-bg text-white" : ""}`}>
+    {/* <section className="py-16 bg-base-100"> */}
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -58,10 +58,14 @@ const { theme, toggleTheme } = useTheme();
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h2 className={`text-4xl font-bold ${theme === "dark" ? "text-white" : "text-gray-800"} mb-4`}>
+          <h2
+            className={`text-4xl font-bold ${theme === "dark" ? "text-white" : "text-gray-800"} mb-4`}
+          >
             Top Scholarships
           </h2>
-          <p className={`text-gray-600 text-lg font-semibold max-w-2xl mx-auto ${theme === "dark" ? "text-gray-100" : ""}`}>
+          <p
+            className={`text-gray-600 text-lg font-semibold max-w-2xl mx-auto ${theme === "dark" ? "text-gray-100" : ""}`}
+          >
             Browse our most recent scholarship opportunities from top
             universities around the world
           </p>
@@ -70,14 +74,14 @@ const { theme, toggleTheme } = useTheme();
         {/* Scholarships Grid */}
         {scholarships.length > 0 ? (
           // <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6`}>
             {scholarships.map((scholarship, index) => (
               <motion.div
                 key={scholarship._id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="card bg-white shadow-lg hover:shadow-2xl transition-shadow"
+                className={`card shadow-lg hover:shadow-2xl transition-shadow ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
               >
                 {/* Scholarship Image */}
                 <figure className="relative h-48 overflow-hidden bg-gray-200">
@@ -85,7 +89,7 @@ const { theme, toggleTheme } = useTheme();
                     <img
                       src={scholarship.universityImage}
                       alt={scholarship.universityName}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                      className={`w-full h-full object-cover hover:scale-110 transition-transform duration-300 ${theme === "dark" ? "filter brightness-75" : ""}`}
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
@@ -119,25 +123,25 @@ const { theme, toggleTheme } = useTheme();
                   <div className="grid grid-cols-2 gap-3 text-sm my-4 pb-4 border-b border-gray-200">
                     <div>
                       <p className="text-gray-500 text-xs">Degree</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className={`font-semibold text-gray-800 ${theme === "dark" ? "text-white" : ""}`}>
                         {scholarship.degree}
                       </p>
                     </div>
                     <div>
                       <p className="text-gray-500 text-xs">Subject</p>
-                      <p className="font-semibold text-gray-800 line-clamp-1">
+                      <p className={`font-semibold text-gray-800 line-clamp-1 ${theme === "dark" ? "text-white" : ""}`}>
                         {scholarship.subjectCategory}
                       </p>
                     </div>
                     <div>
                       <p className="text-gray-500 text-xs">Application Fee</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className={`font-semibold text-gray-800 ${theme === "dark" ? "text-white" : ""}`}>
                         ${scholarship.applicationFees}
                       </p>
                     </div>
                     <div>
                       <p className="text-gray-500 text-xs">World Rank</p>
-                      <p className="font-semibold text-gray-800">
+                      <p className={`font-semibold text-gray-800 ${theme === "dark" ? "text-white" : ""}`}>
                         #{scholarship.universityWorldRank}
                       </p>
                     </div>
@@ -157,7 +161,9 @@ const { theme, toggleTheme } = useTheme();
 
                   {/* View Details Button */}
                   <button
-                    onClick={() => navigate(`/scholarship-details/${scholarship._id}`)}
+                    onClick={() =>
+                      navigate(`/scholarship-details/${scholarship._id}`)
+                    }
                     className="btn btn-primary w-full"
                   >
                     View Details

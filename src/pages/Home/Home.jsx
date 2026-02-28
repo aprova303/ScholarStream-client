@@ -1,6 +1,7 @@
 import React from "react";
 import Banner from "./Banner";
 import TopScholarships from "./TopScholarships";
+import Categories from "./Categories";
 import Features from "./Features";
 import Services from "./Services";
 import HowItWorks from "./HowItWorks";
@@ -17,10 +18,11 @@ const Home = () => {
       <Features />
       <Services />
       <HowItWorks />
+      <Categories />
       <Partners />
       <Newsletter />
       <Testimonial />
-      <ContactUs />
+      {/* <ContactUs /> */}
     </div>
   );
 };

@@ -1,10 +1,18 @@
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const ManageScholarships = () => {
   const axiosSecure = useAxiosSecure();
+  const { theme } = useThemeContext();
   const qc = useQueryClient();
+
+  const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
 
   const { data: scholarships = [], isLoading } = useQuery({
     queryKey: ["scholarships"],
@@ -20,13 +28,15 @@ const ManageScholarships = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div
+      className={`space-y-6 ${bgColor} transition-colors duration-300 min-h-screen p-4 md:p-8`}
+    >
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        <h1 className={`text-3xl md:text-4xl font-bold ${textColor}`}>
           Manage Scholarships
         </h1>
-        <p className="text-gray-500 mt-2">
+        <p className={`${secondaryText} mt-2`}>
           Edit or delete scholarship listings
         </p>
       </div>
@@ -38,7 +48,9 @@ const ManageScholarships = () => {
       ) : scholarships.length === 0 ? (
         <div className="card bg-base-100 shadow-lg">
           <div className="card-body text-center py-12">
-            <p className="text-gray-500 text-lg">No scholarships added yet</p>
+            <p className={`${secondaryText} text-lg`}>
+              No scholarships added yet
+            </p>
             <a
               href="/dashboard/admin/add-scholarship"
               className="btn btn-primary mt-4 w-40 mx-auto"
