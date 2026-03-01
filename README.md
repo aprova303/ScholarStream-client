@@ -7,17 +7,17 @@ ScholarStream is a comprehensive scholarship management and application platform
 **Project Type**: Full-stack web application for scholarship discovery and management
 ---
 
-**Live URL** : https://scholarstream-e6c33.web.app
+- **Live URL** : https://scholarstream-e6c33.web.app
+- **Server Live Link** : https://scholar-stream-server-ten.vercel.app
+- **Github Server Link** : https://github.com/aprova303/ScholarStream-server.git
 
-**Github Server Link** : https://github.com/aprova303/ScholarStream-server.git
 
+- **User** : Prova
+- **Email**: prova@gmail.com
+- **Password**: Prova@123
 
-**User** : Prova
-**Email**: prova@gmail.com
-**Password**: Prova@123
-
-**Admin Email**: admin@scholarstream.com
-**Admin Password**: Admin@123
+- **Admin Email**: admin@scholarstream.com
+- **Admin Password**: Admin@123
 
 
 
