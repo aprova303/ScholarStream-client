@@ -12,12 +12,12 @@ ScholarStream is a comprehensive scholarship management and application platform
 **Github Server Link** : https://github.com/aprova303/ScholarStream-server.git
 
 
-User: Prova
-Email: prova@gmail.com
-Password: Prova@123
+**User** : Prova
+**Email**: prova@gmail.com
+**Password**: Prova@123
 
-Admin Email: admin@scholarstream.com
-Admin Password: Admin@123
+**Admin Email**: admin@scholarstream.com
+**Admin Password**: Admin@123
 
 
 
