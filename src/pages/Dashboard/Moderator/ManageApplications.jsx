@@ -21,7 +21,10 @@ const ManageApplications = () => {
   const textColor = theme === "light" ? "text-gray-800" : "text-white";
   const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
   const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
   const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
+
+
   const { data: apps = [], isLoading } = useQuery({
     queryKey: ["applications"],
     queryFn: async () => {
@@ -334,7 +337,7 @@ const ManageApplications = () => {
                           onChange={(e) =>
                             handleStatusChange(app._id, e.target.value)
                           }
-                          className="select select-sm select-bordered w-full"
+                          className={`select select-sm select-bordered w-full ${inputBg}`}
                         >
                           <option value="pending">Pending</option>
                           <option value="processing">Processing</option>

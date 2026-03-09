@@ -16,6 +16,13 @@ const {theme} = useThemeContext();
     },
   });
 
+   const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
+
   const deleteReviewMutation = useMutation({
     mutationFn: (id) => axiosSecure.delete(`/reviews/${id}`),
     onSuccess: () => {
@@ -85,7 +92,7 @@ const {theme} = useThemeContext();
                   </thead>
                   <tbody>
                     {reviews.map((review) => (
-                      <tr key={review._id} className={`hover:bg-base-100 ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}>
+                      <tr key={review._id} className={`bg-base-100 ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}>
                         <td className="font-semibold">
                           {review.scholarshipName || "N/A"}
                         </td>
@@ -141,7 +148,7 @@ const {theme} = useThemeContext();
           {/* Mobile Card View */}
           <div className="md:hidden space-y-4">
             {reviews.map((review) => (
-              <div key={review._id} className="card bg-base-100 shadow-md">
+              <div key={review._id} className={`card ${cardBg} shadow-md`}>
                 <div className="card-body gap-3">
                   <div>
                     <h3 className="font-bold text-lg">
@@ -152,7 +159,7 @@ const {theme} = useThemeContext();
                     </p>
                   </div>
 
-                  <div className="bg-base-200 p-3 rounded-lg">
+                  <div className={`bg-base-200 p-3 rounded-lg ${cardBg}`}>
                     <p className="text-xs font-semibold mb-2">
                       Reviewed by: {review.userName}
                     </p>

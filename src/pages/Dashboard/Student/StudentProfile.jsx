@@ -69,10 +69,12 @@ const StudentProfile = () => {
     >
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        <h1 className={`text-3xl md:text-4xl font-bold ${textColor}`}>
           Student Profile
         </h1>
-        <p className="text-gray-500 mt-2">Manage your student account</p>
+        <p className={`text-sm ${secondaryText} mt-2`}>
+          Manage your student account
+        </p>
       </div>
 
       {/* Profile Card */}
@@ -94,14 +96,14 @@ const StudentProfile = () => {
             <div className="space-y-4">
               <div className="flex items-center">
                 <div className="avatar placeholder">
-                  <div className="bg-gradient-to-br from-blue-500 to-purple-500 text-white rounded-full w-16">
-                    <span className="text-xl font-bold">
-                      {user?.displayName?.charAt(0) || "S"}
-                    </span>
-                  </div>
+                  {/* <div className="bg-gradient-to-br from-blue-500 to-purple-500 text-white rounded-full w-16"> */}
+                    {/* <span className="text-xl font-bold"> */}
+                      {/* {user?.displayName?.charAt(0) || "S"} */}
+                    {/* </span> */}
+                  {/* </div> */}
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-gray-500">Display Name</p>
+                  <p className={`text-sm ${secondaryText}`}>Display Name</p>
                   <p className="text-lg font-semibold">
                     {user?.displayName || "Not Set"}
                   </p>

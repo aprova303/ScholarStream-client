@@ -16,6 +16,14 @@ const DashboardLayout = () => {
 
   const isLoading = authLoading || roleLoading;
 
+
+  const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
+
   const getInitials = (name) => {
     if (!name) return "U";
     return name
@@ -414,29 +422,28 @@ const DashboardLayout = () => {
                 }`}
               >
                 <li className="menu-title">
-                  <span>{user?.displayName || user?.email}</span>
+                  {/* <span>{user?.displayName || user?.email}</span> */}
                 </li>
                 <li className="menu-title">
                   <span
-                    className={`text-xs transition-colors duration-300 ${
-                      theme === "light" ? "text-gray-600" : "text-gray-400"
-                    }`}
+                    className={`text-xs transition-colors duration-300 ${textColor}`}
                   >
                     Role: {role}
                   </span>
                 </li>
-                <li>
+                <li  className={`${textColor}`}>
                   <a
                     onClick={() => {
                       navigate(getProfileRoute());
                       document.getElementById("my-drawer-4").checked = false;
                     }}
+                   
                   >
                     My Profile
                   </a>
                 </li>
                 <li>
-                  <a onClick={handleLogout}>Logout</a>
+                  <a onClick={handleLogout}  className={`${textColor}`}>Logout</a>
                 </li>
               </ul>
             </div>

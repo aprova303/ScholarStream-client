@@ -73,7 +73,7 @@ const {theme } = useThemeContext();
     <div className="space-y-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        <h1 className={`text-3xl md:text-4xl font-bold ${textColor}`}>
           My Reviews
         </h1>
         <p className="text-gray-500 mt-2">
@@ -96,12 +96,12 @@ const {theme } = useThemeContext();
       ) : (
         <>
           {/* Desktop Table View */}
-          <div className="hidden md:block card bg-base-100 shadow-xl">
+          <div className={`hidden md:block card bg-base-100 shadow-xl ${cardBg}`}>
             <div className="card-body p-4 md:p-6">
               <div className="overflow-x-auto">
                 <table className="table w-full">
                   <thead>
-                    <tr className="bg-base-200">
+                    <tr className={`bg-base-200 ${bgColor} ${textColor}`}>
                       <th>Scholarship Name</th>
                       <th>University Name</th>
                       <th>Review Comment</th>
@@ -112,7 +112,7 @@ const {theme } = useThemeContext();
                   </thead>
                   <tbody>
                     {reviews.map((review) => (
-                      <tr key={review._id} className="hover:bg-base-200">
+                      <tr key={review._id} className={`hover:${bgColor}`}>
                         <td>
                           <div className="font-semibold">
                             {review.scholarshipName || "N/A"}
@@ -125,7 +125,7 @@ const {theme } = useThemeContext();
                         </td>
                         <td>
                           <div className="max-w-xs">
-                            <p className="text-sm text-gray-700 line-clamp-2">
+                            <p className="text-sm line-clamp-2">
                               {review.reviewComment}
                             </p>
                           </div>
@@ -171,20 +171,20 @@ const {theme } = useThemeContext();
           </div>
 
           {/* Mobile Card View */}
-          <div className="md:hidden space-y-4">
+          <div className={`md:hidden space-y-4 ${bgColor}`}>
             {reviews.map((review) => (
-              <div key={review._id} className="card bg-base-100 shadow-md">
+              <div key={review._id} className={`card bg-base-100 shadow-md ${cardBg}`}>
                 <div className="card-body gap-3">
                   <div>
                     <h3 className="font-bold text-lg">
                       {review.scholarshipName || "N/A"}
                     </h3>
-                    <p className="text-sm text-gray-500">
+                    <p className={`text-sm ${secondaryText}`}>
                       {review.universityName}
                     </p>
                   </div>
 
-                  <div className="bg-base-200 p-3 rounded-lg">
+                  <div className=" p-3 rounded-lg">
                     <p className="text-sm">{review.reviewComment}</p>
                   </div>
 

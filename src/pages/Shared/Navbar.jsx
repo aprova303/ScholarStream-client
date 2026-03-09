@@ -238,9 +238,9 @@ const Navbar = () => {
               tabIndex={0}
               className={`dropdown-content menu bg-base-100 rounded-box z-50 w-64 p-2 shadow ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}
             >
-              <li className="menu-title">
+              {/* <li className="menu-title">
                 <span>{user.displayName || user.email}</span>
-              </li>
+              </li> */}
               <li className="menu-title">
                 <span
                   className={`text-xs text-gray-500 font-semibold ${theme === "dark" ? "text-gray-400" : ""}`}

@@ -100,10 +100,10 @@ const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
     <div className="space-y-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        <h1 className={`text-3xl md:text-4xl font-bold ${textColor}`}>
           My Applications
         </h1>
-        <p className="text-gray-500 mt-2">
+        <p className={`text-sm ${secondaryText} mt-2`}>
           Track your scholarship applications
         </p>
       </div>
@@ -242,26 +242,26 @@ const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
           {/* Applications Cards - Mobile */}
           <div className="md:hidden space-y-4">
             {apps.map((app) => (
-              <div key={app._id} className="card bg-base-100 shadow-md">
+              <div key={app._id} className={`card bg-base-100 shadow-md ${cardBg}`}>
                 <div className="card-body gap-3">
                   <div>
                     <h3 className="font-bold text-lg">{app.universityName}</h3>
-                    <p className="text-sm text-gray-500">
+                    <p className={`text-sm ${secondaryText}`}>
                       {app.scholarshipId?.universityCity || "N/A"}
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      <p className="text-gray-600">Category</p>
+                      <p className={`text-sm ${secondaryText}`}>Category</p>
                       <p className="font-semibold">{app.scholarshipCategory}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Fees</p>
+                      <p className={`text-sm ${secondaryText}`}>Fees</p>
                       <p className="font-semibold">${app.applicationFees}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Status</p>
+                      <p className={`text-sm ${secondaryText}`}>Status</p>
                       <span
                         className={`badge ${getStatusBadge(
                           app.applicationStatus,
@@ -271,7 +271,7 @@ const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
                       </span>
                     </div>
                     <div>
-                      <p className="text-gray-600">Payment</p>
+                      <p className={`text-sm ${secondaryText}`}>Payment</p>
                       <span
                         className={`badge ${getPaymentBadge(
                           app.paymentStatus,

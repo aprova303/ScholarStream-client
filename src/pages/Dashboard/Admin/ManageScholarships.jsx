@@ -62,12 +62,15 @@ const ManageScholarships = () => {
       ) : (
         <>
           {/* Desktop Table View */}
-          <div className="hidden md:block card bg-base-100 shadow-xl">
-            <div className="card-body p-4 md:p-6">
+          <div 
+          // className={`hidden md:block card bg-base-100 shadow-xl ${cardBg}`
+          className={`card bg-base-100 shadow-lg ${theme === "dark" ? "bg-gray-800 text-white" : ""}`
+        }>
+            <div className={`card-body p-4 md:p-6`}>
               <div className="overflow-x-auto">
                 <table className="table w-full">
                   <thead>
-                    <tr className="bg-base-200">
+                    <tr className={`bg-base-200 ${bgColor} ${textColor}`}>
                       <th>Scholarship Name</th>
                       <th>University</th>
                       <th>Country</th>
@@ -78,21 +81,21 @@ const ManageScholarships = () => {
                   </thead>
                   <tbody>
                     {scholarships.map((s) => (
-                      <tr key={s._id || s.id} className="hover:bg-base-200">
+                      <tr key={s._id || s.id} className={`hover:${bgColor}`}>
                         <td>
-                          <div className="font-semibold">
+                          <div className={`font-semibold ${textColor}`}>
                             {s.scholarshipName}
                           </div>
-                          <div className="text-xs text-gray-500">
+                          <div className={`text-xs ${secondaryText}`}>
                             {s.subjectCategory}
                           </div>
                         </td>
                         <td>
-                          <div className="font-semibold">
+                          <div className={`font-semibold ${textColor}`}>
                             {s.universityName}
                           </div>
-                          <div className="text-xs text-gray-500">
-                            {s.city}, {s.country}
+                          <div className={`text-xs ${secondaryText}`}>
+                            {s.city} {s.country}
                           </div>
                         </td>
                         <td>{s.country}</td>
@@ -136,9 +139,9 @@ const ManageScholarships = () => {
           </div>
 
           {/* Mobile Card View */}
-          <div className="md:hidden space-y-4">
+          {/* <div className="md:hidden space-y-4">
             {scholarships.map((s) => (
-              <div key={s._id || s.id} className="card bg-base-100 shadow-md">
+              <div key={s._id || s.id} className={`card bg-base-100 shadow-md ${bgColor} ${textColor}`}>
                 <div className="card-body gap-3">
                   <h3 className="card-title text-lg">{s.scholarshipName}</h3>
 
@@ -191,7 +194,7 @@ const ManageScholarships = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
         </>
       )}
     </div>

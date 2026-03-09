@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
+import useThemeContext from "../../../hooks/useThemContext";
 
 const UpdateScholarship = () => {
   const axiosSecure = useAxiosSecure();
@@ -15,6 +16,14 @@ const UpdateScholarship = () => {
     formState: { errors },
     reset,
   } = useForm();
+  const { theme } = useThemeContext();
+
+  const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
 
   // Fetch scholarship data
   const { data: scholarship, isLoading } = useQuery({
@@ -102,27 +111,28 @@ const UpdateScholarship = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        {/* <h1 className= {`text-3xl md:text-4xl font-bold ${textColor}`}> */}
+         <h1 className={`text-3xl md:text-4xl font-bold ${textColor}`}>
           Update Scholarship
         </h1>
-        <p className="text-gray-500 mt-2">Edit scholarship details</p>
+        <p className={`text-gray-500 mt-2 ${textColor}`}>Edit scholarship details</p>
       </div>
-
-      <div className="card bg-base-100 shadow-xl">
+      <div className={`card bg-base-100 shadow-xl ${bgColor}`}>
         <div className="card-body p-4 md:p-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Basic Information */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
+            <div className=''>
+              <h3 className
+              ={`text-lg font-semibold mb-4 ${textColor}`}>Basic Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Scholarship Name *</span>
+                    <span className={`label-text ${textColor}`}>Scholarship Name *</span>
                   </label>
                   <input
                     {...register("scholarshipName", { required: "Required" })}
                     placeholder="Enter scholarship name"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                   {errors.scholarshipName && (
                     <span className="text-error text-xs mt-1">
@@ -133,12 +143,12 @@ const UpdateScholarship = () => {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">University Name *</span>
+                    <span className={`label-text ${textColor}`}>University Name *</span>
                   </label>
                   <input
                     {...register("universityName", { required: "Required" })}
                     placeholder="Enter university name"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                   {errors.universityName && (
                     <span className="text-error text-xs mt-1">
@@ -149,23 +159,23 @@ const UpdateScholarship = () => {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">University Image URL</span>
+                    <span className={`label-text ${textColor}`}>University Image URL</span>
                   </label>
                   <input
                     {...register("image")}
                     placeholder="Enter image URL"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                 </div>
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Country *</span>
+                    <span className={`label-text ${textColor}`}>Country *</span>
                   </label>
                   <input
                     {...register("country", { required: "Required" })}
                     placeholder="Enter country"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                   {errors.country && (
                     <span className="text-error text-xs mt-1">
@@ -176,12 +186,12 @@ const UpdateScholarship = () => {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">City *</span>
+                    <span className={`label-text ${textColor}`}>City *</span>
                   </label>
                   <input
                     {...register("city", { required: "Required" })}
                     placeholder="Enter city"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                   {errors.city && (
                     <span className="text-error text-xs mt-1">
@@ -192,13 +202,13 @@ const UpdateScholarship = () => {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">World Rank</span>
+                    <span className={`label-text ${textColor}`}>World Rank</span>
                   </label>
                   <input
                     {...register("worldRank", { min: 0 })}
                     type="number"
                     placeholder="Enter world rank"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                 </div>
               </div>
@@ -212,12 +222,12 @@ const UpdateScholarship = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Subject Category *</span>
+                    <span className={`label-text ${textColor}`}>Subject Category *</span>
                   </label>
                   <input
                     {...register("subjectCategory", { required: "Required" })}
                     placeholder="e.g., Engineering, Medicine"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                   {errors.subjectCategory && (
                     <span className="text-error text-xs mt-1">
@@ -228,14 +238,14 @@ const UpdateScholarship = () => {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Scholarship Category *</span>
+                    <span className={`label-text ${textColor}`}>Scholarship Category *</span>
                   </label>
                   <input
                     {...register("scholarshipCategory", {
                       required: "Required",
                     })}
                     placeholder="e.g., Merit-based"
-                    className="input input-bordered"
+                    className={`input input-bordered ${inputBg} ${borderColor}`}
                   />
                   {errors.scholarshipCategory && (
                     <span className="text-error text-xs mt-1">
@@ -246,12 +256,12 @@ const UpdateScholarship = () => {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Degree *</span>
+                    <span className={`label-text ${textColor}`}>Degree *</span>
                   </label>
                   <input
                     {...register("degree", { required: "Required" })}
                     placeholder="e.g., Bachelor, Master"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                   {errors.degree && (
                     <span className="text-error text-xs mt-1">
@@ -262,12 +272,12 @@ const UpdateScholarship = () => {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Application Deadline *</span>
+                    <span className={`label-text ${textColor}`}>Application Deadline *</span>
                   </label>
                   <input
                     {...register("deadline", { required: "Required" })}
                     type="date"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                   {errors.deadline && (
                     <span className="text-error text-xs mt-1">
@@ -286,25 +296,25 @@ const UpdateScholarship = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Tuition Fees</span>
+                    <span className={`label-text ${textColor}`}>Tuition Fees</span>
                   </label>
                   <input
                     {...register("tuitionFees")}
                     type="number"
                     placeholder="Enter tuition fees"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                 </div>
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Application Fees *</span>
+                    <span className={`label-text ${textColor}`}>Application Fees *</span>
                   </label>
                   <input
                     {...register("applicationFees", { required: "Required" })}
                     type="number"
                     placeholder="Enter application fees"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                   {errors.applicationFees && (
                     <span className="text-error text-xs mt-1">
@@ -315,13 +325,13 @@ const UpdateScholarship = () => {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Service Charge *</span>
+                    <span className={`label-text ${textColor}`}>Service Charge *</span>
                   </label>
                   <input
                     {...register("serviceCharge", { required: "Required" })}
                     type="number"
                     placeholder="Enter service charge"
-                    className="input input-bordered"
+                    className={`${inputBg} input input-bordered`}
                   />
                   {errors.serviceCharge && (
                     <span className="text-error text-xs mt-1">
@@ -339,25 +349,25 @@ const UpdateScholarship = () => {
               </h3>
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Description</span>
+                  <span className={`label-text ${textColor}`}>Description</span>
                 </label>
                 <textarea
                   {...register("description")}
                   placeholder="Enter scholarship description"
                   rows="4"
-                  className="textarea textarea-bordered"
+                  className={`${inputBg} ${textColor} textarea textarea-bordered`}
                 ></textarea>
               </div>
 
               <div className="form-control mt-4">
                 <label className="label">
-                  <span className="label-text">Requirements</span>
+                  <span className={`label-text ${textColor}`}>Requirements</span>
                 </label>
                 <textarea
                   {...register("requirements")}
                   placeholder="Enter requirements (comma-separated)"
                   rows="3"
-                  className="textarea textarea-bordered"
+                  className={`textarea textarea-bordered ${inputBg} ${textColor}`}
                 ></textarea>
               </div>
             </div>

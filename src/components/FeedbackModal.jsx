@@ -15,6 +15,14 @@ const FeedbackModal = ({ isOpen, application, onClose }) => {
     }
   }, [application, isOpen]);
 
+
+  const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
+  const cardBg = theme === "light" ? "bg-base-100" : "bg-gray-800";
+  const inputBg = theme === "light" ? "bg-white" : "bg-gray-700";
+  const borderColor = theme === "light" ? "border-gray-200" : "border-gray-700";
+
   const updateFeedbackMutation = useMutation({
     mutationFn: (data) =>
       axiosSecure.patch(`/applications/${application?._id}/feedback`, data),
@@ -44,26 +52,26 @@ const FeedbackModal = ({ isOpen, application, onClose }) => {
 
   return (
     <dialog className="modal modal-open">
-      <div className="modal-box w-full max-w-md">
+      <div className={`modal-box w-full max-w-md ${inputBg}`}>
         <h3 className="font-bold text-lg mb-4">
           Submit Feedback for {application?.userName}
         </h3>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Application Info */}
-          <div className="bg-base-200 p-3 rounded-lg">
+          <div className={`bg-base-200 p-3 rounded-lg ${inputBg}`}>
             <p className="text-sm font-semibold">
               {application?.universityName}
             </p>
-            <p className="text-xs text-gray-600">{application?.userEmail}</p>
+            <p className={`text-xs text-gray-600 ${inputBg}`}>{application?.userEmail}</p>
           </div>
 
           {/* Current Status */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Current Status</span>
+              <span className={`label-text font-semibold ${textColor}`}>Current Status</span>
             </label>
-            <select disabled className="select select-bordered bg-base-200">
+            <select disabled className={`select select-bordered bg-base-200 ${inputBg} ${textColor}`}>
               <option>{application?.applicationStatus}</option>
             </select>
           </div>
@@ -71,7 +79,7 @@ const FeedbackModal = ({ isOpen, application, onClose }) => {
           {/* Feedback Textarea */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Your Feedback</span>
+              <span className={`label-text font-semibold ${textColor}`}>Your Feedback</span>
             </label>
             <textarea
               value={feedback}

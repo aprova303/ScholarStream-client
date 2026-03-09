@@ -69,10 +69,12 @@ const {theme} = useThemeContext();
     <div className="space-y-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        <h1 className={`text-3xl md:text-4xl font-bold ${textColor}`}>
           Add New Scholarship
         </h1>
-        <p className="text-gray-500 mt-2">Create a new scholarship listing</p>
+        <p className={`${secondaryText} mt-2`}>
+          Create a new scholarship listing
+        </p>
       </div>
 
       <div className={`card ${cardBg} shadow-xl`}>
@@ -84,12 +86,14 @@ const {theme} = useThemeContext();
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Scholarship Name *</span>
+                    <span className={`label-text ${textColor}`}>
+                      Scholarship Name *
+                    </span>
                   </label>
                   <input
                     {...register("scholarshipName", { required: "Required" })}
                     placeholder="Enter scholarship name"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                   {errors.scholarshipName && (
                     <span className="text-error text-xs mt-1">
@@ -100,12 +104,14 @@ const {theme} = useThemeContext();
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">University Name *</span>
+                    <span className={`label-text ${textColor}`}>
+                      University Name *
+                    </span>
                   </label>
                   <input
                     {...register("universityName", { required: "Required" })}
                     placeholder="Enter university name"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                   {errors.universityName && (
                     <span className="text-error text-xs mt-1">
@@ -116,12 +122,14 @@ const {theme} = useThemeContext();
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Country *</span>
+                    <span className={`label-text ${textColor}`}>
+                      Country *
+                    </span>
                   </label>
                   <input
                     {...register("country", { required: "Required" })}
                     placeholder="Enter country"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                   {errors.country && (
                     <span className="text-error text-xs mt-1">
@@ -132,12 +140,14 @@ const {theme} = useThemeContext();
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">City *</span>
+                    <span className={`label-text ${textColor}`}>
+                      City *
+                    </span>
                   </label>
                   <input
                     {...register("city", { required: "Required" })}
                     placeholder="Enter city"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                   {errors.city && (
                     <span className="text-error text-xs mt-1">
@@ -158,24 +168,28 @@ const {theme} = useThemeContext();
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Image URL</span>
+                    <span className={`label-text ${textColor}`}>
+                      Image URL
+                    </span>
                   </label>
                   <input
                     {...register("image")}
                     placeholder="Enter image URL"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                 </div>
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">World Rank *</span>
+                    <span className={`label-text ${textColor}`}>
+                      World Rank *
+                    </span>
                   </label>
                   <input
                     {...register("worldRank", { required: "Required" })}
                     placeholder="Enter world rank (e.g., 100)"
                     type="number"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                   {errors.worldRank && (
                     <span className="text-error text-xs mt-1">
@@ -186,12 +200,14 @@ const {theme} = useThemeContext();
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Subject Category *</span>
+                    <span className={`label-text ${textColor}`}>
+                      Subject Category *
+                    </span>
                   </label>
                   <input
                     {...register("subjectCategory", { required: "Required" })}
                     placeholder="e.g., Engineering, Medicine"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                   {errors.subjectCategory && (
                     <span className="text-error text-xs mt-1">
@@ -202,13 +218,15 @@ const {theme} = useThemeContext();
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Scholarship Category *</span>
+                    <span className={`label-text ${textColor}`}>
+                      Scholarship Category *
+                    </span>
                   </label>
                   <select
                     {...register("scholarshipCategory", {
                       required: "Required",
                     })}
-                    className={`select select-bordered ${inputBg} ${borderColor}`}
+                    className={`select select-bordered ${inputBg} ${borderColor} ${textColor}`}
                   >
                     <option value="">Select a category</option>
                     <option value="Full Fund">Full Fund</option>
@@ -224,11 +242,13 @@ const {theme} = useThemeContext();
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Degree Level *</span>
+                    <span className={`label-text ${textColor}`}>
+                      Degree Level *
+                    </span>
                   </label>
                   <select
                     {...register("degree", { required: "Required" })}
-                    className={`select select-bordered ${inputBg} ${borderColor}`}
+                    className={`select select-bordered ${inputBg} ${borderColor} ${textColor}`}
                   >
                     <option value="">Select a degree</option>
                     <option value="Diploma">Diploma</option>
@@ -254,25 +274,29 @@ const {theme} = useThemeContext();
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Tuition Fees (Optional)</span>
+                    <span className={`label-text ${textColor}`}>
+                      Tuition Fees (Optional)
+                    </span>
                   </label>
                   <input
                     {...register("tuitionFees")}
                     placeholder="Enter tuition fees"
                     type="number"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                 </div>
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Application Fees *</span>
+                    <span className={`label-text ${textColor}`}>
+                      Application Fees *
+                    </span>
                   </label>
                   <input
                     {...register("applicationFees", { required: "Required" })}
                     placeholder="Enter application fees"
                     type="number"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                   {errors.applicationFees && (
                     <span className="text-error text-xs mt-1">
@@ -283,13 +307,15 @@ const {theme} = useThemeContext();
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Service Charge *</span>
+                    <span className={`label-text ${textColor}`}>
+                      Service Charge *
+                    </span>
                   </label>
                   <input
                     {...register("serviceCharge", { required: "Required" })}
                     placeholder="Enter service charge"
                     type="number"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                   {errors.serviceCharge && (
                     <span className="text-error text-xs mt-1">
@@ -300,12 +326,14 @@ const {theme} = useThemeContext();
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Deadline *</span>
+                    <span className={`label-text ${textColor}`}>
+                      Deadline *
+                    </span>
                   </label>
                   <input
                     {...register("deadline", { required: "Required" })}
                     type="date"
-                    className={`input input-bordered ${inputBg} ${borderColor}`}
+                    className={`input input-bordered ${inputBg} ${borderColor} ${textColor}`}
                   />
                   {errors.deadline && (
                     <span className="text-error text-xs mt-1">
@@ -328,25 +356,27 @@ const {theme} = useThemeContext();
               <div className="grid grid-cols-1 gap-4">
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Description (Optional)</span>
+                    <span className={`label-text ${textColor}`}>
+                      Description (Optional)
+                    </span>
                   </label>
                   <textarea
                     {...register("description")}
                     placeholder="Enter scholarship description"
-                    className={`textarea textarea-bordered ${inputBg} ${borderColor}`}
+                    className={`textarea textarea-bordered ${inputBg} ${borderColor} ${textColor}`}
                     rows="3"
                   />
                 </div>
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">
+                    <span className={`label-text ${textColor}`}>
                       Requirements (Optional, comma-separated)
                     </span>
                   </label>
                   <textarea
                     {...register("requirements")}
                     placeholder="e.g., GPA > 3.5, TOEFL required, Work experience"
-                    className={`textarea textarea-bordered ${inputBg} ${borderColor}`}
+                    className={`textarea textarea-bordered ${inputBg} ${borderColor} ${textColor}`}
                     rows="3"
                   />
                 </div>

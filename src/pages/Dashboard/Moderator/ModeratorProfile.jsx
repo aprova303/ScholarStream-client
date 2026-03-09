@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../contexts/useAxiosSecure";
@@ -9,6 +9,10 @@ const ModeratorProfile = () => {
   const { theme } = useThemeContext();
   const axiosSecure = useAxiosSecure();
   const [isEditing, setIsEditing] = useState(false);
+  const [displayName, setDisplayName] = useState(user?.displayName || "");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
   const textColor = theme === "light" ? "text-gray-800" : "text-white";
@@ -26,6 +30,39 @@ const ModeratorProfile = () => {
     },
     enabled: !!user?.email,
   });
+
+  // Handle save changes
+  const handleSaveChanges = async () => {
+    setSaveError("");
+    setSaveSuccess(false);
+
+    if (!displayName.trim()) {
+      setSaveError("Display name cannot be empty");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const response = await axiosSecure.patch(`/users/${user?.email}`, {
+        name: displayName.trim(),
+      });
+
+      if (response.data.success) {
+        setSaveSuccess(true);
+        setIsEditing(false);
+        // Clear success message after 3 seconds
+        setTimeout(() => setSaveSuccess(false), 3000);
+      }
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      setSaveError(
+        error.response?.data?.error ||
+          "Failed to save profile. Please try again.",
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div
@@ -60,14 +97,14 @@ const ModeratorProfile = () => {
             <div className="space-y-4">
               <div className="flex items-center">
                 <div className="avatar placeholder">
-                  <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-full w-16">
+                  {/* <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-full w-16">
                     <span className="text-xl font-bold">
                       {user?.displayName?.charAt(0) || "M"}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-gray-500">Display Name</p>
+                  <p className={`text-sm ${secondaryText}`}>Display Name</p>
                   <p className="text-lg font-semibold">
                     {user?.displayName || "Not Set"}
                   </p>
@@ -77,19 +114,19 @@ const ModeratorProfile = () => {
               <div className="divider"></div>
 
               <div>
-                <p className="text-sm text-gray-500">Email Address</p>
+                <p className={`text-sm ${secondaryText}`}>Email Address</p>
                 <p className="text-lg font-semibold">{user?.email}</p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">Account Role</p>
+                <p className={`text-sm ${secondaryText}`}>Account Role</p>
                 <div className="badge badge-lg badge-info text-white mt-2">
                   {role || "Moderator"}
                 </div>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">Account Status</p>
+                <p className={`text-sm ${secondaryText}`}>Account Status</p>
                 <div className="badge badge-success gap-2 mt-2">
                   <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                   Active
@@ -98,20 +135,74 @@ const ModeratorProfile = () => {
             </div>
           ) : (
             <div className="space-y-4">
+              {saveSuccess && (
+                <div className="alert alert-success shadow-lg">
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="stroke-current flex-shrink-0 h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span>Profile updated successfully!</span>
+                  </div>
+                </div>
+              )}
+              {saveError && (
+                <div className="alert alert-error shadow-lg">
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="stroke-current flex-shrink-0 h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M10 14l-2-2m0 0l-2-2m2 2l2-2m-2 2l-2 2"
+                      />
+                    </svg>
+                    <span>{saveError}</span>
+                  </div>
+                </div>
+              )}
               <input
                 type="text"
                 placeholder="Display Name"
-                defaultValue={user?.displayName || ""}
-                className="input input-bordered w-full"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                className={`input input-bordered w-full ${inputBg} ${borderColor} ${textColor}`}
               />
               <input
                 type="email"
                 placeholder="Email"
                 defaultValue={user?.email}
                 disabled
-                className="input input-bordered w-full opacity-50 cursor-not-allowed"
+                className={`input input-bordered w-full opacity-50 cursor-not-allowed ${inputBg} ${borderColor} ${textColor}`}
               />
-              <button className="btn btn-primary w-full">Save Changes</button>
+              <button
+                onClick={handleSaveChanges}
+                disabled={isSaving}
+                className="btn btn-primary w-full"
+              >
+                {isSaving ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </button>
             </div>
           )}
         </div>
@@ -244,7 +335,7 @@ const ModeratorProfile = () => {
               View All Applications
             </a>
             <a href="/dashboard/moderator/reviews" className="btn btn-outline">
-              My Reviews
+              Reviews
             </a>
           </div>
         </div>

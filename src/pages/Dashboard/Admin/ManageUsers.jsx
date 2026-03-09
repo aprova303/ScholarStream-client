@@ -53,10 +53,10 @@ const {theme} = useThemeContext();
     <div className="space-y-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+        <h1 className="text-3xl md:text-4xl font-bold">
           Manage Users
         </h1>
-        <p className="text-gray-500 mt-2">
+        <p className={`text-sm ${secondaryText} mt-2`}>
           View, filter, and manage platform users
         </p>
       </div>
@@ -175,16 +175,16 @@ const {theme} = useThemeContext();
               </div>
 
               {/* Mobile Card View */}
-              <div className="md:hidden space-y-4">
+              <div className={`md:hidden space-y-4`}>
                 {filteredUsers.map((u) => (
                   <div
                     key={u._id || u.id}
-                    className="card bg-base-100 shadow-md"
+                    className={`card ${cardBg} border-amber-300 shadow-lg`}
                   >
                     <div className="card-body gap-3">
                       <div className="flex items-center space-x-3 mb-2">
                         <div className="avatar placeholder">
-                          <div className="bg-base-300 text-base-content rounded-full w-12">
+                          <div className={`bg-base-300 text-base-content rounded-full w-12 ${cardBg}`}>
                             <span className="font-bold">
                               {u.name?.charAt(0) || "?"}
                             </span>
@@ -192,7 +192,7 @@ const {theme} = useThemeContext();
                         </div>
                         <div className="flex-1">
                           <h3 className="font-bold">{u.name || "N/A"}</h3>
-                          <p className="text-sm text-gray-500">{u.email}</p>
+                          <p className={`text-sm ${secondaryText}`}>{u.email}</p>
                         </div>
                       </div>
 
@@ -230,11 +230,11 @@ const {theme} = useThemeContext();
                                 role: e.target.value,
                               })
                             }
-                            className="select select-sm select-bordered w-full"
+                            className={`select select-sm select-bordered w-full ${inputBg} ${borderColor}`}
                           >
-                            <option value="Student">Student</option>
-                            <option value="Moderator">Moderator</option>
-                            <option value="Admin">Admin</option>
+                            <option value={`Student`}>Student</option>
+                            <option value={`Moderator`}>Moderator</option>
+                            <option value={`Admin`}>Admin</option>
                           </select>
                         </label>
                       </div>

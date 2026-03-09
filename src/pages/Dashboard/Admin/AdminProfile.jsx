@@ -60,14 +60,14 @@ const AdminProfile = () => {
             <div className="space-y-4">
               <div className="flex items-center">
                 <div className="avatar placeholder">
-                  <div className="bg-gradient-to-br from-[#654ea3] to-[#eaafc8] text-white rounded-full w-16">
+                  {/* <div className="bg-gradient-to-br from-[#654ea3] to-[#eaafc8] text-white rounded-full w-16">
                     <span className="text-xl font-bold">
                       {user?.displayName?.charAt(0) || "A"}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-gray-500">Display Name</p>
+                  <p className={`text-sm ${secondaryText}`}>Display Name</p>
                   <p className="text-lg font-semibold">
                     {user?.displayName || "Not Set"}
                   </p>
@@ -77,19 +77,19 @@ const AdminProfile = () => {
               <div className="divider"></div>
 
               <div>
-                <p className="text-sm text-gray-500">Email Address</p>
+                <p className={`text-sm ${secondaryText}`}>Email Address</p>
                 <p className="text-lg font-semibold">{user?.email}</p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">Account Role</p>
+                <p className={`text-sm ${secondaryText}`}>Account Role</p>
                 <div className="badge badge-lg bg-gradient-to-r from-[#654ea3] to-[#eaafc8] text-white mt-2">
                   {role || "Admin"}
                 </div>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">Account Status</p>
+                <p className={`text-sm ${secondaryText}`}>Account Status</p>
                 <div className="badge badge-success gap-2 mt-2">
                   <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                   Active
