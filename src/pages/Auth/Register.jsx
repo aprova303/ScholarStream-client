@@ -223,92 +223,163 @@ const Register = () => {
   };
 
   return (
-    <div className="card bg-base-100 w-full mx-auto max-w-sm shrink-0 shadow-2xl mt-10">
-      <h3 className="text-3xl text-center font-semibold bg-gradient-to-r from-[#654ea3] to-[#eaafc8] text-transparent bg-clip-text">
-        Create an Account
-      </h3>
-      <form className="card-body" onSubmit={handleSubmit(handleRegistration)}>
-        <fieldset className="fieldset">
-          {/* Name */}
-          <label className="label">Your name</label>
-          <input
-            type="text"
-            {...register("name", { required: true })}
-            className="input"
-            placeholder="Name"
-            disabled={isRegistering}
-          />
-          {errors.name?.type === "required" && (
-            <p className="text-red-500">Name is required</p>
-          )}
+    <div className="w-full min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full max-w-md">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3 bg-gradient-to-r from-[#654ea3] to-[#eaafc8] text-transparent bg-clip-text">
+            Create Account
+          </h1>
+          <p className="text-gray-600 text-sm sm:text-base">
+            Join ScholarStream and discover your scholarship opportunities
+          </p>
+        </div>
 
-          {/* Photo field */}
-          <label className="label">Photo</label>
-          <input
-            type="file"
-            {...register("photo", { required: true })}
-            className="file-input"
-            placeholder="Your Photo"
-            disabled={isRegistering}
-          />
-          {errors.photo && <p className="text-red-500">Photo is required</p>}
-
-          {/* email  */}
-          <label className="label">Email</label>
-          <input
-            type="email"
-            {...register("email", { required: true })}
-            className="input"
-            placeholder="Email"
-            disabled={isRegistering}
-          />
-          {errors.email?.type === "required" && (
-            <p className="text-red-500">Email is required</p>
-          )}
-
-          {/* password */}
-          <label className="label">Password</label>
-          <input
-            type="password"
-            {...register("password", {
-              required: true,
-              minLength: 6,
-              pattern: /^(?=.*[A-Z])(?=.*[!@#$%^&*])/,
-            })}
-            className="input"
-            placeholder="Password"
-            disabled={isRegistering}
-          />
-          {errors.password?.type === "required" && (
-            <p className="text-red-500">Password is required</p>
-          )}
-          {errors.password?.type === "minLength" && (
-            <p className="text-red-500">
-              Password must be 6 characters or longer
-            </p>
-          )}
-          {errors.password?.type === "pattern" && (
-            <p className="text-red-500">
-              Must contain one uppercase letter and one special character.
-            </p>
-          )}
-          <div>
-            <a className="link link-hover">Forgot password?</a>
+        {/* Form Card */}
+        <form
+          onSubmit={handleSubmit(handleRegistration)}
+          className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-100"
+        >
+          {/* Name Field */}
+          <div className="mb-5">
+            <label className="block text-gray-700 font-semibold text-sm mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              {...register("name", { required: "Name is required" })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9f87e2] focus:border-transparent transition"
+              placeholder="John Doe"
+              disabled={isRegistering}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                ⚠️ {errors.name.message}
+              </p>
+            )}
           </div>
+
+          {/* Photo Field */}
+          <div className="mb-5">
+            <label className="block text-gray-700 font-semibold text-sm mb-2">
+              Profile Photo
+            </label>
+            <div className="relative">
+              <input
+                type="file"
+                {...register("photo", { required: "Photo is required" })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9f87e2] focus:border-transparent transition file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#9f87e2] file:text-white hover:file:bg-[#7d6dac] cursor-pointer"
+                disabled={isRegistering}
+              />
+            </div>
+            {errors.photo && (
+              <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                ⚠️ {errors.photo.message}
+              </p>
+            )}
+          </div>
+
+          {/* Email Field */}
+          <div className="mb-5">
+            <label className="block text-gray-700 font-semibold text-sm mb-2">
+              Email Address
+            </label>
+            <input
+              type="email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email",
+                },
+              })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9f87e2] focus:border-transparent transition"
+              placeholder="you@example.com"
+              disabled={isRegistering}
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                ⚠️ {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          {/* Password Field */}
+          <div className="mb-6">
+            <label className="block text-gray-700 font-semibold text-sm mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+                pattern: {
+                  value: /^(?=.*[A-Z])(?=.*[!@#$%^&*])/,
+                  message:
+                    "Must contain uppercase letter and special character (!@#$%^&*)",
+                },
+              })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9f87e2] focus:border-transparent transition"
+              placeholder="••••••••"
+              disabled={isRegistering}
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                ⚠️ {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* Register Button */}
           <button
-            className="btn bg-[#9f87e2] text-white mt-4 disabled:opacity-50"
+            type="submit"
             disabled={isRegistering}
+            className="w-full bg-gradient-to-r from-[#654ea3] to-[#9f87e2] text-white font-bold py-3 rounded-lg hover:shadow-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {isRegistering ? "Registering..." : "Register"}
+            {isRegistering ? (
+              <>
+                <span className="loading loading-spinner loading-sm"></span>
+                Creating Account...
+              </>
+            ) : (
+              "Create Account"
+            )}
           </button>
-        </fieldset>
-        <p className="text-center">
-          Already have an account?{" "}
-          <Link className="text-[#9f87e2] underline" to="/login">
-            Login
+
+          {/* Divider */}
+          <div className="flex items-center gap-4 my-6">
+            <div className="flex-1 h-px bg-gray-300"></div>
+            <span className="text-gray-500 text-sm">OR</span>
+            <div className="flex-1 h-px bg-gray-300"></div>
+          </div>
+
+          {/* Social Login */}
+          <SocialLogin />
+
+          {/* Login Link */}
+          <p className="text-center text-gray-600 text-sm mt-6">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-[#9f87e2] font-bold hover:underline transition"
+            >
+              Sign In
+            </Link>
+          </p>
+        </form>
+
+        {/* Footer Message */}
+        <p className="text-center text-gray-500 text-xs mt-6">
+          By creating an account, you agree to our{" "}
+          <Link to="/terms" className="text-[#9f87e2] hover:underline">
+            Terms of Service
           </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 };

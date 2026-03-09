@@ -16,10 +16,10 @@ const Home = () => {
       <Banner />
       <TopScholarships />
       <Features />
-      <Services />
       <HowItWorks />
       <Categories />
       <Partners />
+        <Services />
       <Newsletter />
       <Testimonial />
       {/* <ContactUs /> */}

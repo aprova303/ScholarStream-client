@@ -56,10 +56,10 @@ const Navbar = () => {
         <li>
           <NavLink to="/all-scholarships">All Scholarships</NavLink>
         </li>
-         <li>
+        <li>
           <NavLink to="/about">About</NavLink>
         </li>
-         <li>
+        <li>
           <NavLink to="/terms">Terms</NavLink>
         </li>
       </>
@@ -146,15 +146,15 @@ const Navbar = () => {
 
   return (
     <div
-      className={`navbar bg-base-200 shadow-sm sticky top-0 z-40 ${theme === "dark" ? "bg-gray-900 text-white" : ""}`}
+      className={`navbar bg-base-200 shadow-md sticky top-0 z-40 px-2 sm:px-4 ${theme === "dark" ? "bg-gray-900 text-white" : ""}`}
     >
       {/* Navbar Start - Logo & Mobile Menu */}
-      <div className="navbar-start">
+      <div className="navbar-start flex-1">
         <div className="dropdown">
           <div
             tabIndex={0}
             role="button"
-            className={`btn btn-ghost lg:hidden ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
+            className={`btn btn-ghost btn-sm lg:hidden ${theme === "dark" ? "bg-gray-800 text-white" : ""}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -190,7 +190,10 @@ const Navbar = () => {
         </div>
 
         {/* Logo */}
-        <Link to="/" className="btn btn-ghost text-xl">
+        <Link
+          to="/"
+          className="btn btn-ghost text-lg sm:text-xl flex-shrink-0 px-1 sm:px-2"
+        >
           <Logo />
         </Link>
       </div>
@@ -201,16 +204,17 @@ const Navbar = () => {
       </div>
 
       {/* Navbar End - Auth Section */}
-      <div className="navbar-end gap-2">
+      <div className="navbar-end flex-1 flex items-center justify-end gap-1 sm:gap-2">
+        {/* Theme Toggle - Hidden on mobile, visible on sm and up */}
         <button
           onClick={toggleTheme}
-          className="btn btn-ghost btn-circle"
+          className="btn btn-ghost btn-circle btn-sm sm:btn-md"
           title="Toggle Theme"
         >
           {theme === "light" ? (
-            <FaMoon className="text-lg" />
+            <FaMoon className="text-base sm:text-lg" />
           ) : (
-            <FaSun className="text-lg text-yellow-400" />
+            <FaSun className="text-base sm:text-lg text-yellow-400" />
           )}
         </button>
 
@@ -218,8 +222,11 @@ const Navbar = () => {
           <span className="loading loading-spinner loading-sm"></span>
         ) : user ? (
           <div className="dropdown dropdown-end">
-            <button tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+            <button
+              tabIndex={0}
+              className="btn btn-ghost btn-circle btn-sm sm:btn-md avatar"
+            >
+              <div className="w-8 sm:w-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
                 {user.photoURL ? (
                   <img
                     src={user.photoURL}
@@ -227,7 +234,7 @@ const Navbar = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-[#9f87e2] text-white font-bold text-lg">
+                  <div className="w-full h-full flex items-center justify-center bg-[#9f87e2] text-white font-bold text-xs sm:text-lg">
                     {user.email?.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -236,7 +243,7 @@ const Navbar = () => {
             {/* Dropdown menu */}
             <ul
               tabIndex={0}
-              className={`dropdown-content menu bg-base-100 rounded-box z-50 w-64 p-2 shadow ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}
+              className={`dropdown-content menu bg-base-100 rounded-box z-50 w-52 sm:w-64 p-2 shadow ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}
             >
               {/* <li className="menu-title">
                 <span>{user.displayName || user.email}</span>
@@ -262,15 +269,15 @@ const Navbar = () => {
             </ul>
           </div>
         ) : (
-          <div className="flex gap-2">
+          <div className="flex gap-1 sm:gap-2">
             <Link
-              className={`btn  border-none transition-colors duration-300 text-white btn-sm ${theme === "dark" ? "bg-[#9f87e2]" : "bg-[#9f87e2]"}`}
+              className={`btn border-none transition-colors duration-300 text-white btn-xs sm:btn-sm ${theme === "dark" ? "bg-[#9f87e2]" : "bg-[#9f87e2]"}`}
               to="/login"
             >
               Login
             </Link>
             <Link
-              className={`btn border-none text-white btn-sm hidden sm:inline-flex ${theme === "dark" ? "bg-[#9f87e2]" : "bg-[#9f87e2]"}`}
+              className={`btn border-none text-white btn-xs sm:btn-sm hidden sm:inline-flex ${theme === "dark" ? "bg-[#9f87e2]" : "bg-[#9f87e2]"}`}
               to="/register"
             >
               Register

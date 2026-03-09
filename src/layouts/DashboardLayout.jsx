@@ -16,7 +16,6 @@ const DashboardLayout = () => {
 
   const isLoading = authLoading || roleLoading;
 
-
   const bgColor = theme === "light" ? "bg-base-100" : "bg-gray-900";
   const textColor = theme === "light" ? "text-gray-800" : "text-white";
   const secondaryText = theme === "light" ? "text-gray-500" : "text-gray-400";
@@ -426,24 +425,25 @@ const DashboardLayout = () => {
                 </li>
                 <li className="menu-title">
                   <span
-                    className={`text-xs transition-colors duration-300 ${textColor}`}
+                    className={`text-xs transition-colors duration-300  ${textColor}`}
                   >
                     Role: {role}
                   </span>
                 </li>
-                <li  className={`${textColor}`}>
+                <li className={`${textColor}`}>
                   <a
                     onClick={() => {
                       navigate(getProfileRoute());
                       document.getElementById("my-drawer-4").checked = false;
                     }}
-                   
                   >
                     My Profile
                   </a>
                 </li>
                 <li>
-                  <a onClick={handleLogout}  className={`${textColor}`}>Logout</a>
+                  <button onClick={handleLogout} className={` ${textColor}`}>
+                    Logout
+                  </button>
                 </li>
               </ul>
             </div>
@@ -468,12 +468,12 @@ const DashboardLayout = () => {
           className="drawer-overlay"
         ></label>
         <div
-          className={`flex min-h-full flex-col items-start transition-colors duration-300 is-drawer-close:w-40 is-drawer-open:w-40 ${
+          className={`flex min-h-screen flex-col items-start transition-colors duration-300 is-drawer-close:w-40 is-drawer-open:w-40 ${
             theme === "light" ? "bg-base-200" : "bg-gray-800 text-white"
           }`}
         >
-          {/* Sidebar content here */}
-          <ul className="menu w-full grow">
+          {/* Sidebar content here - Make scrollable */}
+          <ul className="menu w-full grow overflow-y-auto max-h-[calc(100vh-80px)]">
             {/* List item - Homepage */}
             <li>
               <Link
